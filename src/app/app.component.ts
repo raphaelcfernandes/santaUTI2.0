@@ -18,4 +18,8 @@ export class AppComponent {
   	this.authService.loginWithEmailAndPassword(this.email,this.password);
   	this.email = this.password = '';
   }
+
+  logout(){
+    this.authService.logout();
+  }
 }
