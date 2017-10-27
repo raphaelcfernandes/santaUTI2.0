@@ -1,11 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AppComponent } from './app.component';
-import { AngularFireModule} from 'angularfire2';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { LoginComponent } from './login/login.component';
-import {AuthService} from './providers/auth.service';
+import { AuthService } from './providers/auth.service';
+import { DatabaseService } from './providers/database.service';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { HomeComponent } from './home/home.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { AuthGuardService } from './providers/auth-guard.service';
 
 export const firebaseConfig = {
 	apiKey: "AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c",
@@ -16,20 +21,21 @@ export const firebaseConfig = {
 	messagingSenderId: "666817934398"
 };
 
-
-
 @NgModule({
 	declarations: [
-	AppComponent,
-	LoginComponent
+	LoginComponent,
+	HomeComponent,
+	AppComponent
 	],
 	imports: [
+	AppRoutingModule,
 	BrowserModule,
 	FormsModule,
 	AngularFireModule.initializeApp(firebaseConfig),
-	AngularFireAuthModule
+	AngularFireAuthModule,
+	AngularFireDatabaseModule
 	],
-	providers: [AuthService],
+	providers: [AuthService,DatabaseService,AuthGuardService],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,25 +1,15 @@
-import { Component } from '@angular/core';
-import { AuthService } from './providers/auth.service';
-
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+export class AppComponent implements OnInit {
 
-export class AppComponent {
-  title = 'app';
-  email:string;
-  password:string;
+  constructor(private router: Router) { }
 
-  constructor(public authService : AuthService){}
-
-  login(){
-  	this.authService.loginWithEmailAndPassword(this.email,this.password);
-  	this.email = this.password = '';
+  ngOnInit() {
   }
 
-  logout(){
-    this.authService.logout();
-  }
 }
