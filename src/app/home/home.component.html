@@ -1,4 +1,16 @@
 
 <button (click)="logout()">
-  Logout
+	Logout
 </button>
+<div *ngIf="pacientes; let pacientes; else loading">
+	<ul>
+		<!-- <li *ngFor="let item of pacientes">
+			Paciente
+			<h2><code>{{ item.nome }} {{item.sobrenome}}</code></h2>
+			Medico Responsável
+			<h2></h2>
+		</li> -->
+	</ul>
+	<div *ngIf="pacientes.length === 0">No results, try clearing filters</div>
+</div>
+<ng-template #loading>Loading&hellip;</ng-template>

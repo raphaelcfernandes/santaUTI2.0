@@ -7,7 +7,8 @@ import { Observable } from 'rxjs/Observable';
 import {DatabaseService} from './database.service';
 @Injectable()
 export class AuthService {
-	userLogged;
+	private userKey;
+
 	constructor(public afAuth : AngularFireAuth,private router : Router) { 
 	}
 
@@ -19,7 +20,12 @@ export class AuthService {
 	loginWithEmailAndPassword(email,password){
 		this.afAuth.auth.signInWithEmailAndPassword(email,password)
 		.then(value => {
-			this.router.navigate(['/home']);
+			let ref = firebase.database().ref('Pessoa').orderByChild('email').equalTo(firebase.auth().currentUser.email)
+			.once('value', val => {
+				val.toJSON();
+				this.userKey = Object.keys(val.toJSON())[0];
+				this.router.navigate(['/home']);
+			});			
 		})
 		.catch(err => {
 			console.log('Something went wrong', err.message);
@@ -28,6 +34,10 @@ export class AuthService {
 
 	isLoggedIn(){
 		return firebase.auth().currentUser;
+	}
+
+	getUserKey(){
+		return this.userKey;
 	}
 
 }
