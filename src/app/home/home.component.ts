@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../providers/auth.service';
 import { DatabaseService } from '../providers/database.service';
-import {Injectable} from "@angular/core";
 
 @Component({
 	selector: 'app-home',
@@ -9,39 +8,56 @@ import {Injectable} from "@angular/core";
 	styleUrls: ['./home.component.css']
 })
 
-
-
-export class HomeComponent implements OnInit {
-	pacientes: any;
+export class HomeComponent implements OnInit  {
+	private pacientes: any[] = [];
+	private profissionaisSubscription: any;
+	private pacientesSubscription: any;
 	
-	constructor(private authService : AuthService, private db: DatabaseService) { 		
+	private fichas: any[] = [];
+	private profissionais: any[] = [];
 
+	constructor(private authService : AuthService, private db: DatabaseService) {
+		this.profissionaisSubscription = this.db.getProfissionaisFromHospitalKey('DcbtizNr0ADNNnd0evlN').subscribe(data => {
+			data.forEach(profissionais => {
+				this.profissionais.push({'profissionalKey': profissionais.key, 'profissionalData': profissionais.payload.val()});
+			});
+		});
 	}
 
 	logout(){
 		this.authService.logout();
 	}
+
 	ngOnInit() {
-		this.pacientes = this.db.getHospital().snapshotChanges().subscribe(actions => {
-			actions.forEach(action => {
-				console.log(action.key);
-				console.log(action.payload.val());
-				console.log(Object.keys(action.payload.val().Profissionais));
+		this.pacientesSubscription = this.db.getPacientesFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(actions => {
+			actions.forEach((pacientes,index) =>{
+				this.pacientes.push({'pacienteKey': pacientes.key,
+					'nome': pacientes.payload.val().nome,
+					'sobrenome': pacientes.payload.val().sobrenome,
+					'box': pacientes.payload.val().box,
+					'leito': pacientes.payload.val().leito,
+					'medicoResponsavel': this.getNomeMedicoResponsavel(pacientes.payload.val().profissionalResponsavel)
+				});
 			});
+			console.log(this.pacientes);
 		});
 	}
+
+	private getNomeMedicoResponsavel(medicoKey: string){
+		this.profissionais.forEach(data =>{
+			if(data.profissionalKey == medicoKey){
+				console.log("entrei aqi" + data.profissionalData.nome);
+				return data.profissionalData.nome;
+			}
+		});
+	}
+
 	ngOnDestroy(){
-		this.pacientes.unsubscribe();
+		this.pacientesSubscription.unsubscribe();
+		this.profissionaisSubscription.unsubscribe();
+	}
+
+	liClicked(item){
+		console.log(item);
 	}
 }
-
-// data => {
-// 				console.log(data[0].Pacientes);
-// 				let keys = Object.keys(data[0].Pacientes);
-// 				keys.forEach(data => { 
-// 					this.pacientes.push(data);
-// 				})
-// 				// this.pacientes = Object.keys(data[0].Pacientes);
-// 				// this.pacientes.push(Object.keys(data[0].Pacientes).map((key)=>{ return data[0].Pacientes[key]}));
-
-// 				console.log(this.pacientes);

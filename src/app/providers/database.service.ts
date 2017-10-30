@@ -6,12 +6,34 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
+
 @Injectable()
 export class DatabaseService {
 	
-	constructor(private db: AngularFireDatabase) {	}
+	private hospitalKey: string;
+	private profissionais: any[] = []; 
 
-	getHospital() : AngularFireList<any>{
-		return this.db.list('Hospital',ref => ref.orderByChild('nome').equalTo('Santa Clara'));
+	constructor(private db: AngularFireDatabase) {}
+
+	setHospitalKey(nome: string){
+		this.db.list('Hospital',ref => ref.orderByChild('nome').equalTo(nome)).snapshotChanges().map(actions =>{
+			actions.forEach(data =>{
+				this.hospitalKey = data.key;
+			})
+		});
 	}
+
+	getPacientesFromHospitalKey(key: string){
+		return this.db.list('Hospital/'+key+'/Pacientes');
+	}
+
+	getHospitalKey(){
+		if(this.hospitalKey===undefined)
+			this.setHospitalKey('Santa Clara');
+		return this.hospitalKey;
+	}
+
+	getProfissionaisFromHospitalKey(key: string){
+		return this.db.list('Hospital/'+key+'/Profissionais').snapshotChanges();
+	}	
 }
