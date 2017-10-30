@@ -30,16 +30,19 @@ export class HomeComponent implements OnInit  {
 
 	ngOnInit() {
 		this.pacientesSubscription = this.db.getPacientesFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(actions => {
-			actions.forEach((pacientes,index) =>{
-				this.pacientes.push({'pacienteKey': pacientes.key,
+			actions.forEach(pacientes =>{
+				this.profissionais.forEach(profissional =>{
+					if(profissional.profissionalKey == pacientes.payload.val().profissionalResponsavel){
+						this.pacientes.push({'pacienteKey': pacientes.key,
 					'nome': pacientes.payload.val().nome,
 					'sobrenome': pacientes.payload.val().sobrenome,
 					'box': pacientes.payload.val().box,
 					'leito': pacientes.payload.val().leito,
-					'medicoResponsavel': this.getNomeMedicoResponsavel(pacientes.payload.val().profissionalResponsavel)
-				});
+					'medicoResponsavel': profissional.profissionalData.nome + ' ' + profissional.profissionalData.sobrenome});
+					}
+				})
+				
 			});
-			console.log(this.pacientes);
 		});
 	}
 
