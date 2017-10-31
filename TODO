@@ -1,0 +1,49 @@
+Neurologico
+    - Nivel Consciencia
+        Vigil -> vigil
+        Alerta -> alerta
+        Sonolencia -> sonolento(a)
+        Obnubilaćao -> obnubilado(a)
+        Torpor -> torporoso(a)
+        Coma -> comatoso(a)
+        sedado -> sedado(a)
+            - Ramsay: numero (pontuacao),Rass: numero (pontuacao). Escala de glasgow: Total (AO: numero, Rv: numero, RM: numero)
+            - em sedacao/analgesia com (Bomba) fentanil volumeInfusao, Ketamina, midazolam, precedex, propofol
+        Orientacao Temporo Espacial: orientado em X,Y desorientado X,Y
+        Deficit Motor: sem deficit OU M paretico ou M paretica em local. M plegico ou M plegica em local
+        Avaliacao pupilar: pupilas: mioticas/midriatricas/medias (normais), isocoricas/anisocoricas, diferenća se for anisocoricas, reatividade,
+        PIC+valor, PPC + valor, capnometria+valor,sjo2+valor
+Hemodinamico
+    - Paciente hemodinamicamente estavel/instavel compensado
+        Usando droga vasotiva
+            Em uso de: adrenalina velocidade infusao, dobutamina, dopamina, hidrocortisona, milrinona, nitroglicerina, nitroprussiato de sodio, noradrenalina
+        ritmo:  pulso ritmo/aritmico, bulhas: hiper/hipo/normofoneticas, sem sopros (n marcado), sopro(marcado): caracteristicas e intensidade,
+             perfusao capilar: opcoes, extremidades: cianotica/aciaonitica, fria/quente/normais, pam (valor), pvc (valor !=0), swan-ganz, freq cardiaca (valor)
+Respiratorio
+    - Paciente em:
+        - vias aereas -> Naturais
+                Ventilacao espontanea
+                    SE NAO TIVER USO DE OXIGENIO: em area ambiente
+                    SE USAR: em uso de o2, (mascari de venturi, cateter nasal, mascara de reinalacao) + descrever subitens do q estiver marcando
+        tubo traqueal
+            Entubado com pressao do CUFF, localizacao canula,
+            em ventilacao mecanica: (PCV,FIO2,PEEP,VOLUME,F.R Respirador,F.R Paciente). Murmurio vesicular: fisiologico/reduzido/aumentado
+            SE aumentado ou reduzido:
+                descrecer os pontos
+            SE NAO TIVER RONCOS: sem roncos
+            SE TIVER RONCOS: colocar localizacoes.
+            SE NAO TIVER: sem sibilos
+            SE TIVER: sibilos + localizacoes. saturando SPO2 + valor%
+        traqueostomia = tubo traqueal
+            traqueostomizado com pressao do CUFF, localizacao canula
+ABDOME
+    abdome: formatos (opcoes), tensao (opcoes), ruidos hidraereos: aumentado/normal/reduzido/ausente.
+    SE NAO TIVER ASCITE: nao precisa escrever
+    SE TIVER ASCITE: escrever tipo ascite pequeno/medio/grande + volume
+    SE NAO TIVER MASSAS: sem massas palpaveis
+    SE TIVER: descrever locais marcados
+    SE NAO TIVER VISCERAS: sem visceras palpaveis
+    SE TIVER: locais marcados.
+    OSTOMIAS: opcoes bom/regular/mal aspecto funcionante ou nao funcionante.
+    SE N MARCAR EVACUACOES: nao evacuou
+    SE TIVER: tipo + quantidade.
