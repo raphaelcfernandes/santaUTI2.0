@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit  {
 	}
 
 	liClicked(item){
-		this.subscriptions.add(this.db.getLastFichaInseridaPorPacienteKey(item.pacienteKey).snapshotChanges().subscribe(data =>{
+		this.subscriptions.add(this.db.getLastFichaByPacienteKey(item.pacienteKey).snapshotChanges().subscribe(data =>{
 			data.forEach(ficha =>{
 				this.router.navigate(['/ficha',ficha.key]);
 			});

@@ -1,6 +1,14 @@
 
 https://plnkr.co/edit/ApjJkNwS6hfS56DjL7vt?p=preview
 
+1 - Quando clicar em Fichas de paciente, deve se perguntar qual ficha deseja:
+    Editar:
+        - Periodo de datas
+        - Ultima preenchida
+    Visualizar:
+        - Periodo de datas
+        - Ultima preenchida
+
 
 Neurologico
     - Nivel Consciencia

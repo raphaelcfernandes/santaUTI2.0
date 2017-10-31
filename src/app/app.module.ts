@@ -64,6 +64,7 @@ export const firebaseConfig = {
 	FichaComponent
 	],
 	imports: [
+	MaterialModule.forRoot(),
 	AppRoutingModule,
 	BrowserModule,
 	FormsModule,
