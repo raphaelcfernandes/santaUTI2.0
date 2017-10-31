@@ -6,14 +6,16 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
+import { DatePipe } from '@angular/common';
 
+import { AuthService } from '../providers/auth.service';
 @Injectable()
 export class DatabaseService {
 	
 	private hospitalKey: string;
 	private profissionais: any[] = []; 
 
-	constructor(private db: AngularFireDatabase) {}
+	constructor(private db: AngularFireDatabase,private auth: AuthService) {}
 
 	setHospitalKey(nome: string){
 		this.db.list('Hospital',ref => ref.orderByChild('nome').equalTo(nome)).snapshotChanges().map(actions =>{
@@ -36,4 +38,8 @@ export class DatabaseService {
 	getProfissionaisFromHospitalKey(key: string){
 		return this.db.list('Hospital/'+key+'/Profissionais').snapshotChanges();
 	}	
+
+	getFichaIDByPacienteID(key: string){
+		return this.db.list('Hospital/DcbtizNr0ADNNnd0evlN/Fichas',ref => ref.orderByChild('pacienteKey').equalTo(key).limitToLast(1));
+	}
 }

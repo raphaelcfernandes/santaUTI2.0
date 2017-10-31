@@ -11,6 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuardService } from './providers/auth-guard.service';
+import { FichaComponent } from './ficha/ficha.component';
 
 export const firebaseConfig = {
 	apiKey: "AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c",
@@ -25,7 +26,8 @@ export const firebaseConfig = {
 	declarations: [
 	LoginComponent,
 	HomeComponent,
-	AppComponent
+	AppComponent,
+	FichaComponent
 	],
 	imports: [
 	AppRoutingModule,
