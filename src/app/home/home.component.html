@@ -6,20 +6,22 @@
 </li>
 <div *ngIf="pacientes; let pacientes ">
 	<ul>
-		<li *ngFor="let item of pacientes" (click)="liClicked(item)">
-			Paciente
-			<h2><code>{{ item.nome }} {{item.sobrenome}}</code></h2>
-			Medico Responsável
-			<h2><code>{{ item.medicoResponsavel }} </code></h2>
-			<h2></h2>
-		</li>
+		<mat-list *ngFor="let item of pacientes" (click)="liClicked(item)">
+			<mat-list-item>Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</mat-list-item> <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item>Item 1</button>
+				<button mat-menu-item>Item 2</button>
+			</mat-menu>
+		</mat-list>
 	</ul>
 </div>
 
 <div>
-    <div class="loader-overlay">
-            <div>
-                <mat-spinner mode="indeterminate" *ngIf="show"></mat-spinner>
-            </div>
-    </div>
+	<div class="loader-overlay">
+		<div>
+			<mat-spinner mode="indeterminate" *ngIf="show"></mat-spinner>
+		</div>
+	</div>
 </div>
+
+  

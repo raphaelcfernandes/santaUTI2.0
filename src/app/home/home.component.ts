@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit  {
 	private pacientes: any[] = [];
 	private profissionais: any[] = [];
 	show = false;
+
 	constructor(private authService : AuthService, private db: DatabaseService,private router : Router) {
 		this.subscriptions.add(this.db.getProfissionaisFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(data => {
 			data.forEach(profissionais => {
@@ -53,7 +54,7 @@ export class HomeComponent implements OnInit  {
 	}
 
 	liClicked(item){
-		this.subscriptions.add(this.db.getFichaIDByPacienteID(item.pacienteKey).snapshotChanges().subscribe(data =>{
+		this.subscriptions.add(this.db.getLastFichaInseridaPorPacienteKey(item.pacienteKey).snapshotChanges().subscribe(data =>{
 			data.forEach(ficha =>{
 				this.router.navigate(['/ficha',ficha.key]);
 			});

@@ -39,7 +39,9 @@ export class DatabaseService {
 		return this.db.list('Hospital/'+key+'/Profissionais');
 	}	
 
-	getFichaIDByPacienteID(key: string): AngularFireList<any[]>{
+	getLastFichaInseridaPorPacienteKey(key: string): AngularFireList<any[]>{
 		return this.db.list('Hospital/DcbtizNr0ADNNnd0evlN/Fichas',ref => ref.orderByChild('pacienteKey').equalTo(key).limitToLast(1));
 	}
+
+
 }
