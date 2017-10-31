@@ -1,0 +1,11 @@
+mat-grid-tile {
+  background: #E6E6FA;
+}
+.example-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-container > * {
+  width: 100%;
+}

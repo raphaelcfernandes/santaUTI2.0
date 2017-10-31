@@ -1,7 +1,10 @@
 <button (click)="logout()">
 	Logout
 </button>
-<div *ngIf="pacientes; let pacientes; else loading">
+<li *ngIf="!pacientes">
+	<mat-spinner></mat-spinner>
+</li>
+<div *ngIf="pacientes; let pacientes ">
 	<ul>
 		<li *ngFor="let item of pacientes" (click)="liClicked(item)">
 			Paciente
@@ -12,5 +15,11 @@
 		</li>
 	</ul>
 </div>
-<ng-template #loading>Loading&hellip;</ng-template>
 
+<div>
+    <div class="loader-overlay">
+            <div>
+                <mat-spinner mode="indeterminate" *ngIf="show"></mat-spinner>
+            </div>
+    </div>
+</div>

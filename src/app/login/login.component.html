@@ -1,6 +1,7 @@
-<input type="text" [(ngModel)]="email" placeholder="email">
-<input type="password" [(ngModel)]="password" placeholder="password">
-<button (click)="login()" [disabled]="!email || !password">
-	Login
-</button>
-
+<mat-form-field>
+	<input  [(ngModel)]="email" matInput placeholder="Email" required type="email">
+</mat-form-field>
+<mat-form-field>
+	<input [(ngModel)]="password" matInput placeholder="Senha" required type="password">
+</mat-form-field>
+<button (click)="login()"  mat-raised-button color="primary">Login</button>

@@ -3,6 +3,7 @@ import { AuthService } from '../providers/auth.service';
 import { DatabaseService } from '../providers/database.service';
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
+
 @Component({
 	selector: 'app-home',
 	templateUrl: './home.component.html',
@@ -13,9 +14,9 @@ export class HomeComponent implements OnInit  {
 	private subscriptions:  Subscription = new Subscription();
 	private pacientes: any[] = [];
 	private profissionais: any[] = [];
-
+	show = false;
 	constructor(private authService : AuthService, private db: DatabaseService,private router : Router) {
-		this.subscriptions.add(this.db.getProfissionaisFromHospitalKey('DcbtizNr0ADNNnd0evlN').subscribe(data => {
+		this.subscriptions.add(this.db.getProfissionaisFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(data => {
 			data.forEach(profissionais => {
 				this.profissionais.push({'profissionalKey': profissionais.key, 'profissionalData': profissionais.payload.val()});
 			});
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit  {
 	}
 
 	ngOnInit() {
+		this.show=true;
 		this.subscriptions.add(this.db.getPacientesFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(actions => {
 			actions.forEach(pacientes =>{
 				this.profissionais.forEach(profissional =>{
@@ -41,6 +43,7 @@ export class HomeComponent implements OnInit  {
 				})
 				
 			});
+			this.show=false;
 		}));
 		
 	}

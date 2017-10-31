@@ -25,7 +25,7 @@ export class DatabaseService {
 		});
 	}
 
-	getPacientesFromHospitalKey(key: string){
+	getPacientesFromHospitalKey(key: string): AngularFireList<any[]>{
 		return this.db.list('Hospital/'+key+'/Pacientes');
 	}
 
@@ -35,11 +35,11 @@ export class DatabaseService {
 		return this.hospitalKey;
 	}
 
-	getProfissionaisFromHospitalKey(key: string){
-		return this.db.list('Hospital/'+key+'/Profissionais').snapshotChanges();
+	getProfissionaisFromHospitalKey(key: string): AngularFireList<any[]>{
+		return this.db.list('Hospital/'+key+'/Profissionais');
 	}	
 
-	getFichaIDByPacienteID(key: string){
+	getFichaIDByPacienteID(key: string): AngularFireList<any[]>{
 		return this.db.list('Hospital/DcbtizNr0ADNNnd0evlN/Fichas',ref => ref.orderByChild('pacienteKey').equalTo(key).limitToLast(1));
 	}
 }
