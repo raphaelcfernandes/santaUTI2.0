@@ -16,6 +16,7 @@ import {MatFormFieldModule} from '@angular/material';
 import {MatFormFieldControl} from '@angular/material';
 import {CdkTableModule} from '@angular/cdk/table';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 import {MatAutocompleteModule,
 	MatButtonModule,
 	MatButtonToggleModule,
@@ -64,7 +65,6 @@ export const firebaseConfig = {
 	FichaComponent
 	],
 	imports: [
-	MaterialModule.forRoot(),
 	AppRoutingModule,
 	BrowserModule,
 	FormsModule,
@@ -103,7 +103,7 @@ export const firebaseConfig = {
 	MatTableModule,
 	MatTabsModule,
 	MatToolbarModule,
-	MatTooltipModule,
+	MatTooltipModule
 	],
 	providers: [AuthService,DatabaseService,AuthGuardService],
 	bootstrap: [AppComponent]

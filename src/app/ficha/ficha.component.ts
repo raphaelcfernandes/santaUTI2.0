@@ -11,7 +11,12 @@ import { Observable} from 'rxjs/Observable';
 export class FichaComponent implements OnInit {
 	Title: any;
 	Link: any;
+	tiles = [
+	{text: 'One', cols: 1, rows: 1, color: 'lightblue'},
+	{text: 'Two', cols: 1, rows:1, color: 'lightgreen'},
+	{text: 'Three', cols: 2, rows: 1, color: 'lightpink'},
 
+	];
 	constructor(private router: Router,private activatedRouter: ActivatedRoute) { 
 		
 	}

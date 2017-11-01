@@ -1,11 +1,15 @@
 mat-grid-tile {
-  background: #E6E6FA;
+	background:  	#F0F8FF;
 }
 .example-container {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .example-container > * {
-  width: 100%;
+	width: 100%;
+}
+.text-inside-grid {
+  position: absolute;
+  left: 5px;
 }
