@@ -1,20 +1,82 @@
- <button (click)="home()">
- 	Home
- </button>
 
-<mat-card>
-  <mat-grid-list cols="4">
-   <mat-grid-tile [style.border-right]="'1px dashed #ddd'">
-     <textarea cols="5"> teste</textarea>
-   </mat-grid-tile>
-   <mat-grid-tile [style.border-right]="'1px dashed #ddd'">
-    	 <div class="text-inside-grid">a</div>
-   </mat-grid-tile>
-   <mat-grid-tile>
-     b1
-   </mat-grid-tile>
-   <mat-grid-tile>
-     b2
-   </mat-grid-tile>
-  </mat-grid-list>
-</mat-card>
+<div style="width: 40%; float:left; position:fixed">
+	<button (click)="sendToHome()">
+		Home
+	</button>
+	<form class="example-form">
+		<table class="example-full-width" cellspacing="19">
+			<tr>
+				<td>
+					<mat-form-field class="example-full-width">
+						<textarea matInput placeholder="Diagnosticos"></textarea>
+					</mat-form-field>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+
+
+ 	<!-- <input type="text" [value]='hemodinamicoString'>
+ 		<input type="text" *ngFor="let droga of fichaObject.Dispositivos, let i =index" [value]='droga' (input)="fichaObject.Dispositivos[i] = $event.target.value; prepareArrays();" > -->
+
+
+
+ 		<div style="width: 60%; float:right">
+ 			<button (click)="sendToHome()">
+ 				Home
+ 			</button>
+ 			<mat-card>
+ 				<mat-card-subtitle>Hemodinâmico</mat-card-subtitle>
+ 				<mat-card-content>
+ 					<form class="example-form">
+ 						<table class="example-full-width" cellspacing="">
+ 							<tr>
+ 								<td>
+ 									<mat-form-field class="example-full-width">
+ 										<textarea matInput disabled [value]='hemodinamicoString' rows="5"></textarea>
+ 									</mat-form-field>
+ 								</td>
+ 							</tr>
+ 							<tr>
+ 								<td>
+ 									<mat-form-field class="example-full-width">
+ 										<textarea matInput placeholder="Análise" rows="5"></textarea>
+ 									</mat-form-field>
+ 								</td>
+ 							</tr>
+ 						</table>
+ 					</form>
+ 				</mat-card-content>
+ 				<mat-card-actions align="start">
+ 					<button mat-button>EDITAR</button>
+ 				</mat-card-actions>
+ 			</mat-card> 	
+ 			<br>
+ 			<mat-card tabindex="0">
+ 				<mat-card-subtitle>Abdome</mat-card-subtitle>
+ 				<mat-card-content>
+ 					<form class="example-form">
+ 						<table class="example-full-width" cellspacing="">
+ 							<tr>
+ 								<td>
+ 									<mat-form-field class="example-full-width">
+ 										<textarea matInput disabled [value]='abdomeString' rows="5"></textarea>
+ 									</mat-form-field>
+ 								</td>
+ 							</tr>
+ 							<tr> 
+ 								<td>
+ 									<mat-form-field class="example-full-width">
+ 										<textarea matInput placeholder="Análise" rows="5"></textarea>
+ 									</mat-form-field>
+ 								</td>
+ 							</tr>
+ 						</table>
+ 					</form>
+ 				</mat-card-content>
+ 				<mat-card-actions align="start">
+ 					<button mat-button>EDITAR</button>
+ 				</mat-card-actions>
+ 			</mat-card> 
+ 		</div>
