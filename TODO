@@ -25,12 +25,19 @@ Neurologico
         Deficit Motor: sem deficit OU M paretico ou M paretica em local. M plegico ou M plegica em local
         Avaliacao pupilar: pupilas: mioticas/midriatricas/medias (normais), isocoricas/anisocoricas, diferenća se for anisocoricas, reatividade,
         PIC+valor, PPC + valor, capnometria+valor,sjo2+valor
+        Fentanil, Ketamina, Midazolan, Precedex, propofol => sedativos (bombaSeda). 
+        Em sedoanalgesia com nome + valor.
+
 Hemodinamico: 
-    - Paciente hemodinamicamente estavel/instavel compensado
+    - Paciente hemodinamicamente estavel/instavel compensado em ritmo de (ritmo Monitor)
         Usando droga vasotiva
             Em uso de: adrenalina velocidade infusao, dobutamina, dopamina, hidrocortisona, milrinona, nitroglicerina, nitroprussiato de sodio, noradrenalina
         ritmo:  pulso ritmo/aritmico, bulhas: hiper/hipo/normofoneticas, sem sopros (n marcado), sopro(marcado): caracteristicas e intensidade,
              perfusao capilar: opcoes, extremidades: cianotica/aciaonitica, fria/quente/normais, pam (valor), pvc (valor !=0), swan-ganz, freq cardiaca (valor)
+     Adrenalina, amiodarona, dobutamina, dopamina, hidrocortisona, miorinona, nitroglicerina, nitroprussiato de sodio, noradrenalina => Drogas de efeito vasoativo (bombaDVA)
+
+
+
 Respiratorio
     - Paciente em:
         - vias aereas -> Naturais
@@ -59,3 +66,6 @@ ABDOME
     OSTOMIAS: opcoes bom/regular/mal aspecto funcionante ou nao funcionante.
     SE N MARCAR EVACUACOES: nao evacuou
     SE TIVER: tipo + quantidade.
+
+    Endocrino:
+        Insulina (bombaEndocrino)
