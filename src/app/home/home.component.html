@@ -1,21 +1,16 @@
 <button (click)="logout()">
 	Logout
 </button>
-<li *ngIf="!pacientes">
+<!-- <li *ngIf="!pacientes">
 	<mat-spinner></mat-spinner>
-</li>
+</li> -->
 <div *ngIf="pacientes; let pacientes ">
 	<ul>
-		<mat-list *ngFor="let item of pacientes" (click)="liClicked(item)">
-			<mat-list-item>Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</mat-list-item> <button mat-button [matMenuTriggerFor]="menu">Menu</button>
-			<mat-menu #menu="matMenu">
-				<button mat-menu-item>Item 1</button>
-				<button mat-menu-item>Item 2</button>
-			</mat-menu>
-		</mat-list>
+		<li *ngFor="let item of pacientes" (click)="liClicked(item)">
+			Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</li>
 	</ul>
 </div>
-
+<!-- 
 <div>
 	<div class="loader-overlay">
 		<div>
@@ -24,4 +19,4 @@
 	</div>
 </div>
 
-  
+   -->
