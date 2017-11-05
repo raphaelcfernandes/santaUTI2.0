@@ -1,5 +1,4 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AngularFireModule} from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
@@ -13,6 +12,8 @@ import {AppComponent} from './app.component';
 import {AuthGuardService} from './providers/auth-guard.service';
 import {FichaComponent} from './ficha/ficha.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgModule } from '@angular/core';
 
 
 export const firebaseConfig = {
@@ -26,19 +27,20 @@ export const firebaseConfig = {
 
 @NgModule({
   declarations: [
-    LoginComponent,
-    HomeComponent,
-    AppComponent,
-    FichaComponent
+  LoginComponent,
+  HomeComponent,
+  AppComponent,
+  FichaComponent
   ],
   imports: [
-    AppRoutingModule,
-    BrowserModule,
-    FormsModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireAuthModule,
-    AngularFireDatabaseModule,
-    BrowserAnimationsModule
+  AppRoutingModule,
+  BrowserModule,
+  FormsModule,
+  AngularFireModule.initializeApp(firebaseConfig),
+  AngularFireAuthModule,
+  AngularFireDatabaseModule,
+  BrowserAnimationsModule,
+  NgbModule.forRoot()
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
   bootstrap: [AppComponent]

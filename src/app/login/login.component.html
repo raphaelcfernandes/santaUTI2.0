@@ -1,10 +1,12 @@
-
 <div class="container">
-	
-	<input  [(ngModel)]="email" matInput placeholder="Email" required type="email">
-	
-	
-	<input [(ngModel)]="password" matInput placeholder="Senha" required type="password">
-	
-	<button (click)="login()"  mat-raised-button color="primary" align="center">Login</button>
+  <form #loginForm="ngForm">
+    <div class="form-group">
+      <input type="email" class="form-control"  placeholder="Email" [(ngModel)] = "email" name="email">
+    </div>
+    <div class="form-group">
+      <input type="password" class="form-control" placeholder="Senha" [(ngModel)] = "password" name="password">
+    </div>
+
+    <button type="submit" class="btn btn-primary" (click)="login()">Submit</button>
+  </form>
 </div>

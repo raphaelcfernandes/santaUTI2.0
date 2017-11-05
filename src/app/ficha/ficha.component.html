@@ -26,57 +26,10 @@
  			<button (click)="sendToHome()">
  				Home
  			</button>
-<!--  			<mat-card>
- 				<mat-card-subtitle>Hemodinâmico</mat-card-subtitle>
- 				<mat-card-content>
- 					<form class="example-form">
- 						<table class="example-full-width" cellspacing="">
- 							<tr>
- 								<td>
- 									<mat-form-field class="example-full-width">
- 										<textarea matInput disabled [value]='hemodinamicoString' rows="5"></textarea>
- 									</mat-form-field>
- 								</td>
- 							</tr>
- 							<tr>
- 								<td>
- 									<mat-form-field class="example-full-width">
- 										<textarea matInput placeholder="Análise" rows="5"></textarea>
- 									</mat-form-field>
- 								</td>
- 							</tr>
- 						</table>
- 					</form>
- 				</mat-card-content>
- 				<mat-card-actions align="start">
- 					<button mat-button>EDITAR</button>
- 				</mat-card-actions>
- 			</mat-card> 	
  			<br>
- 			<mat-card tabindex="0">
- 				<mat-card-subtitle>Abdome</mat-card-subtitle>
- 				<mat-card-content>
- 					<form class="example-form">
- 						<table class="example-full-width" cellspacing="">
- 							<tr>
- 								<td>
- 									<mat-form-field class="example-full-width">
- 										<textarea matInput disabled [value]='abdomeString' rows="5"></textarea>
- 									</mat-form-field>
- 								</td>
- 							</tr>
- 							<tr> 
- 								<td>
- 									<mat-form-field class="example-full-width">
- 										<textarea matInput placeholder="Análise" rows="5"></textarea>
- 									</mat-form-field>
- 								</td>
- 							</tr>
- 						</table>
- 					</form>
- 				</mat-card-content>
- 				<mat-card-actions align="start">
- 					<button mat-button>EDITAR</button>
- 				</mat-card-actions>
- 			</mat-card>  -->
+ 			<div class="container">
+ 				<label for="hemodinamicoTextArea">Hemodinâmico</label>
+ 			<textarea id="hemodinamicoTextArea" disabled class="form-control" rows="3" [value]='hemodinamicoString'></textarea>
+ 			</div>
+ 			
  		</div>

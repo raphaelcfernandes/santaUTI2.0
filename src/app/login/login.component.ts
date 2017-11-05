@@ -8,15 +8,14 @@ import { AuthService } from '../providers/auth.service';
 })
 
 export class LoginComponent implements OnInit {
-
-  title = 'app';
   email: string;
   password: string;
+  event: boolean;
   constructor(private authService: AuthService) {}
-  login() {
-    this.authService.loginWithEmailAndPassword(this.email, this.password);
-    this.email = this.password = '';
+  login() { 
+    this.authService.loginWithEmailAndPassword(this.email,this.password);
   }
+
   ngOnInit() {
   }
 
