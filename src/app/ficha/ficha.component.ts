@@ -15,6 +15,8 @@ export class FichaComponent implements OnInit {
 	private bombaInfusao: any[] = [];
 	private hemodinamicoString: string = "";
 	private abdomeString: string = "";
+
+	
 	constructor(private router: Router, private activatedRouter: ActivatedRoute, private db: DatabaseService) {
 		this.fichaObject = this.db.getFichaObject();
 		console.log(this.fichaObject);
@@ -38,7 +40,10 @@ export class FichaComponent implements OnInit {
 		this.itensMonitorMultiparametrico();
 	}
 
-	private hemodinamicamente() { this.hemodinamicoString = "Paciente hemodinamicamente " + this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +'.'; }
+	private hemodinamicamente() { 
+		this.hemodinamicoString = "Paciente hemodinamicamente " + this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +' compensado em ritmo de ' 
+		+ this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +'.'; 
+	}
 
 	private addBombaInfusaoItens(){
 		if(this.fichaObject.BombaInfusao!==undefined){
@@ -78,22 +83,88 @@ export class FichaComponent implements OnInit {
 
 	private prepareAbdomeString(){
 		this.abdome();
+		this.ascite();
+		this.massasPalpaveis();
+		this.ostomias();
+		this.evacuacoes();
 	}
 
 	private abdome(): void{
-		this.abdomeString = 'Abdome ' + this.fichaObject.Gastrointestinal.formato.toLowerCase();
+		this.abdomeString = 'Abdome ' + this.fichaObject.Gastrointestinal.formato.toLowerCase() 
+		+ ', ' + this.fichaObject.Gastrointestinal.tensao.toLowerCase() + ', com ruidos ' + this.fichaObject.Gastrointestinal.ruidos.toLowerCase()
+		+ '. ';
 	}
 
-// ABDOME
-//     abdome: formatos (opcoes), tensao (opcoes), ruidos hidraereos: aumentado/normal/reduzido/ausente.
-//     SE NAO TIVER ASCITE: nao precisa escrever
-//     SE TIVER ASCITE: escrever tipo ascite pequeno/medio/grande + volume
-//     SE NAO TIVER MASSAS: sem massas palpaveis
-//     SE TIVER: descrever locais marcados
-//     SE NAO TIVER VISCERAS: sem visceras palpaveis
-//     SE TIVER: locais marcados.
-//     OSTOMIAS: opcoes bom/regular/mal aspecto funcionante ou nao funcionante.
-//     SE N MARCAR EVACUACOES: nao evacuou
-//     SE TIVER: tipo + quantidade.
+	private ascite(): void{
+		if(this.fichaObject.Gastrointestinal.ascite !== "Ausente")
+			this.abdomeString += 'Ascite ' + this.fichaObject.Gastrointestinal.ascite.toLowerCase() + '. ';
+	}
+
+	private massasPalpaveis(): void{
+		if(this.fichaObject.Gastrointestinal.massasPalpaveis !== false){
+			this.abdomeString+= 'Massas palpáveis ';
+			for(const key in this.fichaObject.Gastrointestinal.massasPalpaveis)
+				this.abdomeString += key.toLowerCase() + ', ';
+			this.abdomeString = this.abdomeString.substr(0,this.abdomeString.length-2) + '. ';
+		}
+		else
+			this.abdomeString += 'Sem massas palpáveis. ';
+		
+	}
+
+	private viscerasPalpaveis(): void {
+		if(this.fichaObject.Gastrointestinal.viscerasPalpaveis !== false){
+			this.abdomeString += 'Visceras palpáveis ';
+			for(const key in this.fichaObject.Gastrointestinal.viscerasPalpaveis)
+				this.abdomeString += key.toLowerCase() + ', ';
+			this.abdomeString = this.abdomeString.substr(0,this.abdomeString.length-2) + '. ';
+		}
+		else
+			this.abdomeString += 'Sem visceras palpáveis. ';
+	}
+
+	private ostomias(): void{
+		if(this.fichaObject.Gastrointestinal.ostomias !== false){
+			this.abdomeString += 'Ostomias '
+			for(const key in this.fichaObject.Gastrointestinal.ostomias){
+				this.abdomeString+= key.toLowerCase() + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase()
+				 + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].funcionamento.toLowerCase() + ', ';
+			}
+			this.abdomeString = this.abdomeString.substr(0,this.abdomeString.length-2) + '. ';
+		}
+		else{
+			this.abdomeString += 'Sem ostomias. ';
+		}
+	}
+
+	private evacuacoes(): void {
+		if(this.fichaObject.FolhasBalanco.evacuacoes !== false){
+			this.abdomeString += 'Evacuacões ';
+			for(const key in this.fichaObject.FolhasBalanco.evacuacoes)
+				this.abdomeString += key.toLowerCase() + ' ' + this.fichaObject.FolhasBalanco.evacuacoes[key] + ' vezes, ';
+			this.abdomeString = this.abdomeString.substr(0,this.abdomeString.length-2) + '. ';
+		}
+		else
+			this.abdomeString += 'Não evacuou.';
+	}
+}
+
+export enum bombaDVA { 
+	adrenalina = "Adrenalina",
+	amiodarona = "Amiodarona",
+	dobutamina = "Dobutamina",
+	dopamina = "Dopamina",
+	hidrocortisona = "Hidrocortisona",
+	miorinona = "Miorinona",
+	nitroglicerina = "Nitroglicerina",
+	nitroprussiatodesódio = "Nitroprussiato de sódio"
+
+};
+
+export enum bombaSeda {
+	fentanil = "Fentanil",
+	ketamina = "Ketamina",
+	midazolan = "Midazolan",
+	precedex = "Precedex"
 }
 
