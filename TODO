@@ -1,14 +1,6 @@
 
 https://plnkr.co/edit/ApjJkNwS6hfS56DjL7vt?p=preview
 
-1 - Quando clicar em Fichas de paciente, deve se perguntar qual ficha deseja:
-    Editar:
-        - Periodo de datas
-        - Ultima preenchida
-    Visualizar:
-        - Periodo de datas
-        - Ultima preenchida
-
 
 Neurologico
     - Nivel Consciencia
@@ -25,7 +17,7 @@ Neurologico
         Orientacao Temporo Espacial: orientado em X,Y desorientado X,Y
         Deficit Motor: sem deficit OU M paretico ou M paretica em local. M plegico ou M plegica em local
         Avaliacao pupilar: pupilas: mioticas/midriatricas/medias (normais), isocoricas/anisocoricas, diferenća se for anisocoricas, reatividade,
-        Olhar convergente/divergente desvio para esquerda/direita, desvio para cima/baixo (multipla escolhas) 
+        Olhar convergente/divergente desvio para esquerda/direita, desvio para cima/baixo (multipla escolhas)  
         realizado CAM-ICU com presenća de delirium ou ausencia. se tiver delirium => Hiperativo ou Hipoativo
         PIC+valor, PPC + valor, capnometria+valor,sjo2+valor
         Fentanil, Ketamina, Midazolan, Precedex, propofol => sedativos (bombaSeda). 
@@ -123,14 +115,13 @@ ABDOME => ok
         Albumina? valor : nao escrever
         Peso
 
-    Pele e mucosas =>
-        Ictericia abrir se clicado em icterico
+    Pele e mucosas => ok 
         Paciente com mucosas (icterico/anictericas), (coradas/hipocoradas), (hidratas/secas).
         Pele (normal/ressecada)
         com ulcera pressao? localizacao
         sem ulcera pressa? sem ulcera de pressao.
 
-    Osteomuscular =>
+    Osteomuscular => ok
         Musculatura (hipertrofica/normotrofica) (hipotonica/normo).
 
 

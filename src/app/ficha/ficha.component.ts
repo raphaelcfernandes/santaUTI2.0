@@ -15,7 +15,8 @@ export class FichaComponent implements OnInit {
 	private bombaInfusao: any[] = [];
 	private hemodinamicoString: string = "";
 	private abdomeString: string = "";
-
+	private osteomuscularString: string = "";
+	private peleMucosasString: string = "";
 	
 	constructor(private router: Router, private activatedRouter: ActivatedRoute, private db: DatabaseService) {
 		this.fichaObject = this.db.getFichaObject();
@@ -25,7 +26,8 @@ export class FichaComponent implements OnInit {
 	ngOnInit() {
 		this.prepareHemodinamicoString();
 		this.prepareAbdomeString();
-
+		this.prepareOsteomuscularString();
+		this.preparePeleMucosasString();
 	}
 
 	sendToHome() {
@@ -41,7 +43,7 @@ export class FichaComponent implements OnInit {
 	}
 
 	private hemodinamicamente() { 
-		this.hemodinamicoString = "Paciente hemodinamicamente " + this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +' compensado em ritmo de ' 
+		this.hemodinamicoString = "Paciente hemodinamicamente " + this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +' compensado em ritmo ' 
 		+ this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +'.'; 
 	}
 
@@ -125,10 +127,9 @@ export class FichaComponent implements OnInit {
 
 	private ostomias(): void{
 		if(this.fichaObject.Gastrointestinal.ostomias !== false){
-			this.abdomeString += 'Ostomias '
 			for(const key in this.fichaObject.Gastrointestinal.ostomias){
-				this.abdomeString+= key.toLowerCase() + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase()
-				 + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].funcionamento.toLowerCase() + ', ';
+				this.abdomeString+= key.toLowerCase() + ' aspecto ' + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase()
+				+ ' ' + this.fichaObject.Gastrointestinal.ostomias[key].funcionamento.toLowerCase() + ', ';
 			}
 			this.abdomeString = this.abdomeString.substr(0,this.abdomeString.length-2) + '. ';
 		}
@@ -146,6 +147,52 @@ export class FichaComponent implements OnInit {
 		}
 		else
 			this.abdomeString += 'Não evacuou.';
+	}
+
+	private prepareOsteomuscularString(): void {
+		this.osteomuscularString += 'Musculatura ' + (this.fichaObject.Osteomuscular.trofismoMuscular
+			.substr(0,this.fichaObject.Osteomuscular.trofismoMuscular.length-1).toLowerCase()) + 'a e ' 
+		+ this.fichaObject.Osteomuscular.tonusMuscular.substr(0,this.fichaObject.Osteomuscular.tonusMuscular.length-1).toLowerCase() + 'a.';
+	}
+
+	private preparePeleMucosasString(): void {
+		this.mucosas();
+		this.pele();
+	}
+
+	private mucosas(): void {
+		this.peleMucosasString += 'Paciente com mucosas ';
+		let coloracao1: string;
+		let coracao: string;
+		let hidratacao: string;
+		let ictericia: number;
+		for(const key in this.fichaObject.PeleMucosas.Mucosas){
+			if(key === 'Anictéricas' || key === 'Ictéricas')
+				coloracao1 = key;
+			if(key === 'Hipocoradas' || key === 'Normocoradas')
+				coracao = key;
+			if(key === 'Hidratadas' || key === 'Secas' || key === 'Hiperhidratadas')
+				hidratacao = key;
+		}
+		if(coloracao1 === 'Ictéricas'){
+			ictericia = this.fichaObject.PeleMucosas.ictericia;
+			this.peleMucosasString+= coloracao1.toLowerCase() + ' +' + ictericia + ', ' + coracao.toLowerCase() + ', ' + hidratacao.toLowerCase() + '. ';
+		}
+		else
+			this.peleMucosasString+= coloracao1.toLowerCase() + ', ' + coracao.toLowerCase() + ', ' + hidratacao.toLowerCase() + '. ';
+	}
+
+	private pele(): void{
+		this.peleMucosasString += 'Pele ' + this.fichaObject.PeleMucosas.pele.toLowerCase() + ' ';
+		if(this.fichaObject.PeleMucosas.UlceraPressao !== undefined){
+			this.peleMucosasString += 'com ulcera de pressão em '
+			for(const key in this.fichaObject.PeleMucosas.UlceraPressao){
+				this.peleMucosasString += key.toLowerCase() + ', ';
+			}
+			this.peleMucosasString = this.peleMucosasString.substr(0,this.peleMucosasString.length-2) + '. ';
+		}
+		else
+			this.peleMucosasString+= 'sem ulcera de pressão.';
 	}
 }
 
