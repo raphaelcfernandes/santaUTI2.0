@@ -17,6 +17,7 @@ export class FichaComponent implements OnInit {
 	private abdomeString: string = "";
 	private osteomuscularString: string = "";
 	private peleMucosasString: string = "";
+	private nutricionalString: string = "";
 	
 	constructor(private router: Router, private activatedRouter: ActivatedRoute, private db: DatabaseService) {
 		this.fichaObject = this.db.getFichaObject();
@@ -28,6 +29,7 @@ export class FichaComponent implements OnInit {
 		this.prepareAbdomeString();
 		this.prepareOsteomuscularString();
 		this.preparePeleMucosasString();
+		this.prepareNutricionalString();
 	}
 
 	sendToHome() {
@@ -50,9 +52,13 @@ export class FichaComponent implements OnInit {
 	private addBombaInfusaoItens(){
 		if(this.fichaObject.BombaInfusao!==undefined){
 			this.hemodinamicoString+=" Em uso de ";	
-			for (const key in this.fichaObject.BombaInfusao) {
-				this.hemodinamicoString +=  key + ' ' + this.fichaObject.BombaInfusao[key] + ' ml/h, ';
-			}
+			Object.keys(bombaDVA).map(item => {
+				Object.keys(this.fichaObject.BombaInfusao).map(res => {
+					if(res === bombaDVA[item]){
+						this.hemodinamicoString +=  res + ' ' + this.fichaObject.BombaInfusao[res] + ' ml/h, ';
+					}
+				});
+			});
 		}
 	}
 
@@ -194,6 +200,17 @@ export class FichaComponent implements OnInit {
 		else
 			this.peleMucosasString+= 'sem ulcera de pressão.';
 	}
+
+	private prepareNutricionalString(): void {
+		this.nutricionalString += 'Paciente em dieta '
+		Object.keys(this.fichaObject.Nutricional).map(res => {
+			this.nutricionalString += res.toLowerCase() + ' com aceitação ' + this.fichaObject.Nutricional[res].toLowerCase()+', ';
+		});
+		this.nutricionalString = this.nutricionalString.substr(0,this.nutricionalString.length-2) + '. ';
+		if(this.fichaObject.Exames.Albumina !== undefined)
+			this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase()+'. ';
+		this.nutricionalString+= 'Peso ' + this.fichaObject.Renal.peso+' kg. ';
+	}
 }
 
 export enum bombaDVA { 
@@ -205,7 +222,6 @@ export enum bombaDVA {
 	miorinona = "Miorinona",
 	nitroglicerina = "Nitroglicerina",
 	nitroprussiatodesódio = "Nitroprussiato de sódio"
-
 };
 
 export enum bombaSeda {

@@ -107,7 +107,7 @@ ABDOME => ok
         marcadores de infeccao (marcaradores Exames)
         "em uso de (antibioticos)".
 
-    Nutricao =>
+    Nutricao => ok
         Aceitacao/Tolerancia para cada item do nutricao
         Aceitacao: oral
         Tolerancia: parenteral/enteral
