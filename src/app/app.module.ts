@@ -14,7 +14,8 @@ import {FichaComponent} from './ficha/ficha.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
-
+import { NbThemeModule } from '@nebular/theme';
+import { HomeModule } from './home/home.module';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
@@ -28,19 +29,20 @@ export const firebaseConfig = {
 @NgModule({
   declarations: [
   LoginComponent,
-  HomeComponent,
   AppComponent,
   FichaComponent
   ],
   imports: [
   AppRoutingModule,
+  HomeModule,
   BrowserModule,
   FormsModule,
   AngularFireModule.initializeApp(firebaseConfig),
   AngularFireAuthModule,
   AngularFireDatabaseModule,
   BrowserAnimationsModule,
-  NgbModule.forRoot()
+  NgbModule.forRoot(),
+  NbThemeModule.forRoot({ name: 'default' }), // this will enable the default theme, you can change this to `cosmic` to enable the dark theme  
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
   bootstrap: [AppComponent]
