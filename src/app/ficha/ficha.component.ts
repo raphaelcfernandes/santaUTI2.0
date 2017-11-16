@@ -338,13 +338,15 @@ export class FichaComponent implements OnInit {
     }
 
     private hemodinamicamente() {
-        this.hemodinamicoString =
-            'Paciente hemodinamicamente ' +
-            this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
-            ' compensado em ritmo ' +
-            this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
-            ', FC ' +
-            this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca ;
+        if (this.fichaObject && this.fichaObject.FolhasBalanco && this.fichaObject.MonitorMultiparametrico) {
+            this.hemodinamicoString =
+                'Paciente hemodinamicamente ' +
+                this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
+                ' compensado em ritmo ' +
+                this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
+                ', FC ' +
+                this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca ;
+        }
     }
 
     private addBombaInfusaoItens() {
