@@ -22,6 +22,8 @@ export class FichaComponent implements OnInit {
 	private neurologicoString: string = "";
 	private respiratorioString: string = "";
 	private renalString: string = "";
+	private hematologicoString: string = "";
+
 	constructor(private router: Router, private activatedRouter: ActivatedRoute, private db: DatabaseService) {
 		this.fichaObject = this.db.getFichaObject();
 		console.log(this.fichaObject);
@@ -38,20 +40,26 @@ export class FichaComponent implements OnInit {
 		this.prepareNeurologicoString();
 		this.prepareRespiratorioString();
 		this.prepareRenalString();
+		this.prepareHematologicoString();
 	}
 
-
+	private prepareHematologicoString(): void {
+		if(this.fichaObject.Hematologico.tromboprofilaxia === 'Não')
+			this.hematologicoString+= 'Não realizada.'
+		else
+			this.hematologicoString+= this.fichaObject.Hematologico.tromboprofilaxia.toLowerCase();
+	}
 
 	private prepareRenalString(): void {
 		this.renalString+= 'Diurese ' + this.fichaObject.FolhasBalanco.diurese + ', balanço hídrico ' + this.fichaObject.FolhasBalanco.balancoHidrico
 		+ ', peso ' + this.fichaObject.Renal.peso;
 		if(this.fichaObject.Exames.ureia !== 0)
-			this.renalString+= ' ureia ' + this.fichaObject.Exames.ureia;
+			this.renalString+= ', ureia ' + this.fichaObject.Exames.ureia;
 		if(this.fichaObject.Exames.creatinina!== 0)
-			this.renalString+= ' creatinina ' + this.fichaObject.Exanes.creatinina;
-		this.renalString+= ' urina ' + this.fichaObject.Renal.urina.toLowerCase()+'.';
+			this.renalString+= ', creatinina ' + this.fichaObject.Exanes.creatinina;
+		this.renalString+= ', urina ' + this.fichaObject.Renal.urina.toLowerCase() + ', '+ this.fichaObject.Metabolico.hidratacao.toLowerCase();
 		if(this.fichaObject.Renal.emDialise !== false){
-			this.renalString+= ' Em hemodiálise ';
+			this.renalString+= '. Em hemodiálise ';
 			if(this.fichaObject.Renal.emDialise.UF === false)
 				this.renalString+= 'sem UF.';
 			else
