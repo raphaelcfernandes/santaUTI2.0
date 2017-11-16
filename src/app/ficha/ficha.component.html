@@ -1,0 +1,79 @@
+
+<div style="width: 40%; float:left; position:fixed">
+	<button (click)="sendToHome()">
+		Home
+	</button>
+	<form class="example-form">
+		<table class="example-full-width" cellspacing="19">
+			<tr>
+				<td>
+					
+					<textarea placeholder="Diagnosticos"></textarea>
+					
+				</tr>
+			</table>
+		</form>
+	</div>
+
+
+
+ 	<!-- <input type="text" [value]='hemodinamicoString'>
+ 		<input type="text" *ngFor="let droga of fichaObject.Dispositivos, let i =index" [value]='droga' (input)="fichaObject.Dispositivos[i] = $event.target.value; prepareArrays();" > -->
+
+
+
+ 		<div style="width: 60%; float:right">
+ 			<button (click)="sendToHome()">
+ 				Home
+ 			</button>
+ 			<br>
+
+			<div class="container">
+ 				<label for="neurologicoTextArea">Neurológico</label>
+ 				<textarea id="neurologicoTextArea" disabled class="form-control" rows="3" [value]='neurologicoString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="hemodinamicoTextArea">Hemodinâmico</label>
+ 				<textarea id="hemodinamicoTextArea" disabled class="form-control" rows="3" [value]='hemodinamicoString'></textarea>
+ 			</div>
+ 			
+			<div class="container">
+ 				<label for="respiratorioTextArea">Respiratório</label>
+ 				<textarea id="respiratorioTextArea" disabled class="form-control" rows="3" [value]='respiratorioString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="abdomeTextArea">Abdome</label>
+ 				<textarea id="abdomeTextArea" disabled class="form-control" rows="2" [value]='abdomeString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="renalTextArea">Renal</label>
+ 				<textarea id="renalTextArea" disabled class="form-control" rows="2" [value]='renalString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="peleMucosasTextArea">Pele e Mucosas</label>
+ 				<textarea id="peleMucosasTextArea" disabled class="form-control" rows="1" [value]='peleMucosasString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="osteomuscularTextArea">Osteomuscular</label>
+ 				<textarea id="osteomuscularTextArea" disabled class="form-control" rows="1" [value]='osteomuscularString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="nutricionalTextArea">Nutricional</label>
+ 				<textarea id="nutricionalTextArea" disabled class="form-control" rows="1" [value]='nutricionalString'></textarea>
+ 			</div>
+
+ 			<div class="container">
+ 				<label for="infecciosoTextArea">Infeccioso</label>
+ 				<textarea id="infecciosoTextArea" disabled class="form-control" rows="2" [value]='infecciosoString'></textarea>
+ 			</div>
+ 			<div class="container">
+ 				<label for="endocrinoTextArea">Endócrino</label>
+ 				<textarea id="endocrinoTextArea" disabled class="form-control" rows="1" [value]='endocrinoString'></textarea>
+ 			</div>
+ 		</div>

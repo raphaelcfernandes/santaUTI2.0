@@ -1,0 +1,126 @@
+
+https://plnkr.co/edit/ApjJkNwS6hfS56DjL7vt?p=preview
+
+
+Neurologico => OK
+    - Nivel Consciencia
+        Vigil -> vigil (deixar vigil mas retirar hiperalerta)
+        Consciente/Alerta -> consciente/alerta
+        Sonolencia -> sonolento(a)
+        Obnubilaćao -> obnubilado(a)
+        Torpor -> torporoso(a)
+        Coma -> comatoso(a)
+        sedado -> sedado(a)
+            - Ramsay: numero (pontuacao),Rass: numero (pontuacao). 
+            - em sedacao/analgesia com (Bomba) fentanil volumeInfusao, Ketamina, midazolam, precedex, propofol
+        Escala de glasgow: Total (AO: numero, Rv: numero, RM: numero)
+
+
+
+        Orientacao Temporo Espacial: orientado em X,Y desorientado X,Y -> CONSERTAR NO APP 'NO ESPAÇO' 'NO Tempo'
+
+
+
+
+        Deficit Motor: sem deficit OU M paretico ou M paretica em local. M plegico ou M plegica em local
+        Avaliacao pupilar: pupilas: mioticas/midriatricas/medias (normais), isocoricas/anisocoricas, diferenća se for anisocoricas, reatividade,
+
+
+        Olhar convergente/divergente desvio para esquerda/direita, desvio para cima/baixo (multipla escolhas) -> Nao mapeado no APP
+
+
+        realizado CAM-ICU com presenća de delirium ou ausencia. se tiver delirium => Hiperativo ou Hipoativo (mapear hiperativo ou hipoativo)
+
+        PIC+valor, PPC + valor, capnometria+valor,sjo2+valor
+        Fentanil, Ketamina, Midazolan, Precedex, propofol => sedativos (bombaSeda). 
+        Em sedoanalgesia com nome + valor.
+
+Hemodinamico: OK
+    Paciente em ritmo (ritmo Monitor), FC (FC monitorM), bulhas (bulhas), sopros (sopros), pulso (pulso), extremidades (extremidades), perfusao capilar (perfusao capilar).
+    PVC (pvc). Swan-ganz (swan-ganz). 
+    PAS entre (FolhasBalanco intervalo) e PAD entre (FolhasBalanco intervalo) (PAM intervalo
+    (PAS + 2*PAD)/3), sem drogas vasoativas, se tiver (qual + infusao).
+
+Respiratorio => OK
+    Paciente em (vias aereas) 
+        Natural: Paciente em ventilacao espontanea/via area natural, com o2 ou sem.
+        Traqueostomia: Paciente traqueostomizado (pressao do CUFF (pressaoCuff))
+            obs: retirar de app localizacao da canula.
+
+        Tubo traqueal: Paciente entubado (pressao do CUFF(pressaoCuff) canula na posicao (localizacaoCanula).
+
+    com o2: em (mascari de venturi, cateter nasal, mascara de reinalacao) + descrever subitens do q estiver marcando
+    sem: sem oxigenio suplementar.
+    
+    Em ventilacao mecanica: ((parametros),FIO2,PEEP,VOLUME,F.R Respirador,F.R Paciente). 
+
+
+    Murmurio vesicular: fisiologico/reduzido/aumentado, 
+    SE aumentado ou reduzido:
+        descrecer os pontos
+    SE NAO TIVER RONCOS: sem roncos
+    SE TIVER RONCOS: colocar localizacoes.
+    SE NAO TIVER: sem sibilos
+    SE TIVER: sibilos + localizacoes. 
+
+    FR (FRMOnitor), saturando SPO2 + valor%. 
+    Raio-x torax se estiver marcado.
+
+    Dreno torax 1 e/ou 2 + volume ml no periodo anotado.
+
+ABDOME => ok
+    abdome: formatos (opcoes), tensao (opcoes), ruidos hidraereos: aumentado/normal/reduzido/ausente.
+    SE NAO TIVER ASCITE: nao precisa escrever
+    SE TIVER ASCITE: escrever tipo ascite pequeno/medio/grande + volume 
+    SE NAO TIVER MASSAS: sem massas palpaveis
+    SE TIVER: descrever locais marcados
+    SE NAO TIVER VISCERAS: sem visceras palpaveis
+    SE TIVER: locais marcados.
+    OSTOMIAS: opcoes bom/regular/mal aspecto funcionante ou nao funcionante.
+    SE N MARCAR EVACUACOES: nao evacuou
+    SE TIVER: tipo + quantidade.
+
+Urinario => OK
+    diurese, balanco hidrico, peso, ureia +valor, creatinina + valor. Dialise + UF volume tempo/hora (se tiver). 
+
+    ureia e creatinina se ausente => nao colocar.
+    SE NAO tiver UF colocar => Em hemodialise sem UF.
+    SE EM UF => Em hemodialise com UF de volume + tempo hora
+
+Endocrino => Checar (valores virao de folhas de balanço ) OK
+    Glicemias variando entre menor valor e maior valor
+        se uso de insulina em bomba de infusao: "em uso de insulina em bomba de infusao".
+    Se tiver hipoglicemia: X eventos de hipoglicemia abaixo de 70.
+
+Infeccioso => ok 
+    Curva termica (lembrar sobre variacoa entre hipotermia e normal)
+        >=38: febril
+        37.6 ~ <=38: subfebril
+        36.5 ~ 37.6: normal
+        <35: hipotermia
+    numero de picos febris (se tiver): com X picos febris
+    marcadores de infeccao (marcaradores Exames)
+    "em uso de (antibioticos)".
+
+Nutricao => ok
+    Aceitacao/Tolerancia para cada item do nutricao
+    Aceitacao: oral
+    Tolerancia: parenteral/enteral
+    Paciente em dieta (Dieta) com aceitacao/tolerancia(aceitacao/tolerancia)
+    Albumina? valor : nao escrever
+    Peso
+
+Pele e mucosas => ok 
+    Paciente com mucosas (icterico/anictericas), (coradas/hipocoradas), (hidratas/secas).
+    Pele (normal/ressecada)
+    com ulcera pressao? localizacao
+    sem ulcera pressa? sem ulcera de pressao.
+
+Osteomuscular => ok
+    Musculatura (hipertrofica/normotrofica) (hipotonica/normo).
+
+
+     
+
+
+Hematologico + Metabolico + Renal (urina, diurese? balanço hidrico?)

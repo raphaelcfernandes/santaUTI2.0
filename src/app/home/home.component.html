@@ -1,0 +1,21 @@
+<nb-layout>
+	<nb-layout-header fixed>Santa UTI</nb-layout-header>
+	<nb-sidebar left fixed state="compacted">
+		<nb-sidebar-header>Header</nb-sidebar-header>
+			Menu or another component here
+		<nb-sidebar-footer>
+			Footer components here
+		</nb-sidebar-footer>
+	</nb-sidebar>	
+	<nb-layout-column>
+		<button (click)="logout()">
+			Logout
+		</button>
+		<div *ngIf="pacientes; let pacientes ">
+			<ul>
+				<li *ngFor="let item of pacientes" (click)="liClicked(item)">
+					Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</li>
+			</ul>
+		</div>
+	</nb-layout-column>
+</nb-layout>
