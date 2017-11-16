@@ -1,5 +1,8 @@
 <nb-layout>
-	<nb-layout-header fixed>Santa UTI</nb-layout-header>
+	<nb-layout-header fixed>
+			<a (click)="toggleSidebar()" href="#" class="navigation"><i class="nb-menu"></i></a>
+	  	<span>Santa UTI</span>
+	</nb-layout-header>
 	<nb-sidebar left fixed state="compacted">
 		<nb-sidebar-header>Header</nb-sidebar-header>
 			Menu or another component here
@@ -8,14 +11,16 @@
 		</nb-sidebar-footer>
 	</nb-sidebar>	
 	<nb-layout-column>
-		<button (click)="logout()">
-			Logout
-		</button>
-		<div *ngIf="pacientes; let pacientes ">
-			<ul>
-				<li *ngFor="let item of pacientes" (click)="liClicked(item)">
-					Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</li>
-			</ul>
-		</div>
+		<router-outlet>
+			<button (click)="logout()">
+					Logout
+				</button>
+				<div *ngIf="pacientes; let pacientes ">
+					<ul>
+						<li *ngFor="let item of pacientes" (click)="liClicked(item)">
+							Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</li>
+					</ul>
+				</div>
+		</router-outlet>
 	</nb-layout-column>
 </nb-layout>

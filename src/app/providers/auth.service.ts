@@ -28,7 +28,7 @@ export class AuthService {
           });
       })
       .catch(err => {
-        
+
       });
   }
 

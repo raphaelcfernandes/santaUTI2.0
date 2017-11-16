@@ -42,7 +42,7 @@ export const firebaseConfig = {
   AngularFireDatabaseModule,
   BrowserAnimationsModule,
   NgbModule.forRoot(),
-  NbThemeModule.forRoot({ name: 'default' }), // this will enable the default theme, you can change this to `cosmic` to enable the dark theme  
+  NbThemeModule.forRoot({ name: 'default' }),
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
   bootstrap: [AppComponent]
