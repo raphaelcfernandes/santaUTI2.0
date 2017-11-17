@@ -14,7 +14,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { HomeModule } from './home/home.module';
-
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
   authDomain: 'santauti-4c4da.firebaseapp.com',
@@ -39,6 +39,7 @@ export const firebaseConfig = {
   AngularFireAuthModule,
   AngularFireDatabaseModule,
   BrowserAnimationsModule,
+  NgbModule.forRoot(),
   NbThemeModule.forRoot({ name: 'default' })
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
