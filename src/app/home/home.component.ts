@@ -3,11 +3,13 @@ import {AuthService} from '../providers/auth.service';
 import {DatabaseService} from '../providers/database.service';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
+import { NbSidebarService } from '@nebular/theme';
+import { MENU_ITEMS } from './pages-menu';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.scss']
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
@@ -15,8 +17,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   private pacientes: any[] = [];
   private profissionais: any[] = [];
   show = false;
+  menu = MENU_ITEMS;
 
-  constructor(private authService: AuthService, private db: DatabaseService, private router: Router) {
+  constructor(
+    private sidebarService: NbSidebarService,
+    private authService: AuthService,
+    private db: DatabaseService,
+    private router: Router) {
     this.subscriptions.add(this.db.getProfissionaisFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(data => {
       data.forEach(profissionais => {
         this.profissionais.push({'profissionalKey': profissionais.key, 'profissionalData': profissionais.payload.val()});
@@ -49,6 +56,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.show = false;
     }));
 
+  }
+
+  toggleSidebar(): boolean {
+    this.sidebarService.toggle(true, 'menu-sidebar');
+    return false;
   }
 
   ngOnDestroy() {
