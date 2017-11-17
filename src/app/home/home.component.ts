@@ -56,11 +56,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   liClicked(item) {
-    this.subscriptions.add(this.db.getLastFichaByPacienteKey(item.pacienteKey).snapshotChanges().subscribe(data => {
-      data.forEach(ficha => {
-        this.db.setFichaObject(ficha.payload.val());
-        this.router.navigate(['/ficha', ficha.key]);
-      });
-    }));
+    this.router.navigate(['/ficha', item.pacienteKey]);
   }
 }

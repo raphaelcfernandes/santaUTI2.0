@@ -6,13 +6,11 @@ import {LoginComponent} from './login/login.component';
 import {AuthService} from './providers/auth.service';
 import {DatabaseService} from './providers/database.service';
 import {AngularFireAuthModule} from 'angularfire2/auth';
-import {HomeComponent} from './home/home.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthGuardService} from './providers/auth-guard.service';
 import {FichaComponent} from './ficha/ficha.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { NgModule } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { HomeModule } from './home/home.module';
@@ -41,8 +39,7 @@ export const firebaseConfig = {
   AngularFireAuthModule,
   AngularFireDatabaseModule,
   BrowserAnimationsModule,
-  NgbModule.forRoot(),
-  NbThemeModule.forRoot({ name: 'default' }), // this will enable the default theme, you can change this to `cosmic` to enable the dark theme  
+  NbThemeModule.forRoot({ name: 'default' })
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
   bootstrap: [AppComponent]

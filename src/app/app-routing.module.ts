@@ -7,12 +7,8 @@ import {FichaComponent} from './ficha/ficha.component';
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
-  {
-    path: 'home',
-    component: HomeComponent,
-    // canActivate: [AuthGuardService],
-    children: [{path: 'ficha/:id', component: FichaComponent}]
-  },
+  {path: 'home', component: HomeComponent},
+  { path: 'ficha/:id', component: FichaComponent}
 ];
 
 @NgModule({
