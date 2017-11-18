@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {DatabaseService} from '../providers/database.service';
 import {Subscription} from 'rxjs/Subscription';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
-
+import { NbThemeService, NbColorHelper } from '@nebular/theme';
 @Component({
     selector: 'app-ficha',
     templateUrl: './ficha.component.html',
@@ -14,6 +14,7 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 export class FichaComponent implements OnInit, OnDestroy {
     private fichaObject: any = [];
+    private allFichas: any = [];
     private hemodinamicoString: string;
     private abdomeString: string;
     private osteomuscularString: string;
@@ -27,15 +28,29 @@ export class FichaComponent implements OnInit, OnDestroy {
     private hematologicoString: string;
     private subscriptions: Subscription = new Subscription();
 
-    constructor(private router: Router, private activatedRoute: ActivatedRoute, private db: DatabaseService) {
+    data: any;
+    options = {
+        responsive: true,
+        maintainAspectRatio: false
+    };
+    pamData: any;
+
+    constructor(private router: Router,
+        private activatedRoute: ActivatedRoute, private db: DatabaseService) {
         this.subscriptions.add(this.activatedRoute.params.subscribe((params: Params) => {
             const userId = params['id'];
-            this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(data => {
-                data.forEach(ficha => {
-                    this.fichaObject = ficha.payload.val();
-                    console.log(this.fichaObject);
-                    this.fillTextAreas();
-                });
+              this.db.getAllFichasByPacienteKey(userId).snapshotChanges().subscribe(data => {
+                  data.forEach(ficha => {
+                    this.allFichas.push(ficha.payload.val());
+                  });
+                  this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(lastFicha => {
+                    lastFicha.forEach(last => {
+                        this.fichaObject = last.payload.val();
+                        console.log(this.fichaObject);
+                        this.fillTextAreas();
+                        this.prepareGraphs();
+                    });
+                  });
               });
           }));
     }
@@ -47,7 +62,67 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
+    private prepareGraphs(): void {
+        const index = this.allFichas.findIndex(ficha => ficha.dataCriada === this.fichaObject.dataCriada);
+        this.allFichas.splice(index, 1);
+        console.log(this.allFichas);
+        const pesoDataGraph: any = [];
+        const pesoDatesGraph: any = [];
+        const pamDataGraph: any = [];
+        const pamDatesGraph: any = [];
+        this.allFichas.forEach(data => {
+            const date = new Date(data.dataCriada).getUTCDate() + '/'
+            + monthNames[new Date(data.dataCriada).getMonth()];
+
+            pesoDataGraph.push(data.Renal.peso);
+            pesoDatesGraph.push(date);
+            pamDataGraph.push(data.MonitorMultiparametrico.pam);
+            pamDatesGraph.push(date);
+        });
+
+        this.pamData = {
+          labels: pamDatesGraph,
+          datasets: [
+            {
+              label: 'PAM',
+              data: pamDataGraph,
+              fill: false,
+              borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }
+          ]
+        };
+
+        this.data = {
+          labels: pesoDatesGraph,
+          datasets: [
+            {
+              label: 'Peso',
+              data: pesoDataGraph,
+              fill: false,
+              borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }
+          ]
+        };
+    }
+
     private fillTextAreas(): void {
+        this.prepareNeurologicoString();
         this.prepareHemodinamicoString();
         this.prepareAbdomeString();
         this.prepareOsteomuscularString();
@@ -55,7 +130,6 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.prepareNutricionalString();
         this.prepareInfecciosoString();
         this.prepareEndocrinoString();
-        this.prepareNeurologicoString();
         this.prepareRespiratorioString();
         this.prepareRenalString();
         this.prepareHematologicoString();
@@ -65,7 +139,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject.Hematologico.tromboprofilaxia === 'Não') {
             this.hematologicoString = 'Não realizada.';
         } else {
-            this.hematologicoString = this.fichaObject.Hematologico.tromboprofilaxia.toLowerCase();
+            this.hematologicoString = this.fichaObject.Hematologico.tromboprofilaxia + '.';
         }
     }
 
@@ -76,7 +150,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             this.renalString += ', ureia ' + this.fichaObject.Exames.ureia;
         }
         if (this.fichaObject.Exames.creatinina !== 0) {
-            this.renalString += ', creatinina ' + this.fichaObject.Exanes.creatinina;
+            this.renalString += ', creatinina ' + this.fichaObject.Exames.creatinina;
             this.renalString += ', urina ' + this.fichaObject.Renal.urina.toLowerCase() + ', '
                                 + this.fichaObject.Metabolico.hidratacao.toLowerCase();
         }
@@ -88,6 +162,8 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.renalString += 'com UF de volume ' + this.fichaObject.Renal.emDialise.volume
                                     + ', ' + this.fichaObject.Renal.emDialise.tempo + ' tempo/hora.';
             }
+        } else {
+            this.renalString += '. ';
         }
     }
 
@@ -184,7 +260,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private sibilos(): void {
-        if (this.fichaObject.Respiratorio.Roncos === undefined) {
+        if (this.fichaObject.Respiratorio.Sibilos === undefined) {
             this.respiratorioString += 'Sem sibilos. ';
         } else {
             this.respiratorioString += 'Sibilos ';
@@ -228,9 +304,6 @@ export class FichaComponent implements OnInit, OnDestroy {
         }
     }
 
-
-
-
     private prepareNeurologicoString(): void {
         this.nivelConsciencia();
         this.escalaGlasgow();
@@ -243,20 +316,36 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private nivelConsciencia(): void {
-        this.neurologicoString = 'Paciente ' + this.fichaObject.Neurologico.nivelConsciencia.toLowerCase();
+        this.neurologicoString = 'Paciente ';
+        if (this.fichaObject.Neurologico.nivelConsciencia === 'CONSCIENTE/ALERTA') {
+            this.neurologicoString += 'consciente/alerta';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'VIGIL') {
+            this.neurologicoString += 'vigil';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'SONOLÊNCIA') {
+            this.neurologicoString += 'sonolento';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'OBNUBILAÇÃO') {
+            this.neurologicoString += 'obnubilado';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'TORPOR') {
+            this.neurologicoString += 'torporoso';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'COMA') {
+            this.neurologicoString += 'comatoso';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'SEDADO') {
+            this.neurologicoString += 'sedado, ramsay ' + this.fichaObject.Neurologico.ramsay
+                + ', rass ' + this.fichaObject.Neurologico.rass;
+        }
     }
 
     private escalaGlasgow(): void {
-        const total = this.fichaObject.Neurologico.abertaOcular +
+        const total = this.fichaObject.Neurologico.aberturaOcular +
         this.fichaObject.Neurologico.respostaMotora + this.fichaObject.Neurologico.respostaVerbal;
-        this.neurologicoString += '. Glasgow ' + total + ' (AO: ' + this.fichaObject.Neurologico.abertaOcular +
+        this.neurologicoString += '. Glasgow ' + total + ' (AO: ' + this.fichaObject.Neurologico.aberturaOcular +
         ', RV: ' + this.fichaObject.Neurologico.respostaVerbal + ', RM: ' + this.fichaObject.Neurologico.respostaMotora + '), ';
     }
 
     private orientacaoTemporoEspacial(): void {
         Object.keys(this.fichaObject.Neurologico).forEach(res => {
             if (res === 'No Espaço' || res === 'No Tempo') {
-                this.neurologicoString += this.fichaObject.Neurologico[res] + ' ' + res.toLowerCase() + ', ';
+                this.neurologicoString += this.fichaObject.Neurologico[res].toLowerCase() + ' ' + res.toLowerCase() + ', ';
             }
         });
         this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2)  + '. ';
@@ -267,7 +356,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             && this.fichaObject.Neurologico.mie === undefined
             && this.fichaObject.Neurologico.msd === undefined
             && this.fichaObject.Neurologico.mse === undefined) {
-            this.neurologicoString += 'Sem déficit motor';
+            this.neurologicoString += 'Sem déficit motor. ';
         } else {
             if (this.fichaObject.Neurologico.mid !== undefined) {
                 if (this.fichaObject.Neurologico.mid === 'Paresia') {
@@ -307,7 +396,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject.Neurologico.simetriaPupilar === 'Anisocóricas') {
             this.fichaObject += this.fichaObject.Neurologico.diferencaPupila.toLowerCase() + ', ';
         }
-        this.neurologicoString += this.fichaObject.Neurologico.reatividadeLuzPupila.toLowerCase() + '. ';
+        this.neurologicoString += this.fichaObject.Neurologico.reatividadeLuzPupila.toLowerCase() + ' à luz. ';
     }
 
     private delirium(): void {
@@ -357,13 +446,23 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private hemodinamicamente() {
         if (this.fichaObject && this.fichaObject.FolhasBalanco && this.fichaObject.MonitorMultiparametrico) {
-            this.hemodinamicoString =
+            if (this.fichaObject.MonitorMultiparametrico.ritmo === 'Ritmo de Marcapasso') {
+                this.hemodinamicoString =
                 'Paciente hemodinamicamente ' +
                 this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
-                ' compensado em ritmo ' +
+                ' compensado em ' +
                 this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
                 ', FC ' +
                 this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca ;
+            } else {
+                this.hemodinamicoString =
+                    'Paciente hemodinamicamente ' +
+                    this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
+                    ' compensado em ritmo ' +
+                    this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
+                    ', FC ' +
+                    this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca ;
+            }
         }
     }
 
@@ -472,9 +571,8 @@ export class FichaComponent implements OnInit, OnDestroy {
     private ostomias(): void {
         if (this.fichaObject.Gastrointestinal.ostomias !== false) {
             for (const key in this.fichaObject.Gastrointestinal.ostomias) {
-                this.abdomeString += key.toLowerCase()
-                + ' aspecto '
-                + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase()
+                this.abdomeString += key
+                + ' com ' + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase() + ' aspecto'
                 + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].funcionamento.toLowerCase() + ', ';
             }
             this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2)  + '. ';
@@ -625,3 +723,10 @@ export enum bombaSeda {
 export enum bombaEndocrino {
     insulina = 'Insulina'
 }
+
+export let monthNames = [
+    'Janeiro', 'Fevereiro', 'Março',
+    'Abril', 'Maio', 'Junho', 'Julho',
+    'Agosto', 'Setembro', 'Outubro',
+    'Novembro', 'Dezembro'
+];

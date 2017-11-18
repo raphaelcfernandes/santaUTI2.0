@@ -4,16 +4,23 @@
 		Home
 	</button>
 	<form class="example-form">
+		<p>
+			Consultas
+		</p>
 		<table class="example-full-width" cellspacing="19">
 			<tr>
 				<td>
-					
-					<textarea placeholder="Diagnosticos"></textarea>
-					
-				</tr>
-			</table>
-		</form>
-	</div>
+					<chart type="bar" [data]="data" [options]="options"></chart>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<chart type="bar" [data]="pamData" [options]="options"></chart>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
 
 
 
