@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {Router, ActivatedRoute, Params} from '@angular/router';
-import {RouterOutlet} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
-import {DatabaseService} from '../providers/database.service';
-import {Subscription} from 'rxjs/Subscription';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { DatabaseService } from '../providers/database.service';
+import { Subscription } from 'rxjs/Subscription';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { NbThemeService, NbColorHelper } from '@nebular/theme';
 @Component({
@@ -15,6 +15,7 @@ import { NbThemeService, NbColorHelper } from '@nebular/theme';
 export class FichaComponent implements OnInit, OnDestroy {
     private fichaObject: any = [];
     private allFichas: any = [];
+    private nutricaoArray: any[] = [];
     private hemodinamicoString: string;
     private abdomeString: string;
     private osteomuscularString: string;
@@ -27,7 +28,8 @@ export class FichaComponent implements OnInit, OnDestroy {
     private renalString: string;
     private hematologicoString: string;
     private subscriptions: Subscription = new Subscription();
-
+    private pesoAcumulado: any;
+    private balancoHidricoAcumulado: any;
     data: any;
     options = {
         responsive: true,
@@ -39,20 +41,20 @@ export class FichaComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute, private db: DatabaseService) {
         this.subscriptions.add(this.activatedRoute.params.subscribe((params: Params) => {
             const userId = params['id'];
-              this.db.getAllFichasByPacienteKey(userId).snapshotChanges().subscribe(data => {
-                  data.forEach(ficha => {
+            this.db.getAllFichasByPacienteKey(userId).snapshotChanges().subscribe(data => {
+                data.forEach(ficha => {
                     this.allFichas.push(ficha.payload.val());
-                  });
-                  this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(lastFicha => {
+                });
+                this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(lastFicha => {
                     lastFicha.forEach(last => {
                         this.fichaObject = last.payload.val();
                         console.log(this.fichaObject);
                         this.fillTextAreas();
                         this.prepareGraphs();
                     });
-                  });
-              });
-          }));
+                });
+            });
+        }));
     }
 
     ngOnInit() {
@@ -63,64 +65,100 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private prepareGraphs(): void {
-        const index = this.allFichas.findIndex(ficha => ficha.dataCriada === this.fichaObject.dataCriada);
-        this.allFichas.splice(index, 1);
-        console.log(this.allFichas);
         const pesoDataGraph: any = [];
         const pesoDatesGraph: any = [];
         const pamDataGraph: any = [];
         const pamDatesGraph: any = [];
-        this.allFichas.forEach(data => {
-            const date = new Date(data.dataCriada).getUTCDate() + '/'
-            + monthNames[new Date(data.dataCriada).getMonth()];
+        let firstDay = Infinity;
 
-            pesoDataGraph.push(data.Renal.peso);
-            pesoDatesGraph.push(date);
+        this.allFichas.forEach(data => {
+            if (data.dataCriada < firstDay) {
+                this.pesoAcumulado = this.fichaObject.Renal.peso - data.Renal.peso;
+                this.balancoHidricoAcumulado = this.fichaObject.FolhasBalanco.balancoHidrico - data.FolhasBalanco.balancoHidrico;
+                firstDay = data.dataCriada;
+            }
+        });
+
+        this.allFichas.forEach(data => {
+            const date = this.convertTimeStampToPrettyDate(data.dataCriada);
             pamDataGraph.push(data.MonitorMultiparametrico.pam);
             pamDatesGraph.push(date);
+            pesoDataGraph.push(data.Renal.peso);
+            pesoDatesGraph.push(date);
+        });
+
+        // Remove de allFichas a ficha + recente
+        let index = this.allFichas.findIndex(ficha => ficha.dataCriada === this.fichaObject.dataCriada);
+        this.allFichas.splice(index, 1);
+
+        // Remove as fichas com periodo maior que 24hrs em relaçaoa a ficha + recente
+        index = this.allFichas.findIndex(ficha => ficha.dataCriada < this.fichaObject.dataCriada
+            && ficha.dataCriada > new Date(this.fichaObject.dataCriada).getDate() - 1);
+        this.allFichas.splice(index, 1);
+
+        this.allFichas.forEach(data => {
+            data.dataCriada = this.convertTimeStampToPrettyDate(data.dataCriada);
+        });
+
+        this.allFichas.forEach(ficha => {
+            Object.keys(ficha.FolhasBalanco.nutricao).forEach(key => {
+                this.nutricaoArray.push({
+                    'dieta': key,
+                    'valor': ficha.FolhasBalanco.nutricao[key],
+                    'data': ficha.dataCriada
+                });
+            });
         });
 
         this.pamData = {
-          labels: pamDatesGraph,
-          datasets: [
-            {
-              label: 'PAM',
-              data: pamDataGraph,
-              fill: false,
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-            }
-          ]
+            labels: pesoDatesGraph,
+            datasets: [
+                {
+                    label: 'Histórico pesagem',
+                    data: pesoDataGraph,
+                    fill: false,
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }
+            ]
         };
-
         this.data = {
-          labels: pesoDatesGraph,
-          datasets: [
-            {
-              label: 'Peso',
-              data: pesoDataGraph,
-              fill: false,
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-            }
-          ]
+            labels: pamDatesGraph,
+            datasets: [
+                {
+                    label: 'Histórico PAM',
+                    data: pamDataGraph,
+                    fill: false,
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }
+            ]
         };
     }
 
+    private convertTimeStampToPrettyDate(time: any): string {
+        let date = new Date(time).getUTCDate() + '/'
+            + monthNames[new Date(time).getMonth()] + ' às ';
+        new Date(time).getHours() < 10 ? date += '0' + new Date(time).getHours()
+            : date += new Date(time).getHours();
+        new Date(time).getMinutes() < 10 ? date += ':0' + new Date(time).getMinutes()
+            : date += ':' + new Date(time).getMinutes();
+        return date;
+    }
     private fillTextAreas(): void {
         this.prepareNeurologicoString();
         this.prepareHemodinamicoString();
@@ -145,14 +183,14 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private prepareRenalString(): void {
         this.renalString = 'Diurese ' + this.fichaObject.FolhasBalanco.diurese + ', balanço hídrico '
-                            + this.fichaObject.FolhasBalanco.balancoHidrico + ', peso ' + this.fichaObject.Renal.peso;
+            + this.fichaObject.FolhasBalanco.balancoHidrico + ', peso ' + this.fichaObject.Renal.peso;
         if (this.fichaObject.Exames.ureia !== 0) {
             this.renalString += ', ureia ' + this.fichaObject.Exames.ureia;
         }
         if (this.fichaObject.Exames.creatinina !== 0) {
             this.renalString += ', creatinina ' + this.fichaObject.Exames.creatinina;
             this.renalString += ', urina ' + this.fichaObject.Renal.urina.toLowerCase() + ', '
-                                + this.fichaObject.Metabolico.hidratacao.toLowerCase();
+                + this.fichaObject.Metabolico.hidratacao.toLowerCase();
         }
         if (this.fichaObject.Renal.emDialise !== false) {
             this.renalString += '. Em hemodiálise ';
@@ -160,7 +198,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.renalString += 'sem UF.';
             } else {
                 this.renalString += 'com UF de volume ' + this.fichaObject.Renal.emDialise.volume
-                                    + ', ' + this.fichaObject.Renal.emDialise.tempo + ' tempo/hora.';
+                    + ', ' + this.fichaObject.Renal.emDialise.tempo + ' tempo/hora.';
             }
         } else {
             this.renalString += '. ';
@@ -198,7 +236,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             Object.keys(this.fichaObject.Respiratorio.ViasAereas).forEach(item => {
                 if (item === 'Tubo Traqueal') {
                     this.respiratorioString = 'Paciente entubado (pressão do CUFF ' + this.fichaObject.Respiratorio.ViasAereas.pressaoCuff
-                    + ', canula na posição ' + this.fichaObject.Respiratorio.ViasAereas.localizacaoCanula.toLowerCase() + ').';
+                        + ', canula na posição ' + this.fichaObject.Respiratorio.ViasAereas.localizacaoCanula.toLowerCase() + ').';
                 }
                 if (item === 'Traqueostomia') {
                     this.respiratorioString =
@@ -214,20 +252,20 @@ export class FichaComponent implements OnInit, OnDestroy {
         } else {
             this.respiratorioString += ' Em ventilação mecânica (';
             if (this.fichaObject.Respirador.modoVentilatorio === 'Mecânica') {
-                this.respiratorioString +=  this.fichaObject.Respirador.parametros + ', FIO2 ' + this.fichaObject.Respirador.fio2
-                + ', PEEP ' + this.fichaObject.Respirador.peep + ', VOLUME ' + this.fichaObject.Respirador.volume
-                + ', F.R Respirador ' + this.fichaObject.Respirador.freqRespiratoriaRespirador
-                + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '). ';
+                this.respiratorioString += this.fichaObject.Respirador.parametros + ', FIO2 ' + this.fichaObject.Respirador.fio2
+                    + ', PEEP ' + this.fichaObject.Respirador.peep + ', VOLUME ' + this.fichaObject.Respirador.volume
+                    + ', F.R Respirador ' + this.fichaObject.Respirador.freqRespiratoriaRespirador
+                    + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '). ';
             } else if (this.fichaObject.Respirador.modoVentilatorio === 'BIPAP') {
                 this.respiratorioString += this.fichaObject.Respirador.modoVentilatorio + ', EPAP ' + this.fichaObject.Respirador.epap
-                + ', IPAP ' + this.fichaObject.Respirador.ipap + ', VOLUME ' + this.fichaObject.Respirador.volume
-                + ', saturação ' + this.fichaObject.Respirador.saturacao
-                + ', oxigênio ' + this.fichaObject.Respirador.oxigenio + '). ';
+                    + ', IPAP ' + this.fichaObject.Respirador.ipap + ', VOLUME ' + this.fichaObject.Respirador.volume
+                    + ', saturação ' + this.fichaObject.Respirador.saturacao
+                    + ', oxigênio ' + this.fichaObject.Respirador.oxigenio + '). ';
             } else if (this.fichaObject.Respirador.modoVentilatorio === 'Não-invasiva') {
                 this.respiratorioString += this.fichaObject.Respirador.modoVentilatorio + ', FIO2 ' + this.fichaObject.Respirador.fio2
-                + ', PEEP ' + this.fichaObject.Respirador.peep + ', VOLUME ' + this.fichaObject.Respirador.volume
-                + ', F.R Respirador ' + this.fichaObject.Respirador.freqRespiratoriaRespirador
-                + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '). ';
+                    + ', PEEP ' + this.fichaObject.Respirador.peep + ', VOLUME ' + this.fichaObject.Respirador.volume
+                    + ', F.R Respirador ' + this.fichaObject.Respirador.freqRespiratoriaRespirador
+                    + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '). ';
             }
         }
     }
@@ -285,7 +323,7 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private respiratorioMonitorMultiparametrico(): void {
         this.respiratorioString += 'FR ' + this.fichaObject.MonitorMultiparametrico.frequenciaRespiratoria
-        +  ', saturando SPO2 ' + this.fichaObject.MonitorMultiparametrico.spo2 + '%. ';
+            + ', saturando SPO2 ' + this.fichaObject.MonitorMultiparametrico.spo2 + '%. ';
     }
 
     private raioxTorax(): void {
@@ -337,9 +375,9 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private escalaGlasgow(): void {
         const total = this.fichaObject.Neurologico.aberturaOcular +
-        this.fichaObject.Neurologico.respostaMotora + this.fichaObject.Neurologico.respostaVerbal;
+            this.fichaObject.Neurologico.respostaMotora + this.fichaObject.Neurologico.respostaVerbal;
         this.neurologicoString += '. Glasgow ' + total + ' (AO: ' + this.fichaObject.Neurologico.aberturaOcular +
-        ', RV: ' + this.fichaObject.Neurologico.respostaVerbal + ', RM: ' + this.fichaObject.Neurologico.respostaMotora + '), ';
+            ', RV: ' + this.fichaObject.Neurologico.respostaVerbal + ', RM: ' + this.fichaObject.Neurologico.respostaMotora + '), ';
     }
 
     private orientacaoTemporoEspacial(): void {
@@ -348,7 +386,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.neurologicoString += this.fichaObject.Neurologico[res].toLowerCase() + ' ' + res.toLowerCase() + ', ';
             }
         });
-        this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2)  + '. ';
+        this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2) + '. ';
     }
 
     private deficitMotor(): void {
@@ -386,13 +424,13 @@ export class FichaComponent implements OnInit, OnDestroy {
                     this.neurologicoString += 'M plégico superior esquerdo, ';
                 }
             }
-            this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2)  + '. ';
+            this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2) + '. ';
         }
     }
 
     private avaliacaoPupilar(): void {
         this.neurologicoString += 'Pupilas ' + this.fichaObject.Neurologico.tamanhoPupila.toLowerCase() + ', '
-        + this.fichaObject.Neurologico.simetriaPupila.toLowerCase() + ', ';
+            + this.fichaObject.Neurologico.simetriaPupila.toLowerCase() + ', ';
         if (this.fichaObject.Neurologico.simetriaPupilar === 'Anisocóricas') {
             this.fichaObject += this.fichaObject.Neurologico.diferencaPupila.toLowerCase() + ', ';
         }
@@ -427,8 +465,9 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private neurologicoMonitorMultiparametrico(): void {
         this.neurologicoString += 'PIC ' + this.fichaObject.MonitorMultiparametrico.pic
-        + ', PPC ' + this.fichaObject.MonitorMultiparametrico.ppc + ', capnometria ' + this.fichaObject.MonitorMultiparametrico.capnometria
-        + ', SJO2 ' + this.fichaObject.MonitorMultiparametrico.sjo2 + '. ';
+            + ', PPC ' + this.fichaObject.MonitorMultiparametrico.ppc + ', capnometria '
+            + this.fichaObject.MonitorMultiparametrico.capnometria
+            + ', SJO2 ' + this.fichaObject.MonitorMultiparametrico.sjo2 + '. ';
     }
 
     sendToHome() {
@@ -448,12 +487,12 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject && this.fichaObject.FolhasBalanco && this.fichaObject.MonitorMultiparametrico) {
             if (this.fichaObject.MonitorMultiparametrico.ritmo === 'Ritmo de Marcapasso') {
                 this.hemodinamicoString =
-                'Paciente hemodinamicamente ' +
-                this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
-                ' compensado em ' +
-                this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
-                ', FC ' +
-                this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca ;
+                    'Paciente hemodinamicamente ' +
+                    this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
+                    ' compensado em ' +
+                    this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
+                    ', FC ' +
+                    this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca;
             } else {
                 this.hemodinamicoString =
                     'Paciente hemodinamicamente ' +
@@ -461,7 +500,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                     ' compensado em ritmo ' +
                     this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
                     ', FC ' +
-                    this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca ;
+                    this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca;
             }
         }
     }
@@ -472,7 +511,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             Object.keys(bombaDVA).map(item => {
                 Object.keys(this.fichaObject.BombaInfusao).map(res => {
                     if (res === bombaDVA[item]) {
-                        this.hemodinamicoString +=  res + ' ' + this.fichaObject.BombaInfusao[res] + ' ml/h, ';
+                        this.hemodinamicoString += res + ' ' + this.fichaObject.BombaInfusao[res] + ' ml/h, ';
                     }
                 });
             });
@@ -509,18 +548,18 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private itensMonitorMultiparametrico() {
         this.hemodinamicoString += ', extremidades '
-        + this.fichaObject.Hemodinamico.extremidadesColoracao.toLowerCase()
-        + ' e '
-        + this.fichaObject.Hemodinamico.extremidadesTemperatura.toLowerCase()
-        + ', perfusão capilar '
-        + this.fichaObject.Hemodinamico.perfusaoCapilar.toLowerCase()
-        + ', PAM '
-        + this.fichaObject.MonitorMultiparametrico.pam
-        + ', PVC '
-        + this.fichaObject.MonitorMultiparametrico.pvc
-        + ', Swan-Ganz '
-        + this.fichaObject.MonitorMultiparametrico.swanGanz
-        + '.';
+            + this.fichaObject.Hemodinamico.extremidadesColoracao.toLowerCase()
+            + ' e '
+            + this.fichaObject.Hemodinamico.extremidadesTemperatura.toLowerCase()
+            + ', perfusão capilar '
+            + this.fichaObject.Hemodinamico.perfusaoCapilar.toLowerCase()
+            + ', PAM '
+            + this.fichaObject.MonitorMultiparametrico.pam
+            + ', PVC '
+            + this.fichaObject.MonitorMultiparametrico.pvc
+            + ', Swan-Ganz '
+            + this.fichaObject.MonitorMultiparametrico.swanGanz
+            + '.';
     }
 
     private prepareAbdomeString() {
@@ -533,9 +572,10 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private abdome(): void {
         this.abdomeString = 'Abdome ' + this.fichaObject.Gastrointestinal.formato.toLowerCase()
-        + ', '
-        + this.fichaObject.Gastrointestinal.tensao.toLowerCase() + ', com ruidos ' + this.fichaObject.Gastrointestinal.ruidos.toLowerCase()
-        + '. ';
+            + ', '
+            + this.fichaObject.Gastrointestinal.tensao.toLowerCase() + ', com ruidos '
+            + this.fichaObject.Gastrointestinal.ruidos.toLowerCase()
+            + '. ';
     }
 
     private ascite(): void {
@@ -550,7 +590,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             for (const key in this.fichaObject.Gastrointestinal.massasPalpaveis) {
                 this.abdomeString += key.toLowerCase() + ', ';
             }
-            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2)  + '. ';
+            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + '. ';
         } else {
             this.abdomeString += 'Sem massas palpáveis. ';
         }
@@ -562,7 +602,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             for (const key in this.fichaObject.Gastrointestinal.viscerasPalpaveis) {
                 this.abdomeString += key.toLowerCase() + ', ';
             }
-            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2)  + '. ';
+            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + '. ';
         } else {
             this.abdomeString += 'Sem visceras palpáveis. ';
         }
@@ -572,10 +612,10 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject.Gastrointestinal.ostomias !== false) {
             for (const key in this.fichaObject.Gastrointestinal.ostomias) {
                 this.abdomeString += key
-                + ' com ' + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase() + ' aspecto'
-                + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].funcionamento.toLowerCase() + ', ';
+                    + ' com ' + this.fichaObject.Gastrointestinal.ostomias[key].qualidade.toLowerCase() + ' aspecto'
+                    + ' ' + this.fichaObject.Gastrointestinal.ostomias[key].funcionamento.toLowerCase() + ', ';
             }
-            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2)  + '. ';
+            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + '. ';
         } else {
             this.abdomeString += 'Sem ostomias. ';
         }
@@ -587,7 +627,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             for (const key in this.fichaObject.FolhasBalanco.evacuacoes) {
                 this.abdomeString += key.toLowerCase() + ' ' + this.fichaObject.FolhasBalanco.evacuacoes[key] + ' vezes, ';
             }
-            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2)  + '. ';
+            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + '. ';
         } else {
             this.abdomeString += 'Não evacuou.';
         }
@@ -625,8 +665,8 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (coloracao1 === 'Ictéricas') {
             ictericia = this.fichaObject.PeleMucosas.ictericia;
             this.peleMucosasString += coloracao1.toLowerCase()
-            + ' + ' + ictericia + ', ' + coracao.toLowerCase()
-            + ', ' + hidratacao.toLowerCase() + '. ';
+                + ' + ' + ictericia + ', ' + coracao.toLowerCase()
+                + ', ' + hidratacao.toLowerCase() + '. ';
         } else {
             this.peleMucosasString += coloracao1.toLowerCase() + ', ' + coracao.toLowerCase() + ', ' + hidratacao.toLowerCase() + '. ';
         }
@@ -639,7 +679,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             for (const key in this.fichaObject.PeleMucosas.UlceraPressao) {
                 this.peleMucosasString += key.toLowerCase() + ', ';
             }
-            this.peleMucosasString = this.peleMucosasString.substr(0, this.peleMucosasString.length - 2)  + '. ';
+            this.peleMucosasString = this.peleMucosasString.substr(0, this.peleMucosasString.length - 2) + '. ';
         } else {
             this.peleMucosasString += 'sem ulcera de pressão.';
         }
@@ -650,7 +690,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         Object.keys(this.fichaObject.Nutricional).forEach(res => {
             this.nutricionalString += res.toLowerCase() + ' com aceitação ' + this.fichaObject.Nutricional[res].toLowerCase() + ', ';
         });
-        this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2)  + '. ';
+        this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2) + '. ';
         if (this.fichaObject.Exames.Albumina !== undefined) {
             this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase() + '. ';
         }
@@ -693,11 +733,11 @@ export class FichaComponent implements OnInit, OnDestroy {
             Object.keys(bombaEndocrino).forEach(item => {
                 Object.keys(this.fichaObject.BombaInfusao).map(res => {
                     if (res === bombaEndocrino[item]) {
-                        this.endocrinoString += 'Em uso de ' +  res + ' em bomba de infusão, ';
+                        this.endocrinoString += 'Em uso de ' + res + ' em bomba de infusão, ';
                     }
                 });
             });
-            this.endocrinoString = this.endocrinoString.substr(0, this.endocrinoString.length - 2)  + '. ';
+            this.endocrinoString = this.endocrinoString.substr(0, this.endocrinoString.length - 2) + '. ';
         }
     }
 }
