@@ -82,7 +82,7 @@
 				<div *ngIf="fichaObject.Exames.raioxTorax !== undefined && fichaObject.Exames.raioxTorax !== 'Normal'
 							&& fichaObject.Exames.raioxTorax !== 'Não realizou/sem resultados'">
 					<li>
-						Raio-x:
+						Raio-x: {{fichaObject.Exames.raioxTorax.diagnosticoRaiox}} em 
 						<ng-container *ngFor="let rx of raiox; let last = last">
 							{{rx}}{{last ? '.' : ', '}}
 						</ng-container>
@@ -215,21 +215,6 @@
 		<hr>
 	</form>
 </div>
-
-
-
-<!-- <tr>
-					<td>
-						<chart type="line" [data]="data" [options]="options"></chart>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<chart type="bar" [data]="pamData" [options]="options"></chart>
-					</td>
-				</tr> -->
-
-
 
 <!-- <input type="text" [value]='hemodinamicoString'>
 			 <input type="text" *ngFor="let droga of fichaObject.Dispositivos, let i =index" [value]='droga' (input)="fichaObject.Dispositivos[i] = $event.target.value; prepareArrays();" > -->
