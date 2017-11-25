@@ -1,14 +1,101 @@
-<div style="width: 40%; float:left; overflow-x: auto;">
+
+
+<div class="col-sm-5" id="left">
 	<button (click)="sendToHome()">
 		Home
 	</button>
 	<form class="example-form">
+		<div *ngIf="fichaObject.Exames">
+			<p>
+				Exames laboratoriais com alterações:
+			</p>
+			<ul>
+				<li *ngIf="fichaObject.Exames.albumina !== undefined && fichaObject.Exames.albumina !== 'Estáveis' 
+							&& fichaObject.Exames.albumina !== 'Não realizou/sem resultados'">
+					Albumina: {{fichaObject.Exames.albumina}}
+				</li>
+				<li *ngIf="fichaObject.Exames.amilase !== undefined && fichaObject.Exames.amilase !== 'Normal' 
+							&& fichaObject.Exames.amilase !== false">
+					Amilase: {{fichaObject.Exames.amilase}}
+				</li>
+				<li *ngIf="fichaObject.Exames.calcio !== undefined && fichaObject.Exames.calcio !== 'Normal' 
+							&& fichaObject.Exames.calcio !== 'Não realizou/sem resultados'">
+					Cálcio: {{fichaObject.Exames.calcio}}
+				</li>
+				<li *ngIf="fichaObject.Exames.creatinina > 0">
+					Creatinina: {{fichaObject.Exames.creatinina}}
+				</li>
+				<li *ngIf="fichaObject.Exames.fosforo !== undefined && fichaObject.Exames.fosforo !== 'Normal' 
+							&& fichaObject.Exames.fosforo !== 'Não realizou/sem resultados'">
+					Fosfóro: {{fichaObject.Exames.fosforo}}
+				</li>
+				<li *ngIf="fichaObject.Exames.funcaoHepaticaBilirrubinas !== undefined && fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Normais' 
+							&& fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Não realizou/sem resultados'">
+					Bilirrubinas: {{fichaObject.Exames.funcaoHepaticaBilirrubinas}}
+				</li>
+				<li *ngIf="fichaObject.Exames.funcaoHepaticaFAGGT !== undefined && fichaObject.Exames.funcaoHepaticaFAGGT !== 'Normais' 
+							&& fichaObject.Exames.funcaoHepaticaFAGGT !== 'Não realizou/sem resultados'">
+					FA/GGT: {{fichaObject.Exames.funcaoHepaticaFAGGT}}
+				</li>
+				<li *ngIf="fichaObject.Exames.funcaoHepaticaTransaminases !== undefined && fichaObject.Exames.funcaoHepaticaTransaminases !== 'Normais' 
+							&& fichaObject.Exames.funcaoHepaticaTransaminases !== 'Não realizou/sem resultados'">
+					Transaminases: {{fichaObject.Exames.funcaoHepaticaTransaminases}}
+				</li>
+				<li *ngIf="fichaObject.Exames.gasometriaArterial !== undefined && fichaObject.Exames.gasometriaArterial !== 'Normal' 
+							&& fichaObject.Exames.gasometriaArterial !== 'Não realizou/sem resultados'">
+					Gasometria Arterial: {{fichaObject.Exames.gasometriaArterial.tipoGasometriaArterial}} {{fichaObject.Exames.gasometriaArterial.metabolicaRespiratoria}}
+					{{fichaObject.Exames.gasometriaArterial.compensadaDescompensada !== undefined ? fichaObject.Exames.gasometriaArterial.compensadaDescompensada
+					: ''}}
+				</li>
+				<li *ngIf="fichaObject.Exames.hematocrito > 0">
+					Hematócrito: {{fichaObject.Exames.hematocrito}}
+				</li>
+				<li *ngIf="fichaObject.Exames.hemoglobina > 0">
+					Hemoglobina: {{fichaObject.Exames.hemoglobina}}
+				</li>
+				<li *ngIf="fichaObject.Exames.lactato !== undefined && fichaObject.Exames.lactato !== 'Normal' 
+							&& fichaObject.Exames.lactato !== 'Não realizou/sem resultados'">
+					Lactato: {{fichaObject.Exames.lactato}}
+				</li>
+				<li *ngIf="fichaObject.Exames.leucograma !== undefined && fichaObject.Exames.leucograma !== 'Normal' 
+							&& fichaObject.Exames.leucograma !== 'Não realizou/sem resultados'">
+					Leucograma: {{fichaObject.Exames.leucograma}}
+				</li>
+				<li *ngIf="fichaObject.Exames.magnesio !== undefined && fichaObject.Exames.magnesio !== 'Normais' 
+							&& fichaObject.Exames.magnesio !== 'Não realizou/sem resultados'">
+					Magnésio: {{fichaObject.Exames.magnesio}}
+				</li>
+				<li *ngIf="fichaObject.Exames.pcr !== undefined && fichaObject.Exames.pcr !== 'Estável' 
+							&& fichaObject.Exames.pcr !== 'Não realizou/sem resultados'">
+					PCR: {{fichaObject.Exames.pcr}}
+				</li>
+				<li *ngIf="fichaObject.Exames.plaquetas > 0">
+					Plaquetas: {{fichaObject.Exames.plaquetas}}
+				</li>
+				<li *ngIf="fichaObject.Exames.potassio !== undefined && fichaObject.Exames.potassio !== 'Normal' 
+							&& fichaObject.Exames.potassio !== 'Não realizou/sem resultados'">
+					Potássio: {{fichaObject.Exames.potassio}}
+				</li>
+				<li *ngIf="fichaObject.Exames.ureia > 0">
+					Uréia: {{fichaObject.Exames.ureia}}
+				</li>
+				<div *ngIf="fichaObject.Exames.raioxTorax !== undefined && fichaObject.Exames.raioxTorax !== 'Normal'
+							&& fichaObject.Exames.raioxTorax !== 'Não realizou/sem resultados'">
+					<li>
+						Raio-x:
+						<ng-container *ngFor="let rx of raiox; let last = last">
+							{{rx}}{{last ? '.' : ', '}}
+						</ng-container>
+					</li>
+
+				</div>
+			</ul>
+		</div>
 		<div *ngIf="allFichas">
 			<hr>
 			<p>
 				Marcadores de infecção:
 			</p>
-			<br/>
 			<ul>
 				<li *ngFor="let ficha of allFichas">
 					{{ ficha.Exames.marcadoresInfeccao + ' (' + ficha.dataCriada + ').'}}
@@ -20,11 +107,40 @@
 			<ul>
 				<li *ngFor="let ficha of allFichas">
 					{{ficha.Exames.leucograma + ' (' + ficha.dataCriada + ').'}}
-
+				</li>
+			</ul>
+			<hr>
+			<p>
+				Antibióticos
+			</p>
+			<ul *ngFor="let antibiotico of antibioticos">
+				{{antibiotico.data}}
+				<li *ngFor="let a of antibiotico.antibioticos">
+					{{a}}
 				</li>
 			</ul>
 		</div>
 		<hr>
+		<div *ngIf="allFichas">
+			<p>
+				Curva Térmica:
+			</p>
+			<ul>
+				<li *ngFor="let ficha of allFichas">
+					{{ficha.FolhasBalanco.curvaTermica + ' (' + ficha.dataCriada + ').'}}
+				</li>
+			</ul>
+			<hr>
+			<p>
+				Glicemias:
+			</p>
+			<ul>
+				<li *ngFor="let ficha of allFichas">
+					{{ficha.Endocrino.curvaGlicemica + ' (' + ficha.dataCriada + ').'}}
+				</li>
+			</ul>
+
+		</div>
 		<chart type="line" [data]="data" [options]="options"></chart>
 		<hr>
 		<br/>
@@ -120,7 +236,7 @@
 
 
 
-<div style="width: 60%; float:right; overflow-x: auto;">
+<div class="col-sm-7" id="right">
 	<button (click)="sendToHome()">
 		Home
 	</button>

@@ -30,6 +30,8 @@ export class FichaComponent implements OnInit, OnDestroy {
     private subscriptions: Subscription = new Subscription();
     private pesoAcumulado: any;
     private balancoHidricoAcumulado: any;
+    private antibioticos: any[] = [];
+    private raiox: any = [];
     data: any;
     options = {
         responsive: true,
@@ -69,6 +71,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         const pesoDatesGraph: any = [];
         const pamDataGraph: any = [];
         const pamDatesGraph: any = [];
+        const ant: any[] = [];
         let firstDay = Infinity;
 
         this.allFichas.forEach(data => {
@@ -95,6 +98,65 @@ export class FichaComponent implements OnInit, OnDestroy {
         index = this.allFichas.findIndex(ficha => ficha.dataCriada < this.fichaObject.dataCriada
             && ficha.dataCriada > new Date(this.fichaObject.dataCriada).getDate() - 1);
         this.allFichas.splice(index, 1);
+
+        this.allFichas.forEach(ficha => {
+            for (const k of ficha.Infeccioso) {
+                this.antibioticos.push({
+                    'nome': k,
+                    'data': this.convertTimeStampToPrettyDate(ficha.dataCriada)
+                });
+            }
+        });
+
+        if (this.fichaObject.Infeccioso !== undefined) {
+            for (const k of this.fichaObject.Infeccioso) {
+                this.antibioticos.push({
+                    'nome': k,
+                    'data': this.convertTimeStampToPrettyDate(this.fichaObject.dataCriada)
+                });
+            }
+        }
+
+        this.antibioticos.forEach(a => {
+            if (ant.length === 0) {
+                ant.push({
+                    'data': a.data,
+                    'antibioticos': [a.nome]
+                });
+            } else {
+                let flag = false;
+                ant.forEach(b => {
+                    if (b.data === a.data) {
+                        b.antibioticos.push(a.nome);
+                        flag = true;
+                    }
+                });
+                if (!flag) {
+                    ant.push({
+                        'data': a.data,
+                        'antibioticos': [a.nome]
+                    });
+                }
+
+            }
+        });
+
+        if (this.fichaObject.Infeccioso !== undefined) {
+            this.fichaObject.Infeccioso.forEach(today => {
+                ant.forEach(b => {
+                    if (b.data === today.data) {
+                        b.antibioticos.push(today.nome);
+                    } else {
+                        ant.push({
+                            'data': today.data,
+                            'antibioticos': [today.nome]
+                        });
+                    }
+                });
+            });
+        }
+
+        this.antibioticos = ant;
 
         this.allFichas.forEach(data => {
             data.dataCriada = this.convertTimeStampToPrettyDate(data.dataCriada);
@@ -148,6 +210,14 @@ export class FichaComponent implements OnInit, OnDestroy {
                 }
             ]
         };
+    }
+
+    private correctName(name: string) {
+        Object.keys(exames).forEach(item => {
+            if (item === name) {
+                return exames[item];
+            }
+        });
     }
 
     private convertTimeStampToPrettyDate(time: any): string {
@@ -334,6 +404,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             Object.keys(this.fichaObject.Exames.raioxTorax).forEach(item => {
                 if (item !== 'diagnosticoRaiox') {
                     this.respiratorioString += item.toLowerCase() + ', ';
+                    this.raiox.push(item);
                 }
             });
             this.respiratorioString = this.respiratorioString.substr(0, this.respiratorioString.length - 2) + '. ';
@@ -698,16 +769,8 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private prepareInfecciosoString(): void {
-        this.infecciosoString = 'Curva térmica ';
-        if (this.fichaObject.FolhasBalanco.curvaTermica >= 40) {
-            this.infecciosoString += 'hipertermica ';
-        } else if (this.fichaObject.FolhasBalanco.curvaTermica >= 36.5 && this.fichaObject.FolhasBalanco.curvaTermica <= 37.6) {
-            this.infecciosoString += 'normal ';
-        } else if (this.fichaObject.FolhasBalanco.curvaTermica > 36 && this.fichaObject.FolhasBalanco.curvaTermica <= 38) {
-            this.infecciosoString += 'subfebril ';
-        } else if (this.fichaObject.FolhasBalanco.curvaTermica < 35) {
-            this.infecciosoString += 'hiportérmica ';
-        }
+        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + ' ';
+
         if (this.fichaObject.FolhasBalanco.picosFebris !== undefined) {
             if (this.fichaObject.FolhasBalanco.picosFebris > 1) {
                 this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' picos febris. ';
@@ -758,6 +821,28 @@ export enum bombaSeda {
     ketamina = 'Ketamina',
     midazolan = 'Midazolan',
     precedex = 'Precedex'
+}
+
+export enum exames {
+    albumina = 'Albumina',
+    amilase = 'Amilase',
+    calcio = 'Calcio',
+    creatinina = 'Creatinina',
+    fosforo = 'Fósforo',
+    funcaoHepaticaBilirrubinas = 'Bilirrubinas',
+    funcaoHepaticaFAGGT = 'FAGGT',
+    funcaoHepaticaTransaminases = 'Transaminases',
+    gasometriaArterial = 'Gasometria Arterial',
+    hematocrito = 'Hematócrito',
+    hemoglobina = 'Hemoglobina',
+    lactato = 'Lactato',
+    leucograma = 'Leucograma',
+    magnesio = 'Magnésio',
+    pcr = 'PCR',
+    plaquetas = 'Plaquetas',
+    potassio = 'Potássio',
+    raioxTorax = 'Raio-x do Torax',
+    ureia = 'Uréia'
 }
 
 export enum bombaEndocrino {
