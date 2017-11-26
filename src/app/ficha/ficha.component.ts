@@ -32,6 +32,11 @@ export class FichaComponent implements OnInit, OnDestroy {
     private balancoHidricoAcumulado: any;
     private antibioticos: any[] = [];
     private raiox: any = [];
+    private diagnosticos: any = [];
+    private diagnosticoString: '';
+    private id = 0;
+    private diagnosticoButtonString: string;
+    private radioModel: string;
     data: any;
     options = {
         responsive: true,
@@ -41,6 +46,8 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     constructor(private router: Router,
         private activatedRoute: ActivatedRoute, private db: DatabaseService) {
+        this.diagnosticoButtonString = 'Mostrar todos';
+        this.radioModel = 'todos';
         this.subscriptions.add(this.activatedRoute.params.subscribe((params: Params) => {
             const userId = params['id'];
             this.db.getAllFichasByPacienteKey(userId).snapshotChanges().subscribe(data => {
@@ -55,8 +62,48 @@ export class FichaComponent implements OnInit, OnDestroy {
                         this.prepareGraphs();
                     });
                 });
+                this.db.getDiagosnitcosByPacienteKey(userId).snapshotChanges().subscribe(diagnosticos => {
+                    diagnosticos.forEach(diagnostico => {
+                        this.diagnosticos.push(diagnostico.payload.val());
+                    });
+                    this.prepareDiagnosticos();
+                });
             });
         }));
+    }
+
+    filtrar(index, diagnostico) {
+        return diagnostico.dataResolvido !== null ? true : false;
+    }
+
+    private addDiagnostico() {
+        this.diagnosticos.push({
+            'diagnostico': this.diagnosticoString,
+            'dataDiagnostico': this.convertTimeStampToPrettyDate(new Date().getTime()),
+            'id': this.id
+        });
+        this.diagnosticoString = '';
+        this.id++;
+    }
+
+    private prepareDiagnosticos(): void {
+        this.diagnosticos.forEach(diagnostico => {
+            diagnostico.dataDiagnostico = this.convertTimeStampToPrettyDate(diagnostico.dataDiagnostico);
+            if (diagnostico.dataResolvido !== undefined) {
+                diagnostico.dataResolvido = this.convertTimeStampToPrettyDate(diagnostico.dataResolvido);
+            }
+        });
+    }
+
+    private excluirDiagnostico(diagnostico): void {
+        console.log(diagnostico);
+        const index = this.diagnosticos.findIndex(item => item.id === diagnostico.id);
+        this.diagnosticos.splice(index, 1);
+        if (this.id === 0) {
+            this.id = 0;
+        } else {
+            this.id--;
+        }
     }
 
     ngOnInit() {

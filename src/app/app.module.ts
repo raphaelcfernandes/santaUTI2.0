@@ -16,6 +16,8 @@ import { NbThemeModule } from '@nebular/theme';
 import { HomeModule } from './home/home.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { ChartModule } from 'angular2-chartjs';
+import { MyFilterPipe } from './my-filter.pipe';
+import { FilterResolvidosPipe } from './filter-resolvidos.pipe';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
@@ -30,7 +32,9 @@ export const firebaseConfig = {
   declarations: [
   LoginComponent,
   AppComponent,
-  FichaComponent
+  FichaComponent,
+  MyFilterPipe,
+  FilterResolvidosPipe
   ],
   imports: [
   AppRoutingModule,

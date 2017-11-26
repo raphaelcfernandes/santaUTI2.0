@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {AngularFireDatabase, AngularFireObject, AngularFireList, AngularFireAction} from 'angularfire2/database';
-import {AngularFireAuth} from 'angularfire2/auth';
+import { Injectable } from '@angular/core';
+import { AngularFireDatabase, AngularFireObject, AngularFireList, AngularFireAction } from 'angularfire2/database';
+import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
-import {Observable} from 'rxjs/Observable';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Subscription} from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
-import {DatePipe} from '@angular/common';
-import {AuthService} from '../providers/auth.service';
+import { DatePipe } from '@angular/common';
+import { AuthService } from '../providers/auth.service';
 
 @Injectable()
 export class DatabaseService {
@@ -16,7 +16,7 @@ export class DatabaseService {
   private profissionais: any[] = [];
   private fichaObject: any[] = [];
 
-  constructor(private db: AngularFireDatabase, private auth: AuthService) {}
+  constructor(private db: AngularFireDatabase, private auth: AuthService) { }
 
   setHospitalKey(nome: string) {
     this.db.list('Hospital', ref => ref.orderByChild('nome').equalTo(nome)).snapshotChanges().map(actions => {
@@ -47,5 +47,9 @@ export class DatabaseService {
 
   getAllFichasByPacienteKey(key: string): AngularFireList<any[]> {
     return this.db.list('Hospital/DcbtizNr0ADNNnd0evlN/Fichas', ref => ref.orderByChild('pacienteKey').equalTo(key));
+  }
+
+  getDiagosnitcosByPacienteKey(key: string): AngularFireList<any[]> {
+    return this.db.list('Hospital/DcbtizNr0ADNNnd0evlN/Pacientes/' + key + '/Diagnosticos');
   }
 }

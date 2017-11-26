@@ -1,10 +1,59 @@
-
-
-<div class="col-sm-5" id="left">
+<div class="col-sm-6" id="left">
 	<button (click)="sendToHome()">
 		Home
 	</button>
 	<form class="example-form">
+		<div *ngIf="diagnosticos">
+			<p>
+				Diagnósticos
+			</p>
+			<div class="row">
+				<div class="col-sm-8">
+					<p>
+						Inserir novo
+					</p>
+				</div>
+				<div class="col-sm-4">
+					<div [(ngModel)]="radioModel" [ngModelOptions]="{standalone: true}" ngbRadioGroup class="btn-group btn-toggle-group btn-outline-toggle-group btn-group-full-width btn-toggle-radio-group">
+						<label ngbButtonLabel class="btn btn-outline-primary">
+							<input ngbButton type="radio" value="ativos"> Ativos
+						</label>
+						<label ngbButtonLabel class="btn btn-outline-primary">
+							<input ngbButton type="radio" value="resolvidos"> Resolvidos
+						</label>
+						<label ngbButtonLabel class="btn btn-outline-primary">
+							<input ngbButton type="radio" value="todos"> Todos
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<input type="text" name="diagnostico" size="50" [(ngModel)]="diagnosticoString" />
+			<button class="btn btn-primary btn-md" (click)="addDiagnostico()">Adicionar</button>
+			<br/>
+			<br/>
+			<ul *ngIf="radioModel==='todos'">
+				<li *ngFor="let d of diagnosticos">
+					{{d.diagnostico}} diagnosticado em {{d.dataDiagnostico}}. {{d.dataResolvido !== undefined ? 'Resolvido em: ' + d.dataResolvido
+					: ''}}
+					<button class="btn btn-danger btn-sm" *ngIf="d.id !== undefined" (click)="excluirDiagnostico(d)">Excluir</button>
+				</li>
+			</ul>
+			<ul *ngIf="radioModel==='ativos'">
+				<li *ngFor="let d of diagnosticos | myFilter:diagnosticos">
+					{{d.diagnostico}} diagnosticado em {{d.dataDiagnostico}}.
+					<button class="btn btn-danger btn-sm" *ngIf="d.id !== undefined" (click)="excluirDiagnostico(d)">Excluir</button>
+				</li>
+			</ul>
+			<ul *ngIf="radioModel==='resolvidos' ">
+				<li *ngFor="let d of diagnosticos |  filterResolvidos:diagnosticos">
+					{{d.diagnostico}} diagnosticado em {{d.dataDiagnostico}}. {{d.dataResolvido !== undefined ? 'Resolvido em: ' + d.dataResolvido
+					: ''}}
+					<button class="btn btn-danger btn-sm" *ngIf="d.id !== undefined" (click)="excluirDiagnostico(d)">Excluir</button>
+				</li>
+			</ul>
+		</div>
+		<hr>
 		<div *ngIf="fichaObject.Exames">
 			<p>
 				Exames laboratoriais com alterações:
@@ -82,7 +131,7 @@
 				<div *ngIf="fichaObject.Exames.raioxTorax !== undefined && fichaObject.Exames.raioxTorax !== 'Normal'
 							&& fichaObject.Exames.raioxTorax !== 'Não realizou/sem resultados'">
 					<li>
-						Raio-x: {{fichaObject.Exames.raioxTorax.diagnosticoRaiox}} em 
+						Raio-x: {{fichaObject.Exames.raioxTorax.diagnosticoRaiox}} em
 						<ng-container *ngFor="let rx of raiox; let last = last">
 							{{rx}}{{last ? '.' : ', '}}
 						</ng-container>
@@ -186,8 +235,6 @@
 		</div>
 		<br/>
 		<hr>
-
-
 		<div class="row" *ngIf="fichaObject.Renal">
 			<div class="col-sm-6">
 				Peso atual: {{fichaObject.Renal.peso}} kg.
@@ -219,9 +266,7 @@
 <!-- <input type="text" [value]='hemodinamicoString'>
 			 <input type="text" *ngFor="let droga of fichaObject.Dispositivos, let i =index" [value]='droga' (input)="fichaObject.Dispositivos[i] = $event.target.value; prepareArrays();" > -->
 
-
-
-<div class="col-sm-7" id="right">
+<div class="col-sm-6" id="right">
 	<button (click)="sendToHome()">
 		Home
 	</button>
