@@ -145,3 +145,11 @@ Osteomuscular => ok
     Musculatura (hipertrofica/normotrofica) (hipotonica/normo).
 
 Hematologico + Metabolico + Renal (urina, diurese? balanço hidrico?)
+
+
+
+
+Amilase -> retirar checkbox
+CAM-ICU -> adicionar nivel de delirium
+Sopro,tipo sopro -> Hemodinamico
+Renal -> Em dialise? Volume e tempo/hora aperecer se selecionado UF

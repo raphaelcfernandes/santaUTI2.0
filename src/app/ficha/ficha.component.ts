@@ -25,6 +25,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     private endocrinoString: string;
     private neurologicoString: string;
     private respiratorioString: string;
+    private metabolicoString: string;
     private renalString: string;
     private hematologicoString: string;
     private subscriptions: Subscription = new Subscription();
@@ -137,14 +138,20 @@ export class FichaComponent implements OnInit, OnDestroy {
             pesoDatesGraph.push(date);
         });
 
-        // Remove de allFichas a ficha + recente
-        let index = this.allFichas.findIndex(ficha => ficha.dataCriada === this.fichaObject.dataCriada);
-        this.allFichas.splice(index, 1);
 
-        // Remove as fichas com periodo maior que 24hrs em relaçaoa a ficha + recente
-        index = this.allFichas.findIndex(ficha => ficha.dataCriada < this.fichaObject.dataCriada
-            && ficha.dataCriada > new Date(this.fichaObject.dataCriada).getDate() - 1);
-        this.allFichas.splice(index, 1);
+        // Remove de allFichas a ficha + recente
+        this.allFichas.splice(this.allFichas.findIndex(ficha => ficha.dataCriada === this.fichaObject.dataCriada), 1);
+
+
+        // // Remove as fichas com periodo maior que 24hrs em relaçaoa a ficha + recente
+        for (const k in this.allFichas) {
+            const date = new Date(this.fichaObject.dataCriada);
+            date.setDate(date.getDate() - 1);
+            if (this.allFichas[k].dataCriada < this.fichaObject.dataCriada &&
+                this.allFichas[k].dataCriada < date) {
+                this.allFichas.splice(k, 1);
+            }
+        }
 
         this.allFichas.forEach(ficha => {
             for (const k of ficha.Infeccioso) {
@@ -155,15 +162,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             }
         });
 
-        if (this.fichaObject.Infeccioso !== undefined) {
-            for (const k of this.fichaObject.Infeccioso) {
-                this.antibioticos.push({
-                    'nome': k,
-                    'data': this.convertTimeStampToPrettyDate(this.fichaObject.dataCriada)
-                });
-            }
-        }
-
+        console.log(this.antibioticos);
         this.antibioticos.forEach(a => {
             if (ant.length === 0) {
                 ant.push({
@@ -187,21 +186,6 @@ export class FichaComponent implements OnInit, OnDestroy {
 
             }
         });
-
-        if (this.fichaObject.Infeccioso !== undefined) {
-            this.fichaObject.Infeccioso.forEach(today => {
-                ant.forEach(b => {
-                    if (b.data === today.data) {
-                        b.antibioticos.push(today.nome);
-                    } else {
-                        ant.push({
-                            'data': today.data,
-                            'antibioticos': [today.nome]
-                        });
-                    }
-                });
-            });
-        }
 
         this.antibioticos = ant;
 
@@ -288,6 +272,22 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.prepareRespiratorioString();
         this.prepareRenalString();
         this.prepareHematologicoString();
+        this.prepareMetabolicoString();
+    }
+
+    private prepareMetabolicoString(): void {
+        if (this.fichaObject.Exames.calcio !== undefined) {
+            this.metabolicoString = 'Cálcio ' + this.fichaObject.Exames.calcio.toLowerCase();
+        }
+        if (this.fichaObject.Exames.fosforo !== undefined) {
+            this.metabolicoString += ', fosfóro ' + this.fichaObject.Exames.fosforo.toLowerCase();
+        }
+        if (this.fichaObject.Exames.magnesio !== undefined) {
+            this.metabolicoString += ', magnésio ' + this.fichaObject.Exames.magnesio.toLowerCase();
+        }
+        if (this.fichaObject.Exames.potassio !== undefined) {
+            this.metabolicoString += ', potássio ' + this.fichaObject.Exames.potassio.toLowerCase() + '. ';
+        }
     }
 
     private prepareHematologicoString(): void {
@@ -319,6 +319,14 @@ export class FichaComponent implements OnInit, OnDestroy {
             }
         } else {
             this.renalString += '. ';
+        }
+        if (this.fichaObject.Exames.albumina !== undefined) {
+            if (this.fichaObject.Exames.albumina === 'Normal' ||
+                this.fichaObject.Exames.albumina === 'Não realizou/sem resultados') {
+                this.renalString += 'Albumina ' + this.fichaObject.Exames.albumina.toLowerCase() + ', ';
+            } else {
+                this.renalString += this.fichaObject.Exames.albumina + ', ';
+            }
         }
     }
 
@@ -751,6 +759,16 @@ export class FichaComponent implements OnInit, OnDestroy {
         }
     }
 
+    private amilase(): void {
+        if (this.fichaObject.Exames.amilase !== undefined) {
+            if (this.fichaObject.Exames.amilase === false) {
+                this.abdomeString += 'Amilase não dosada. ';
+            } else {
+                this.abdomeString += 'Amilase ' + this.fichaObject.Exames.amilase + '. ';
+            }
+        }
+    }
+
     private prepareOsteomuscularString(): void {
         this.osteomuscularString = 'Musculatura ' + (this.fichaObject.Osteomuscular.trofismoMuscular
             .substr(0, this.fichaObject.Osteomuscular.trofismoMuscular.length - 1).toLowerCase()) + 'a e '
@@ -825,8 +843,11 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' pico febril. ';
             }
         }
-        if (this.fichaObject.Exames.marcadoresInfeccao !== undefined) {
-            this.infecciosoString += 'Marcadores de infecção ' + this.fichaObject.Exames.marcadoresInfeccao.toLowerCase() + '. ';
+        if (this.fichaObject.Exames.pcr !== undefined) {
+            this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
+        }
+        if (this.fichaObject.Exames.leucograma !== undefined) {
+            this.infecciosoString += 'leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
         }
         if (this.fichaObject.Infeccioso !== undefined) {
             this.infecciosoString += 'Em uso de ';

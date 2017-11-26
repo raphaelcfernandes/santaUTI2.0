@@ -18,3 +18,8 @@
   overflow-y: scroll;
   width:100%;
 }
+
+label {
+  color: #F88017;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
