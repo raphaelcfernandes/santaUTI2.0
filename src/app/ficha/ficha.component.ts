@@ -843,12 +843,12 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' pico febril. ';
             }
         }
-        if (this.fichaObject.Exames.pcr !== undefined) {
-            this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
-        }
-        if (this.fichaObject.Exames.leucograma !== undefined) {
-            this.infecciosoString += 'leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
-        }
+        // if (this.fichaObject.Exames.pcr !== undefined) {
+        //     this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
+        // }
+        // if (this.fichaObject.Exames.leucograma !== undefined) {
+        //     this.infecciosoString += 'leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
+        // }
         if (this.fichaObject.Infeccioso !== undefined) {
             this.infecciosoString += 'Em uso de ';
             this.fichaObject.Infeccioso.forEach(item => {

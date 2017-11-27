@@ -4,9 +4,9 @@
 	</button>
 	<form class="example-form">
 		<div *ngIf="diagnosticos">
-			<p>
+			<label class="labelsConsulta">
 				Diagnósticos
-			</p>
+			</label>
 			<div class="row">
 				<div class="col-sm-4">
 					<div [(ngModel)]="radioModel" [ngModelOptions]="{standalone: true}" ngbRadioGroup class="btn-group btn-toggle-group btn-outline-toggle-group btn-group-full-width btn-toggle-radio-group">
@@ -50,165 +50,245 @@
 		</div>
 		<hr>
 		<div *ngIf="fichaObject.Exames">
-			<p>
+			<label class="labelsConsulta">
 				Exames com alterações:
-			</p>
-			<ul>
-				<li *ngIf="fichaObject.Exames.creatinina > 0">
-					Creatinina: {{fichaObject.Exames.creatinina}}
-				</li>
-				<li *ngIf="fichaObject.Exames.funcaoHepaticaBilirrubinas !== undefined && fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Normais' 
-							&& fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Não realizou/sem resultados'">
-					Bilirrubinas: {{fichaObject.Exames.funcaoHepaticaBilirrubinas}}
-				</li>
-				<li *ngIf="fichaObject.Exames.funcaoHepaticaFAGGT !== undefined && fichaObject.Exames.funcaoHepaticaFAGGT !== 'Normais' 
-							&& fichaObject.Exames.funcaoHepaticaFAGGT !== 'Não realizou/sem resultados'">
-					FA/GGT: {{fichaObject.Exames.funcaoHepaticaFAGGT}}
-				</li>
-				<li *ngIf="fichaObject.Exames.funcaoHepaticaTransaminases !== undefined && fichaObject.Exames.funcaoHepaticaTransaminases !== 'Normais' 
-							&& fichaObject.Exames.funcaoHepaticaTransaminases !== 'Não realizou/sem resultados'">
-					Transaminases: {{fichaObject.Exames.funcaoHepaticaTransaminases}}
-				</li>
-				<li *ngIf="fichaObject.Exames.gasometriaArterial !== undefined && fichaObject.Exames.gasometriaArterial !== 'Normal' 
-							&& fichaObject.Exames.gasometriaArterial !== 'Não realizou/sem resultados'">
-					Gasometria Arterial: {{fichaObject.Exames.gasometriaArterial.tipoGasometriaArterial}} {{fichaObject.Exames.gasometriaArterial.metabolicaRespiratoria}}
-					{{fichaObject.Exames.gasometriaArterial.compensadaDescompensada !== undefined ? fichaObject.Exames.gasometriaArterial.compensadaDescompensada
-					: ''}}
-				</li>
-				<li *ngIf="fichaObject.Exames.hematocrito > 0">
-					Hematócrito: {{fichaObject.Exames.hematocrito}}
-				</li>
-				<li *ngIf="fichaObject.Exames.hemoglobina > 0">
-					Hemoglobina: {{fichaObject.Exames.hemoglobina}}
-				</li>
-				<li *ngIf="fichaObject.Exames.lactato !== undefined && fichaObject.Exames.lactato !== 'Normal' 
-							&& fichaObject.Exames.lactato !== 'Não realizou/sem resultados'">
-					Lactato: {{fichaObject.Exames.lactato}}
-				</li>
-				<li *ngIf="fichaObject.Exames.plaquetas > 0">
-					Plaquetas: {{fichaObject.Exames.plaquetas}}
-				</li>
-				<li *ngIf="fichaObject.Exames.ureia > 0">
-					Uréia: {{fichaObject.Exames.ureia}}
-				</li>
-				<div *ngIf="fichaObject.Exames.raioxTorax !== undefined && fichaObject.Exames.raioxTorax !== 'Normal'
-							&& fichaObject.Exames.raioxTorax !== 'Não realizou/sem resultados'">
-					<li>
+			</label>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.albumina !== undefined && fichaObject.Exames.albumina !== 'Estáveis' 
+					&& fichaObject.Exames.albumina !== 'Não realizou/sem resultados'">
+						Albumina: {{fichaObject.Exames.albumina}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.amilase !== undefined 
+					&& fichaObject.Exames.amilase !== false">
+						Amilase: {{fichaObject.Exames.amilase}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.calcio !== undefined
+						&& fichaObject.Exames.calcio !== 'Não realizou/sem resultados'">
+						Cálcio: {{fichaObject.Exames.calcio}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.creatinina > 0">
+						Creatinina: {{fichaObject.Exames.creatinina}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.fosforo !== undefined
+						&& fichaObject.Exames.fosforo !== 'Não realizou/sem resultados'">
+						Fosfóro: {{fichaObject.Exames.fosforo}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.funcaoHepaticaBilirrubinas !== undefined
+					&& fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Não realizou/sem resultados'">
+						Bilirrubinas: {{fichaObject.Exames.funcaoHepaticaBilirrubinas}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.funcaoHepaticaFAGGT !== undefined
+						&& fichaObject.Exames.funcaoHepaticaFAGGT !== 'Não realizou/sem resultados'">
+						FA/GGT: {{fichaObject.Exames.funcaoHepaticaFAGGT}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.funcaoHepaticaTransaminases !== undefined 
+						&& fichaObject.Exames.funcaoHepaticaTransaminases !== 'Não realizou/sem resultados'">
+						Transaminases: {{fichaObject.Exames.funcaoHepaticaTransaminases}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.gasometriaArterial !== undefined
+						&& fichaObject.Exames.gasometriaArterial !== 'Não realizou/sem resultados'">
+						Gasometria Arterial: {{fichaObject.Exames.gasometriaArterial.tipoGasometriaArterial}} {{fichaObject.Exames.gasometriaArterial.metabolicaRespiratoria}}
+						{{fichaObject.Exames.gasometriaArterial.compensadaDescompensada !== undefined ? fichaObject.Exames.gasometriaArterial.compensadaDescompensada
+						: ''}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.hematocrito > 0">
+						Hematócrito: {{fichaObject.Exames.hematocrito}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.hemoglobina > 0">
+						Hemoglobina: {{fichaObject.Exames.hemoglobina}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.lactato !== undefined 
+						&& fichaObject.Exames.lactato !== 'Não realizou/sem resultados'">
+						Lactato: {{fichaObject.Exames.lactato}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.leucograma !== undefined 
+						&& fichaObject.Exames.leucograma !== 'Não realizou/sem resultados'">
+						Leucograma: {{fichaObject.Exames.leucograma}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.magnesio !== undefined && fichaObject.Exames.magnesio !== 'Normais' 
+						&& fichaObject.Exames.magnesio !== 'Não realizou/sem resultados'">
+						Magnésio: {{fichaObject.Exames.magnesio}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.pcr !== undefined 
+						&& fichaObject.Exames.pcr !== 'Não realizou/sem resultados'">
+						PCR: {{fichaObject.Exames.pcr}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.plaquetas > 0">
+						Plaquetas: {{fichaObject.Exames.plaquetas}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.potassio !== undefined
+						&& fichaObject.Exames.potassio !== 'Não realizou/sem resultados'">
+						Potássio: {{fichaObject.Exames.potassio}}
+					</ng-container>
+				</div>
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.ureia > 0">
+						Uréia: {{fichaObject.Exames.ureia}}
+					</ng-container>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<ng-container *ngIf="fichaObject.Exames.raioxTorax !== undefined
+						&& fichaObject.Exames.raioxTorax !== 'Não realizou/sem resultados'">
 						Raio-x: {{fichaObject.Exames.raioxTorax.diagnosticoRaiox}} em
 						<ng-container *ngFor="let rx of raiox; let last = last">
 							{{rx}}{{last ? '.' : ', '}}
 						</ng-container>
-					</li>
-
+					</ng-container>
 				</div>
-			</ul>
+			</div>
 		</div>
+		<hr>
 		<div *ngIf="allFichas">
-			<p>
+			<label class="labelsConsulta">
 				Antibióticos
-			</p>
-			<ul *ngFor="let antibiotico of antibioticos">
-				{{antibiotico.data}}
-				<li *ngFor="let a of antibiotico.antibioticos">
-					{{a}}
-				</li>
-			</ul>
-		</div>
-		<hr>
-		<div *ngIf="allFichas">
-			<p>
-				PAM:
-			</p>
-			<ul>
-				<li *ngFor="let ficha of allFichas">
-					{{ficha.MonitorMultiparametrico.pam + ' (' + ficha.dataCriada + ').'}}
-				</li>
-			</ul>
-		</div>
-		<hr>
-		<div *ngIf="allFichas">
-			<p>
-				Curva Térmica:
-			</p>
-			<ul>
-				<li *ngFor="let ficha of allFichas">
-					{{ficha.FolhasBalanco.curvaTermica + ' (' + ficha.dataCriada + ').'}}
-				</li>
-			</ul>
-			<hr>
-			<p>
-				Glicemias:
-			</p>
-			<ul>
-				<li *ngFor="let ficha of allFichas">
-					{{ficha.Endocrino.curvaGlicemica + ' (' + ficha.dataCriada + ').'}}
-				</li>
-			</ul>
+			</label>
 
+			<div class="row">
+				<div class="col-sm-12">
+					<ng-container *ngFor="let antibiotico of antibioticos">
+						{{antibiotico.data}}:
+						<ng-container *ngFor="let a of antibiotico.antibioticos; let last=last">
+							{{a}}{{last ? '.' : ', '}}
+						</ng-container>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<ng-container *ngIf="allFichas">
+			<label class="labelsConsulta">
+				PAM:
+			</label>
+			<div *ngFor="let ficha of allFichas">
+				{{ficha.MonitorMultiparametrico.pam + ' (' + ficha.dataCriada + ').'}}
+			</div>
+		</ng-container>
+		<hr>
+		<ng-container *ngIf="allFichas">
+			<label class="labelsConsulta">
+				Curva Térmica:
+			</label>
+			<div *ngFor="let ficha of allFichas">
+				{{ficha.FolhasBalanco.curvaTermica + ' (' + ficha.dataCriada + ').'}}
+			</div>
+		</ng-container>
+		<hr>
+		<label class="labelsConsulta">
+			Glicemias:
+		</label>
+		<div *ngFor="let ficha of allFichas">
+			{{ficha.Endocrino.curvaGlicemica + ' (' + ficha.dataCriada + ').'}}
 		</div>
 		<!-- <chart type="line" [data]="data" [options]="options"></chart> -->
 		<hr>
 		<div class="row">
 			<div class="col-sm-12">
-				<p>
+				<label class="labelsConsulta">
 					Diurese registrado nas últimas 24hrs:
-				</p>
+				</label>
 			</div>
 		</div>
-		<div *ngIf="allFichas">
-			<ul>
-				<li *ngFor="let ficha of allFichas">
-					{{ ficha.FolhasBalanco.diurese }} em {{ficha.dataCriada}}
-				</li>
-			</ul>
-		</div>
+		<ng-container *ngIf="allFichas">
+			<div *ngFor="let ficha of allFichas">
+				{{ ficha.FolhasBalanco.diurese }} em {{ficha.dataCriada}}
+			</div>
+		</ng-container>
 		<hr>
 
 		<div class="row" *ngIf="fichaObject.FolhasBalanco">
 			<div class="col-sm-6">
-				Balanço hídrico atual: {{fichaObject.FolhasBalanco.balancoHidrico}}.
+				<label class="labelsConsulta">
+					Balanço hídrico atual:
+				</label>
+				{{fichaObject.FolhasBalanco.balancoHidrico}}.
 			</div>
 			<div class="col-sm-6">
-				Balanço hídrico acumulado: {{balancoHidricoAcumulado > 0 ? '+' + balancoHidricoAcumulado : balancoHidricoAcumulado}}.
+				<label class="labelsConsulta">
+					Balanço hídrico acumulado:
+				</label>
+				{{balancoHidricoAcumulado > 0 ? '+' + balancoHidricoAcumulado : balancoHidricoAcumulado}}.
 			</div>
 		</div>
-		<!-- <div class="row">
-			<div class="col-sm-12">
-				<p>
-					Balanço hidrico registrado nas ultimas 24hrs:
-				</p>
-			</div>
-		</div>
-		<div *ngIf="allFichas">
-			<ul>
-				<li *ngFor="let ficha of allFichas">
-					Balanço Hidrico: {{ ficha.FolhasBalanco.balancoHidrico }} em {{ficha.dataCriada}}
-				</li>
-			</ul>
-		</div> -->
 		<hr>
 		<div class="row" *ngIf="fichaObject.Renal">
 			<div class="col-sm-6">
-				Peso atual: {{fichaObject.Renal.peso}} kg.
+				<label class="labelsConsulta">
+					Peso atual:
+				</label>
+				{{fichaObject.Renal.peso}} kg.
 			</div>
 			<div class="col-sm-6">
-				Peso acumulado: {{pesoAcumulado > 0 ? '+' + pesoAcumulado : pesoAcumulado}} kg.
+				<label class="labelsConsulta">
+					Peso acumulado:
+				</label>
+				{{pesoAcumulado > 0 ? '+' + pesoAcumulado : pesoAcumulado}} kg.
 			</div>
 		</div>
 
 		<hr>
 		<div class="row">
 			<div class="col-sm-12">
-				Dieta nas últimas 24hrs:
+				<label class="labelsConsulta">
+					Dieta nas últimas 24hrs:
+				</label>
 			</div>
 		</div>
-		<div *ngIf="allFichas">
-			<ul>
-				<li *ngFor="let nutricao of nutricaoArray">
-					{{ nutricao.dieta }} com {{nutricao.valor}} volume/ml. ({{nutricao.data}})
-				</li>
-			</ul>
-		</div>
+		<ng-container *ngIf="allFichas">
+			<div *ngFor="let nutricao of nutricaoArray">
+				{{ nutricao.dieta }} com {{nutricao.valor}} volume/ml. ({{nutricao.data}})
+			</div>
+		</ng-container>
 		<hr>
 	</form>
 </div>
@@ -234,7 +314,7 @@
 
 	<div class="container">
 		<label for="respiratorioTextArea">Respiratório</label>
-		<textarea id="respiratorioTextArea" disabled class="form-control" rows="3" [value]='respiratorioString'></textarea>
+		<textarea id="respiratorioTextArea" disabled class="form-control" rows="4" [value]='respiratorioString'></textarea>
 	</div>
 
 	<div class="container">
