@@ -1,11 +1,30 @@
-<div class="container">
+<!-- <div class="container">
   <div class="card card-container rounded">
-    <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+
     <form class="form-signin">
       <span id="reauth-email" class="reauth-email"></span>
-      <input type="email" id="inputEmail" class="form-control" placeholder="E-mail" required autofocus [(ngModel)]="email" name="email">
-      <input type="password" id="inputPassword" class="form-control" placeholder="Senha" required [(ngModel)]="password" name="password">
-      <button type="button" class="btn btn-primary" (click)="login()">Entrar</button>
+      <input type="email" id="inputEmail" class="form-control" >
+      <input type="password" id="inputPassword" class="form-control" >
+      
     </form>
+  </div>
+</div> -->
+<!-- Single button -->
+<div class="container">
+
+  <div class="row" id="pwd-container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <section class="login-form">
+        <form method="post" action="#" role="login">
+          <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+          <input type="email" name="email" placeholder="Email" required class="form-control input-lg" placeholder="E-mail" required
+            autofocus [(ngModel)]="email" name="email" />
+          <input type="password" class="form-control input-lg" id="password" F placeholder="Senha" required [(ngModel)]="password"
+            name="password" />
+          <button type="button" class="btn btn-primary btn-lg btn-block" (click)="login()">Entrar</button>
+        </form>
+      </section>
+    </div>
   </div>
 </div>

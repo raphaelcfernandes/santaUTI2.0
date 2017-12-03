@@ -1,41 +1,11 @@
-/*
- * Specific styles of signin component
- */
-/*
- * General styles
- */
- body, html {
-    height: 100%;
-    background-repeat: no-repeat;
-	background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
-}
-
- .card-container.card {
-    max-width: 350px;
-	padding: 40px 40px;
+.progress-bar {
+    color: #333;
 } 
-/* .btn {
-    margin: 0px;
-} */
-/*
- * Card component
- */
-.card {
-    background-color: #F7F7F7;
-    
-    padding: 20px 25px 30px;
-    margin: 0 auto 25px;
-	margin-top: 50px;
-	border-radius: 50%;
-    
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-}
 
+/*
+Reference:
+http://www.bootstrapzen.com/item/135/simple-login-form-logo/
+*/
 .profile-img-card {
     width: 96px;
     height: 96px;
@@ -44,4 +14,54 @@
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
     border-radius: 50%;
-} 
+}
+* {
+    -webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	outline: none;
+}
+
+
+body {
+	background: url(http://i.imgur.com/GHr12sH.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.login-form {
+	margin-top: 60px;
+}
+
+form[role=login] {
+	color: #5d5d5d;
+	background: #f2f2f2;
+	padding: 26px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
+	form[role=login] img {
+		display: block;
+		margin: 0 auto;
+		margin-bottom: 35px;
+	}
+	form[role=login] input,
+	form[role=login] button {
+		font-size: 18px;
+		margin: 16px 0;
+	}
+	form[role=login] > div {
+		text-align: center;
+	}
+	
+.form-links {
+	text-align: center;
+	margin-top: 1em;
+	margin-bottom: 50px;
+}
+	.form-links a {
+		color: #fff;
+	}
