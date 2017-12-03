@@ -19,7 +19,8 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "../node_modules/@nebular/theme/styles/prebuilt/default.css",
+        "../node_modules/angular-bootstrap-md/scss/bootstrap/bootstrap.scss",
+        "../node_modules/angular-bootstrap-md/scss/mdb-free.scss",
         "styles.scss"
       ],
       "scripts": [],

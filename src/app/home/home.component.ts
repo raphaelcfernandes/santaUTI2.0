@@ -3,8 +3,7 @@ import {AuthService} from '../providers/auth.service';
 import {DatabaseService} from '../providers/database.service';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
-import { NbSidebarService } from '@nebular/theme';
-import { MENU_ITEMS } from './pages-menu';
+
 
 @Component({
   selector: 'app-home',
@@ -17,10 +16,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   private pacientes: any[] = [];
   private profissionais: any[] = [];
   show = false;
-  menu = MENU_ITEMS;
+
 
   constructor(
-    private sidebarService: NbSidebarService,
     private authService: AuthService,
     private db: DatabaseService,
     private router: Router) {
@@ -56,11 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.show = false;
     }));
 
-  }
-
-  toggleSidebar(): boolean {
-    this.sidebarService.toggle(true, 'menu-sidebar');
-    return false;
   }
 
   ngOnDestroy() {

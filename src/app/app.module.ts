@@ -12,14 +12,12 @@ import { AuthGuardService } from './providers/auth-guard.service';
 import { FichaComponent } from './ficha/ficha.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { NbThemeModule } from '@nebular/theme';
 import { HomeModule } from './home/home.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChartModule } from 'angular2-chartjs';
 import { MyFilterPipe } from './my-filter.pipe';
 import { FilterResolvidosPipe } from './filter-resolvidos.pipe';
-import { NbCardModule } from '@nebular/theme';
-import { NbCheckboxModule } from '@nebular/theme';
+
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
   authDomain: 'santauti-4c4da.firebaseapp.com',
@@ -47,10 +45,7 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     BrowserAnimationsModule,
-    NbCardModule,
-    NbCheckboxModule,
-    NgbModule.forRoot(),
-    NbThemeModule.forRoot({ name: 'default' })
+    NgbModule.forRoot()
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
   bootstrap: [AppComponent]

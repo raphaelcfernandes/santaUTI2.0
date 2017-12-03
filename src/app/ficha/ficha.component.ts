@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { DatabaseService } from '../providers/database.service';
 import { Subscription } from 'rxjs/Subscription';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
-import { NbThemeService, NbColorHelper } from '@nebular/theme';
+
 @Component({
     selector: 'app-ficha',
     templateUrl: './ficha.component.html',
@@ -70,6 +70,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                     this.prepareDiagnosticos();
                 });
             });
+            this.subscriptions.unsubscribe();
         }));
     }
 
@@ -108,6 +109,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+
     }
 
     ngOnDestroy() {
