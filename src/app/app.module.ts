@@ -11,12 +11,12 @@ import { AppComponent } from './app.component';
 import { AuthGuardService } from './providers/auth-guard.service';
 import { FichaComponent } from './ficha/ficha.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { HomeModule } from './home/home.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChartModule } from 'angular2-chartjs';
 import { MyFilterPipe } from './my-filter.pipe';
 import { FilterResolvidosPipe } from './filter-resolvidos.pipe';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
@@ -45,9 +45,10 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     BrowserAnimationsModule,
-    NgbModule.forRoot()
+    MDBBootstrapModule.forRoot()
   ],
   providers: [AuthService, DatabaseService, AuthGuardService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

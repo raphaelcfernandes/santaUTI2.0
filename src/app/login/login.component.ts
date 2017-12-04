@@ -8,8 +8,8 @@ import { AuthService } from '../providers/auth.service';
 })
 
 export class LoginComponent implements OnInit {
-  email: string;
-  password: string;
+  email: '';
+  password: '';
   event: boolean;
   constructor(private authService: AuthService) {}
   login() {
