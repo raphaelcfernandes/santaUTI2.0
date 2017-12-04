@@ -17,6 +17,7 @@ import { ChartModule } from 'angular2-chartjs';
 import { MyFilterPipe } from './my-filter.pipe';
 import { FilterResolvidosPipe } from './filter-resolvidos.pipe';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { HomeComponent } from './home/home.component';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
@@ -31,13 +32,13 @@ export const firebaseConfig = {
   declarations: [
     LoginComponent,
     AppComponent,
+    HomeComponent,
     FichaComponent,
     MyFilterPipe,
     FilterResolvidosPipe
   ],
   imports: [
     AppRoutingModule,
-    HomeModule,
     ChartModule,
     BrowserModule,
     FormsModule,
