@@ -1,4 +1,4 @@
-<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark indigo">
+<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark light-blue">
   <links>
     <ul class="navbar-nav">
       <li class="nav-item active">
@@ -7,15 +7,37 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link waves-light"(click)="logout()" mdbRippleRadius>Logout</a>
+        <a class="nav-link waves-light" (click)="logout()" mdbRippleRadius>Logout</a>
       </li>
     </ul>
   </links>
 </mdb-navbar>
 <!--/.Navbar-->
-<div *ngIf="pacientes; let pacientes ">
-  <ul>
-    <li *ngFor="let item of pacientes" (click)="liClicked(item)">
-      Paciente: {{ item.nome }} {{item.sobrenome}} Médico Responsavel: {{ item.medicoResponsavel }}</li>
-  </ul>
-</div>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Paciente</th>
+      <th>Médico Responsável</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody *ngFor="let item of pacientes">
+    <tr>
+      <td>{{ item.nome }} {{item.sobrenome}}</td>
+      <td>{{ item.medicoResponsavel }}</td>
+      <td style="padding-top: 0.4rem">
+        <div class="btn-group" dropdown>
+          <button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+            Ficha
+          </button>
+          <div class="dropdown-menu dropdown-primary">
+            <a class="dropdown-item" (click)="liClicked(item)">Editar mais recente</a>
+            <a class="dropdown-item disabled" href="#">Procurar por data</a>
+          </div>
+        </div>
+        <button class="btn btn-danger btn-sm">Dar Alta</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
