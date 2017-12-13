@@ -1,8 +1,7 @@
-import {Component, OnInit, ElementRef, ViewChild, OnDestroy} from '@angular/core';
-import {AuthService} from '../providers/auth.service';
-import {DatabaseService} from '../providers/database.service';
-import {Router} from '@angular/router';
-import {Subscription} from 'rxjs/Subscription';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { DatabaseService } from '../providers/database.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 
 @Component({
@@ -19,19 +18,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private authService: AuthService,
     private db: DatabaseService,
     private router: Router) {
     this.subscriptions.add(this.db.getProfissionaisFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(data => {
       data.forEach(profissionais => {
-        this.profissionais.push({'profissionalKey': profissionais.key, 'profissionalData': profissionais.payload.val()});
+        this.profissionais.push({ 'profissionalKey': profissionais.key, 'profissionalData': profissionais.payload.val() });
       });
     }));
   }
 
-  logout() {
-    this.authService.logout();
-  }
+
 
   ngOnInit() {
     this.show = true;

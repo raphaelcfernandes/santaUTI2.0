@@ -18,6 +18,7 @@ import { MyFilterPipe } from './my-filter.pipe';
 import { FilterResolvidosPipe } from './filter-resolvidos.pipe';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { HomeComponent } from './home/home.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
@@ -35,13 +36,15 @@ export const firebaseConfig = {
     HomeComponent,
     FichaComponent,
     MyFilterPipe,
-    FilterResolvidosPipe
+    FilterResolvidosPipe,
+    NavbarComponent
   ],
   imports: [
     AppRoutingModule,
     ChartModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireDatabaseModule,

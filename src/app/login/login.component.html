@@ -1,18 +1,18 @@
-<div class="container-fluid" >
+<div class="container-fluid">
   <div class="card text-center">
     <div class="card-body">
       <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
-      <div class="md-form form-sm">
-        <input mdbActive type="email" name="email" required class="form-control input-lg" required autofocus [(ngModel)]="email"
-          id="email" />
-        <label for="email" class="">E-mail</label>
-      </div>
-      <div class="md-form form-sm">
-        <input mdbActive type="password" class="form-control input-lg" id="password" required [(ngModel)]="password" name="password"
-        />
-        <label for="password" class="">Senha</label>
-      </div>
-      <button type="button" class="btn btn-primary waves-light btn-block" (click)="login()" mdbRippleRadius>Entrar</button>
+      <form [formGroup]="loginForm" (ngSubmit)="doLogin($event)">
+        <div class="md-form form-sm">
+          <input formControlName="email" mdbActive type="email" required class="form-control input-lg" id="email" ngModel/>
+          <label for="email" class="">E-mail</label>
+        </div>
+        <div class="md-form form-sm">
+          <input formControlName="password" mdbActive type="password" class="form-control input-lg" id="password" required ngModel/>
+          <label for="password" class="">Senha</label>
+        </div>
+        <button type="submit" class="btn btn-primary waves-light btn-block" mdbRippleRadius (click)="doLogin($event)">Entrar</button>
+      </form>
     </div>
   </div>
 </div>

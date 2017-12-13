@@ -1,5 +1,6 @@
 {
   "compileOnSave": false,
+  "include": ["node_modules/angular-bootstrap-md/**/*.ts",  "src/**/*.ts"],
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -8,7 +9,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "include": ["node_modules/angular-bootstrap-md/**/*.ts",  "src/**/*.ts"],
     "typeRoots": [
       "node_modules/@types"
     ],
