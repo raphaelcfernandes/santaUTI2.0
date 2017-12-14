@@ -1,6 +1,6 @@
 {
   "compileOnSave": false,
-  "include": ["node_modules/angular-bootstrap-md/**/*.ts",  "src/**/*.ts"],
+  "include": ["node_modules/angular-bootstrap-md/**/*.ts",  "node_modules/ng-autosize/**/*.ts","src/**/*.ts"],
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "sourceMap": true,

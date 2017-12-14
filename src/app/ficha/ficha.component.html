@@ -1,39 +1,107 @@
 <app-navbar></app-navbar>
+
 <div class="row">
 	<div class="col-sm-7" id="left">
 		<form class="example-form">
 			<div *ngIf="diagnosticos">
-				<table class="table table-sm">
-					<thead>
-						<tr>
-							<th class="labelsConsulta">Diagnóstico</th>
-							<th class="labelsConsulta">Data Criado</th>
-							<th class="labelsConsulta">Data Resolvido</th>
-							<th class="labelsConsulta">Comentários</th>
-							<th class="labelsConsulta">Ações</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr *ngFor="let d of diagnosticos">
-							<td>{{d.diagnostico}}</td>
-							<td>{{d.dataDiagnostico}}</td>
-							<td>{{d.dataResolvido}}</td>
-							<td>{{d.comentario}}</td>
-							<ng-container *ngIf="d.id!==undefined">
-								<td>
-									<button class="btn btn-primary btn-sm" (click)="manageDiagnostico(d)"> Excluir
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
-								<td>
-									<button class="btn btn-primary btn-sm" (click)="manageDiagnostico(d)"> Resolver
-									</button>
-								</td>
-							</ng-container>
-						</tr>
-					</tbody>
-				</table>
+				<div class="panel panel-primary filterable">
+					<div class="panel-heading">
+						<div class="pull-right">
+							<button class="btn btn-warning btn-sm" (click)="radioModel = 'todos'">Todos</button>
+							<button class="btn btn-warning btn-sm" (click)="radioModel = 'resolvidos'">Resolvidos</button>
+							<button class="btn btn-warning btn-sm" (click)="radioModel = 'ativos'">Ativos</button>
+						</div>
+					</div>
+					<table class="table table-sm">
+						<thead>
+							<tr>
+								<th class="labelsConsulta">Diagnóstico</th>
+								<th class="labelsConsulta">Data Criado</th>
+								<th class="labelsConsulta">Data Resolvido</th>
+								<th class="labelsConsulta">Comentários</th>
+								<th class="labelsConsulta">Ações</th>
+							</tr>
+						</thead>
+						<tbody *ngIf="radioModel==='todos'">
+							<tr *ngFor="let d of diagnosticos">
+								<td>{{d.diagnostico}}</td>
+								<td>{{d.dataDiagnostico}}</td>
+								<td>{{d.dataResolvido}}</td>
+								<td>{{d.comentario}}</td>
+								<ng-container *ngIf="d.id!==undefined">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
+										</button>
+									</td>
+								</ng-container>
+								<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
+										</button>
+									</td>
+								</ng-container>
+								<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
+										</button>
+									</td>
+								</ng-container>
+							</tr>
+						</tbody>
+						<tbody *ngIf="radioModel==='ativos'">
+							<tr *ngFor="let d of diagnosticos  | myFilter:diagnosticos">
+								<td>{{d.diagnostico}}</td>
+								<td>{{d.dataDiagnostico}}</td>
+								<td>{{d.dataResolvido}}</td>
+								<td>{{d.comentario}}</td>
+								<ng-container *ngIf="d.id!==undefined">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
+										</button>
+									</td>
+								</ng-container>
+								<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
+										</button>
+									</td>
+								</ng-container>
+								<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
+										</button>
+									</td>
+								</ng-container>
+							</tr>
+						</tbody>
+						<tbody *ngIf="radioModel==='resolvidos' ">
+							<tr *ngFor="let d of diagnosticos | filterResolvidos:diagnosticos">
+								<td>{{d.diagnostico}}</td>
+								<td>{{d.dataDiagnostico}}</td>
+								<td>{{d.dataResolvido}}</td>
+								<td>{{d.comentario}}</td>
+								<ng-container *ngIf="d.id!==undefined">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
+										</button>
+									</td>
+								</ng-container>
+								<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
+										</button>
+									</td>
+								</ng-container>
+								<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
+									<td>
+										<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
+										</button>
+									</td>
+								</ng-container>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 				<hr>
 				<table>
 					<tfoot>
@@ -53,51 +121,11 @@
 								</div>
 							</td>
 							<td>
-								<button class="btn btn-primary btn-sm" (click)="addDiagnostico()">Adicionar</button>
+								<button class="btn btn-info btn-sm" (click)="addDiagnostico()">Adicionar</button>
 							</td>
 						</tr>
 					</tfoot>
 				</table>
-				<!-- <div class="row">
-							<div class="col-sm-4">
-								<div [(ngModel)]="radioModel" [ngModelOptions]="{standalone: true}" ngbRadioGroup class="btn-group btn-toggle-group btn-outline-toggle-group btn-group-full-width btn-toggle-radio-group">
-									<label ngbButtonLabel class="btn btn-outline-primary">
-										<input ngbButton type="radio" value="ativos"> Ativos
-									</label>
-									<label ngbButtonLabel class="btn btn-outline-primary">
-										<input ngbButton type="radio" value="resolvidos"> Resolvidos
-									</label>
-									<label ngbButtonLabel class="btn btn-outline-primary">
-										<input ngbButton type="radio" value="todos"> Todos
-									</label>
-								</div>
-							</div>
-						</div> -->
-
-				<!-- <input type="text" name="diagnostico" size="50" [(ngModel)]="diagnosticoString" />
-				<button class="btn btn-primary btn-md" (click)="addDiagnostico()">Adicionar</button>
-				<br/>
-				<br/>
-				<ul *ngIf="radioModel==='todos'">
-					<li *ngFor="let d of diagnosticos">
-						{{d.diagnostico}} diagnosticado em {{d.dataDiagnostico}}. {{d.dataResolvido !== undefined ? 'Resolvido em: ' + d.dataResolvido
-						: ''}}
-						<button class="btn btn-danger btn-sm" *ngIf="d.id !== undefined" (click)="excluirDiagnostico(d)">Excluir</button>
-					</li>
-				</ul>
-				<ul *ngIf="radioModel==='ativos'">
-					<li *ngFor="let d of diagnosticos | myFilter:diagnosticos">
-						{{d.diagnostico}} diagnosticado em {{d.dataDiagnostico}}.
-						<button class="btn btn-danger btn-sm" *ngIf="d.id !== undefined" (click)="excluirDiagnostico(d)">Excluir</button>
-					</li>
-				</ul>
-				<ul *ngIf="radioModel==='resolvidos' ">
-					<li *ngFor="let d of diagnosticos |  filterResolvidos:diagnosticos">
-						{{d.diagnostico}} diagnosticado em {{d.dataDiagnostico}}. {{d.dataResolvido !== undefined ? 'Resolvido em: ' + d.dataResolvido
-						: ''}}
-						<button class="btn btn-danger btn-sm" *ngIf="d.id !== undefined" (click)="excluirDiagnostico(d)">Excluir</button>
-					</li>
-				</ul> -->
 			</div>
 			<hr>
 			<div *ngIf="fichaObject.Exames">
@@ -349,73 +377,72 @@
 			 <input type="text" *ngFor="let droga of fichaObject.Dispositivos, let i =index" [value]='droga' (input)="fichaObject.Dispositivos[i] = $event.target.value; prepareArrays();" > -->
 
 	<div class="col-sm-5" id="right">
-		<div class="container">
-			<label for="neurologicoTextArea">Neurológico</label>
-			<textarea id="neurologicoTextArea" disabled class="form-control" rows="3" [value]='neurologicoString'></textarea>
+		<div class="container" *ngIf="neurologicoString">
+			<label class="labelsConsulta" for="neurologicoTextArea">Neurológico</label>
+			<textarea autosize id="neurologicoTextArea" disabled class="form-control" [value]='neurologicoString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="hemodinamicoTextArea">Hemodinâmico</label>
-			<textarea id="hemodinamicoTextArea" disabled class="form-control" rows="3" [value]='hemodinamicoString'></textarea>
+		<div class="container" *ngIf="hemodinamicoString">
+			<label class="labelsConsulta" for="hemodinamicoTextArea">Hemodinâmico</label>
+			<textarea id="hemodinamicoTextArea" autosize disabled class="form-control" [value]='hemodinamicoString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="respiratorioTextArea">Respiratório</label>
-			<textarea id="respiratorioTextArea" disabled class="form-control" rows="4" [value]='respiratorioString'></textarea>
+		<div class="container" *ngIf="respiratorioString">
+			<label class="labelsConsulta" for="respiratorioTextArea">Respiratório</label>
+			<textarea id="respiratorioTextArea" autosize disabled class="form-control" [value]='respiratorioString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="abdomeTextArea">Abdome</label>
-			<textarea id="abdomeTextArea" disabled class="form-control" rows="2" [value]='abdomeString'></textarea>
+		<div class="container" *ngIf="abdomeString">
+			<label class="labelsConsulta" for="abdomeTextArea">Abdome</label>
+			<textarea id="abdomeTextArea" autosize disabled class="form-control" [value]='abdomeString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="renalTextArea">Renal</label>
-			<textarea id="renalTextArea" disabled class="form-control" rows="2" [value]='renalString'></textarea>
+		<div class="container" *ngIf="renalString">
+			<label class="labelsConsulta" for="renalTextArea">Renal</label>
+			<textarea id="renalTextArea" disabled class="form-control" autosize [value]='renalString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="peleMucosasTextArea">Pele e Mucosas</label>
-			<textarea id="peleMucosasTextArea" disabled class="form-control" rows="1" [value]='peleMucosasString'></textarea>
+		<div class="container" *ngIf="peleMucosasString">
+			<label class="labelsConsulta" for="peleMucosasTextArea">Pele e Mucosas</label>
+			<textarea id="peleMucosasTextArea" disabled class="form-control" autosize [value]='peleMucosasString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="osteomuscularTextArea">Osteomuscular</label>
-			<textarea id="osteomuscularTextArea" disabled class="form-control" rows="1" [value]='osteomuscularString'></textarea>
+		<div class="container" *ngIf="osteomuscularString">
+			<label class="labelsConsulta" class="labelsConsulta" for="osteomuscularTextArea">Osteomuscular</label>
+			<textarea id="osteomuscularTextArea" disabled class="form-control" autosize [value]='osteomuscularString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="nutricionalTextArea">Nutricional</label>
-			<textarea id="nutricionalTextArea" disabled class="form-control" rows="1" [value]='nutricionalString'></textarea>
+		<div class="container" *ngIf="nutricionalString">
+			<label class="labelsConsulta" for="nutricionalTextArea">Nutricional</label>
+			<textarea id="nutricionalTextArea" disabled class="form-control" autosize [value]='nutricionalString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="infecciosoTextArea">Infeccioso</label>
-			<textarea id="infecciosoTextArea" disabled class="form-control" rows="2" [value]='infecciosoString'></textarea>
+		<div class="container" *ngIf="infecciosoString">
+			<label class="labelsConsulta" for="infecciosoTextArea">Infeccioso</label>
+			<textarea id="infecciosoTextArea" disabled class="form-control" autosize  [value]='infecciosoString'></textarea>
 		</div>
 
-
-		<div class="container">
-			<label for="endocrinoTextArea">Endócrino</label>
-			<textarea id="endocrinoTextArea" disabled class="form-control" rows="1" [value]='endocrinoString'></textarea>
+		<div class="container" *ngIf="endocrinoString">
+			<label class="labelsConsulta" for="endocrinoTextArea">Endócrino</label>
+			<textarea id="endocrinoTextArea" disabled class="form-control" autosize  [value]='endocrinoString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="metabolicoTextArea">Metabólico</label>
-			<textarea id="metabolicoTextArea" disabled class="form-control" rows="2" [value]='metabolicoString'></textarea>
+		<div class="container" *ngIf="metabolicoString">
+			<label class="labelsConsulta" for="metabolicoTextArea">Metabólico</label>
+			<textarea id="metabolicoTextArea" disabled class="form-control" autosize [value]='metabolicoString'></textarea>
 		</div>
 
-		<div class="container">
-			<label for="hematologicoTextArea">Hematológico</label>
-			<textarea id="hematologicoTextArea" disabled class="form-control" rows="1" [value]='hematologicoString'></textarea>
+		<div class="container" *ngIf="hematologicoString">
+			<label class="labelsConsulta" for="hematologicoTextArea">Hematológico</label>
+			<textarea id="hematologicoTextArea" disabled class="form-control" autosize [value]='hematologicoString'></textarea>
 		</div>
 		<div class="container">
-			<label for="analiseTextArea">Análise/Comentários</label>
-			<textarea id="analiseTextArea" class="form-control" rows="4"></textarea>
+			<label class="labelsConsulta" for="analiseTextArea">Análise/Comentários</label>
+			<textarea id="analiseTextArea" class="form-control" autosize ></textarea>
 		</div>
 		<div class="container">
-			<label for="planoTextArea">Plano</label>
-			<textarea id="planoTextArea" class="form-control" rows="4"></textarea>
+			<label class="labelsConsulta" for="planoTextArea">Plano</label>
+			<textarea id="planoTextArea" class="form-control" autosize ></textarea>
 		</div>
 	</div>
 </div>

@@ -19,6 +19,7 @@ import { FilterResolvidosPipe } from './filter-resolvidos.pipe';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { Autosize } from 'ng-autosize/src/autosize.directive';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcE_YeumSzNFKWlvZxTHq3a7QRW1MvL9c',
@@ -37,7 +38,8 @@ export const firebaseConfig = {
     FichaComponent,
     MyFilterPipe,
     FilterResolvidosPipe,
-    NavbarComponent
+    NavbarComponent,
+    Autosize
   ],
   imports: [
     AppRoutingModule,

@@ -103,8 +103,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         console.log(this.diagnosticos);
     }
 
-    private manageDiagnostico(diagnostico): void {
-        console.log(diagnostico);
+    private excluirDiagnostico(diagnostico): void {
         let index: number;
         // Diagnostico recem adicionado
         if (diagnostico.id !== undefined) {
@@ -115,13 +114,24 @@ export class FichaComponent implements OnInit, OnDestroy {
             } else {
                 this.id--;
             }
-        } else {
-            index = this.diagnosticos.findIndex(item => item === diagnostico);
-            this.diagnosticos[index].push({
-                'dataResolvido': this.convertTimeStampToPrettyDate(new Date().getTime())
-            });
         }
+    }
 
+    private resolverDiagnostico(diagnostico): void {
+        console.log(diagnostico);
+        let index: number;
+        // Diagnostico recem adicionado
+        index = this.diagnosticos.findIndex(item => item === diagnostico);
+        this.diagnosticos[index].dataResolvido = this.convertTimeStampToPrettyDate(new Date().getTime());
+        this.diagnosticos[index].resolvido = true;
+    }
+
+    private desfazerAcaoDiagnostico(diagnostico): void {
+        let index: number;
+        // Diagnostico recem adicionado
+        index = this.diagnosticos.findIndex(item => item === diagnostico);
+        this.diagnosticos[index].dataResolvido = null;
+        this.diagnosticos[index].resolvido = false;
     }
 
     ngOnInit() {

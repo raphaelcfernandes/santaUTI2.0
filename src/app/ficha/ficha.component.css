@@ -16,11 +16,13 @@ html, body {margin: 0; height: 900px; overflow: hidden}
   width:100%;
 }
 
-/*label {
-  color: #F88017;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-}*/
 
 .labelsConsulta {
   color: #F88017;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+textarea{
+  border-radius: 0.25em;
+  padding: 5px;
 }
