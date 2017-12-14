@@ -35,6 +35,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     private raiox: any = [];
     private diagnosticos: any = [];
     private diagnosticoString: '';
+    private comentarioString: '';
     private id = 0;
     private diagnosticoButtonString: string;
     private radioModel: string;
@@ -79,13 +80,17 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private addDiagnostico() {
-        this.diagnosticos.push({
-            'diagnostico': this.diagnosticoString,
-            'dataDiagnostico': this.convertTimeStampToPrettyDate(new Date().getTime()),
-            'id': this.id
-        });
-        this.diagnosticoString = '';
-        this.id++;
+        if (this.comentarioString !== '' && this.diagnosticoString !== '') {
+            this.diagnosticos.push({
+                'diagnostico': this.diagnosticoString,
+                'comentario': this.comentarioString,
+                'dataDiagnostico': this.convertTimeStampToPrettyDate(new Date().getTime()),
+                'id': this.id
+            });
+            this.diagnosticoString = '';
+            this.comentarioString = '';
+            this.id++;
+        }
     }
 
     private prepareDiagnosticos(): void {
@@ -95,17 +100,28 @@ export class FichaComponent implements OnInit, OnDestroy {
                 diagnostico.dataResolvido = this.convertTimeStampToPrettyDate(diagnostico.dataResolvido);
             }
         });
+        console.log(this.diagnosticos);
     }
 
-    private excluirDiagnostico(diagnostico): void {
+    private manageDiagnostico(diagnostico): void {
         console.log(diagnostico);
-        const index = this.diagnosticos.findIndex(item => item.id === diagnostico.id);
-        this.diagnosticos.splice(index, 1);
-        if (this.id === 0) {
-            this.id = 0;
+        let index: number;
+        // Diagnostico recem adicionado
+        if (diagnostico.id !== undefined) {
+            index = this.diagnosticos.findIndex(item => item.id === diagnostico.id);
+            this.diagnosticos.splice(index, 1);
+            if (this.id === 0) {
+                this.id = 0;
+            } else {
+                this.id--;
+            }
         } else {
-            this.id--;
+            index = this.diagnosticos.findIndex(item => item === diagnostico);
+            this.diagnosticos[index].push({
+                'dataResolvido': this.convertTimeStampToPrettyDate(new Date().getTime())
+            });
         }
+
     }
 
     ngOnInit() {
