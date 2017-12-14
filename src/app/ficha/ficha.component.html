@@ -3,7 +3,6 @@
 	<div class="col-sm-7" id="left">
 		<form class="example-form">
 			<div *ngIf="diagnosticos">
-			
 				<table class="table table-sm">
 					<thead>
 						<tr>
@@ -11,27 +10,53 @@
 							<th class="labelsConsulta">Data Criado</th>
 							<th class="labelsConsulta">Data Resolvido</th>
 							<th class="labelsConsulta">Comentários</th>
+							<th class="labelsConsulta">Ações</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td >Cancer de pulmao</td>
-							<td >15/12/2017 às 16:50</td>
-							<td>15/12/2017 às 17:30</td>
-							<td>aseuhai sejaes okase iase oaes pokaes oase iju</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>Jacob</td>
-							<td>Thornton</td>
-							<td>@fat</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td colspan="2">Larry the Bird</td>
-							<td>@twitter</td>
+						<tr *ngFor="let d of diagnosticos">
+							<td>{{d.diagnostico}}</td>
+							<td>{{d.dataDiagnostico}}</td>
+							<td>{{d.dataResolvido}}</td>
+							<td>{{d.comentario}}</td>
+							<ng-container *ngIf="d.id!==undefined">
+								<td>
+									<button class="btn btn-primary btn-sm" (click)="manageDiagnostico(d)"> Excluir
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+								<td>
+									<button class="btn btn-primary btn-sm" (click)="manageDiagnostico(d)"> Resolver
+									</button>
+								</td>
+							</ng-container>
 						</tr>
 					</tbody>
+				</table>
+				<hr>
+				<table>
+					<tfoot>
+						<tr>
+							<td>
+								<div class="md-form form-sm">
+									<input id="diagnostico" class="form-control input-lg" type="text" name="diagnostico" size="50" [(ngModel)]="diagnosticoString"
+									 length="10" mdbCharCounter mdbActive />
+									<label for="diagnostico" class="">Diagnóstico</label>
+								</div>
+							</td>
+							<td>
+								<div class="md-form form-sm">
+									<input id="comentario" mdbCharCounter length="50" mdbActive class="form-control input-lg" type="text" name="comentario" size="50"
+									 [(ngModel)]="comentarioString" />
+									<label for="comentario" class="">Comentário</label>
+								</div>
+							</td>
+							<td>
+								<button class="btn btn-primary btn-sm" (click)="addDiagnostico()">Adicionar</button>
+							</td>
+						</tr>
+					</tfoot>
 				</table>
 				<!-- <div class="row">
 							<div class="col-sm-4">

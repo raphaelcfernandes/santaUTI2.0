@@ -2,7 +2,10 @@
 https://plnkr.co/edit/ApjJkNwS6hfS56DjL7vt?p=preview
 https://bootsnipp.com/snippets/featured/panel-table-with-filters-per-column
 https://bootsnipp.com/snippets/gv6Pe
+<<<<<<< HEAD
 
+=======
+>>>>>>> a3000e4900b8b39ec79f019b4716687701ba3ddd
 // pesoDataGraph.push(data.Renal.peso);
             // pesoDatesGraph.push(date);
             // pamDataGraph.push(data.MonitorMultiparametrico.pam);
