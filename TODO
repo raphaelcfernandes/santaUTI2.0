@@ -154,3 +154,35 @@ Amilase -> retirar checkbox
 CAM-ICU -> adicionar nivel de delirium
 Sopro,tipo sopro -> Hemodinamico
 Renal -> Em dialise? Volume e tempo/hora aperecer se selecionado UF
+
+
+Metabolico textarea arrumar fosforo e outros
+
+Exames com alteracao:
+    PCR + leucograma => Infeccioso
+    albumina => Renal
+    amilase => gastro
+    calcio + magnesio + fosforo + potassio retirar de exames de alteracao
+    Creatinina => Renal
+    Bilirrubinas => gastro
+    FA/GGT => gastro
+    Transaminases =? gastro
+    gasometria => Metabolico
+    hematocrito => Hematologico
+    hemoglobina => Hematologico
+    lactato => Infeccioso
+    leucograma => Infeccioso
+    plaquetas => Hematologico
+    Ureia => Renal
+    Raio-x torax => Respiratorio
+
+
+
+antibiotico => Infeccioso
+PAM => Hemodinamico
+curva termica => Infeccioso
+glicemcia => Metabolico
+diurese => Renal
+balanco hidrico + acumulado => Renal
+Peso + acumulado => Renal/nutricional
+dieta => nutricional
