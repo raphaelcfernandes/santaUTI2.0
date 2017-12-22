@@ -58,10 +58,9 @@ export class FichaComponent implements OnInit, OnDestroy {
                 });
                 this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(lastFicha => {
                     lastFicha.forEach(last => {
-                        this.fichaObject = last.payload.val();
-                        console.log(this.fichaObject);
-                        this.fillTextAreas();
+                        this.fichaObject = last.payload.val();                        
                         this.prepareGraphs();
+                        this.fillTextAreas();
                     });
                 });
                 this.db.getDiagosnitcosByPacienteKey(userId).snapshotChanges().subscribe(diagnosticos => {
@@ -100,7 +99,6 @@ export class FichaComponent implements OnInit, OnDestroy {
                 diagnostico.dataResolvido = this.convertTimeStampToPrettyDate(diagnostico.dataResolvido);
             }
         });
-        console.log(this.diagnosticos);
     }
 
     private excluirDiagnostico(diagnostico): void {
@@ -118,7 +116,6 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private resolverDiagnostico(diagnostico): void {
-        console.log(diagnostico);
         let index: number;
         // Diagnostico recem adicionado
         index = this.diagnosticos.findIndex(item => item === diagnostico);
@@ -134,9 +131,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.diagnosticos[index].resolvido = false;
     }
 
-    ngOnInit() {
-
-    }
+    ngOnInit() { }
 
     ngOnDestroy() {
         this.subscriptions.unsubscribe();
@@ -190,7 +185,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             }
         });
 
-        console.log(this.antibioticos);
+        
         this.antibioticos.forEach(a => {
             if (ant.length === 0) {
                 ant.push({
@@ -216,7 +211,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         });
 
         this.antibioticos = ant;
-
+        
         this.allFichas.forEach(data => {
             data.dataCriada = this.convertTimeStampToPrettyDate(data.dataCriada);
         });
@@ -288,6 +283,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             : date += ':' + new Date(time).getMinutes();
         return date;
     }
+
     private fillTextAreas(): void {
         this.prepareNeurologicoString();
         this.prepareHemodinamicoString();
@@ -304,18 +300,48 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private prepareMetabolicoString(): void {
-        if (this.fichaObject.Exames.calcio !== undefined) {
-            this.metabolicoString = 'Cálcio ' + this.fichaObject.Exames.calcio.toLowerCase();
+        this.metabolicoString = '';
+        if (this.fichaObject.Exames.calcio !== undefined && this.fichaObject.Exames.calcio !== 'Normal'
+            && this.fichaObject.Exames.calcio !== 'Não realizou/sem resultados') {
+            this.metabolicoString += this.fichaObject.Exames.calcio;
         }
-        if (this.fichaObject.Exames.fosforo !== undefined) {
-            this.metabolicoString += ', fosfóro ' + this.fichaObject.Exames.fosforo.toLowerCase();
+        if (this.fichaObject.Exames.fosforo !== undefined && this.fichaObject.Exames.fosforo !== 'Normal'
+            && this.fichaObject.Exames.fosforo !== 'Não realizou/sem resultados') {
+            if (this.metabolicoString !== '') {
+                this.metabolicoString += ', ' + this.fichaObject.Exames.fosforo.toLowerCase();
+            } else {
+                this.metabolicoString += this.fichaObject.Exames.fosforo;
+            }
         }
-        if (this.fichaObject.Exames.magnesio !== undefined) {
-            this.metabolicoString += ', magnésio ' + this.fichaObject.Exames.magnesio.toLowerCase();
+        if (this.fichaObject.Exames.magnesio !== undefined && this.fichaObject.Exames.magnesio !== 'Normal'
+            && this.fichaObject.Exames.magnesio !== 'Não realizou/sem resultados') {
+            if (this.metabolicoString !== '') {
+                this.metabolicoString += ', ' + this.fichaObject.Exames.magnesio.toLowerCase();
+            } else {
+                this.metabolicoString += this.fichaObject.Exames.magnesio;
+            }
         }
-        if (this.fichaObject.Exames.potassio !== undefined) {
-            this.metabolicoString += ', potássio ' + this.fichaObject.Exames.potassio.toLowerCase() + '. ';
+        if (this.fichaObject.Exames.potassio !== undefined && this.fichaObject.Exames.potassio !== 'Normal'
+            && this.fichaObject.Exames.potassio !== 'Não realizou/sem resultados') {
+            if (this.metabolicoString !== '') {
+                this.metabolicoString += ', ' + this.fichaObject.Exames.potassio.toLowerCase();
+            } else {
+                this.metabolicoString += this.fichaObject.Exames.potassio;
+            }
+            this.metabolicoString += '. ';
         }
+        if (this.fichaObject.Exames.gasometriaArterial !== undefined
+            && this.fichaObject.Exames.gasometriaArterial !== 'Não realizou/sem resultados'
+            && this.fichaObject.Exames.gasometriaArterial !== 'Normal') {
+            this.metabolicoString += 'Gasometria arterial ' +
+                this.fichaObject.Exames.gasometriaArterial.tipoGasometriaArterial.toLowerCase() + ' ' +
+                this.fichaObject.Exames.gasometriaArterial.metabolicaRespiratoria.toLowerCase() + ' ';
+            if (this.fichaObject.Exames.gasometriaArterial.metabolicaRespiratoria !== 'Mista') {
+                this.metabolicoString += this.fichaObject.Exames.gasometriaArterial.compensadaDescompensada.toLowerCase() + '. ';
+            }
+        }
+
+
     }
 
     private prepareHematologicoString(): void {
@@ -324,11 +350,32 @@ export class FichaComponent implements OnInit, OnDestroy {
         } else {
             this.hematologicoString = this.fichaObject.Hematologico.tromboprofilaxia + '.';
         }
+        if (this.fichaObject.Exames.hematocrito > 0) {
+            this.hematologicoString += 'Hematócritos ' + this.fichaObject.Exames.hematocrito + '. ';
+        }
+        if (this.fichaObject.Exames.hemoglobina > 0) {
+            this.hematologicoString += 'Hemoglobina ' + this.fichaObject.Exames.hemoglobina + '. ';
+        }
+        if (this.fichaObject.Exames.plaquetas > 0) {
+            this.hematologicoString += 'Plaquetas ' + this.fichaObject.Exames.plaquetas + '. ';
+        }
+        if (this.fichaObject.Exames.lactato !== 'Normal'
+            && this.fichaObject.Exames.lactato !== undefined
+            && this.fichaObject.Exames.lactato !== 'Não realizou/sem resultados') {
+            this.hematologicoString += 'Lactato ' + this.fichaObject.Exames.lactato.toLowerCase() + '. ';
+        }
+
     }
 
     private prepareRenalString(): void {
-        this.renalString = 'Diurese ' + this.fichaObject.FolhasBalanco.diurese + ', balanço hídrico '
-            + this.fichaObject.FolhasBalanco.balancoHidrico + ', peso ' + this.fichaObject.Renal.peso;
+        this.renalString = 'Diurese ' + this.fichaObject.FolhasBalanco.diurese;
+        if (this.allFichas !== undefined) {
+            this.renalString += ' (' + this.allFichas[0].FolhasBalanco.diurese +
+                ' em ' + this.allFichas[0].dataCriada + ')';
+        }
+        this.renalString += ', balanço hídrico '
+            + this.fichaObject.FolhasBalanco.balancoHidrico + ' e acumulado de ' + this.balancoHidricoAcumulado + ', peso '
+            + this.fichaObject.Renal.peso + 'kg e acumulado de ' + this.pesoAcumulado + 'kg';
         if (this.fichaObject.Exames.ureia !== 0) {
             this.renalString += ', ureia ' + this.fichaObject.Exames.ureia;
         }
@@ -343,17 +390,15 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.renalString += 'sem UF.';
             } else {
                 this.renalString += 'com UF de volume ' + this.fichaObject.Renal.emDialise.volume
-                    + ', ' + this.fichaObject.Renal.emDialise.tempo + ' tempo/hora.';
+                    + ', ' + this.fichaObject.Renal.emDialise.tempo + ' tempo/hora. ';
             }
         } else {
             this.renalString += '. ';
         }
         if (this.fichaObject.Exames.albumina !== undefined) {
-            if (this.fichaObject.Exames.albumina === 'Normal' ||
-                this.fichaObject.Exames.albumina === 'Não realizou/sem resultados') {
-                this.renalString += 'Albumina ' + this.fichaObject.Exames.albumina.toLowerCase() + ', ';
-            } else {
-                this.renalString += this.fichaObject.Exames.albumina + ', ';
+            if (this.fichaObject.Exames.albumina !== 'Normal' ||
+                this.fichaObject.Exames.albumina !== 'Não realizou/sem resultados') {
+                this.renalString += this.fichaObject.Exames.albumina + '. ';
             }
         }
     }
@@ -624,10 +669,6 @@ export class FichaComponent implements OnInit, OnDestroy {
             + ', SJO2 ' + this.fichaObject.MonitorMultiparametrico.sjo2 + '. ';
     }
 
-    sendToHome() {
-        this.router.navigate(['/home']);
-    }
-
     private prepareHemodinamicoString(): void {
         this.hemodinamicamente();
         this.bulhas();
@@ -701,15 +742,18 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private itensMonitorMultiparametrico() {
+        const ficha = this.allFichas[0];
         this.hemodinamicoString += ', extremidades '
             + this.fichaObject.Hemodinamico.extremidadesColoracao.toLowerCase()
             + ' e '
             + this.fichaObject.Hemodinamico.extremidadesTemperatura.toLowerCase()
             + ', perfusão capilar '
             + this.fichaObject.Hemodinamico.perfusaoCapilar.toLowerCase()
-            + ', PAM '
-            + this.fichaObject.MonitorMultiparametrico.pam
-            + ', PVC '
+            + ', PAM ' + this.fichaObject.MonitorMultiparametrico.pam;
+        if (this.allFichas !== undefined) {
+            this.hemodinamicoString += ' (' + ficha.MonitorMultiparametrico.pam + ' em ' + ficha.dataCriada + ')';
+        }
+        this.hemodinamicoString += ', PVC '
             + this.fichaObject.MonitorMultiparametrico.pvc
             + ', Swan-Ganz '
             + this.fichaObject.MonitorMultiparametrico.swanGanz
@@ -722,6 +766,10 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.massasPalpaveis();
         this.ostomias();
         this.evacuacoes();
+        this.amilase();
+        this.insertExamesIntoAbdome();
+        this.ffaGGT();
+        this.transaminases();
     }
 
     private abdome(): void {
@@ -792,8 +840,30 @@ export class FichaComponent implements OnInit, OnDestroy {
             if (this.fichaObject.Exames.amilase === false) {
                 this.abdomeString += 'Amilase não dosada. ';
             } else {
-                this.abdomeString += 'Amilase ' + this.fichaObject.Exames.amilase + '. ';
+                this.abdomeString += 'Amilase ' + this.fichaObject.Exames.amilase.toLowerCase() + '. ';
             }
+        }
+    }
+
+    private ffaGGT(): void {
+        if (this.fichaObject.Exames.funcaoHepaticaFAGGT !== undefined
+            && this.fichaObject.Exames.funcaoHepaticaFAGGT === 'Elevadas') {
+            this.abdomeString += 'FA/GGT ' + this.fichaObject.Exames.funcaoHepaticaFAGGT.toLowerCase() + '. ';
+        }
+    }
+
+    private transaminases(): void {
+        if (this.fichaObject.Exames.funcaoHepaticaTransaminases !== undefined
+            && this.fichaObject.Exames.funcaoHepaticaTransaminases === 'Elevadas') {
+            this.abdomeString += 'Transaminases ' + this.fichaObject.Exames.funcaoHepaticaTransaminases.toLowerCase() + '. ';
+        }
+    }
+
+    private insertExamesIntoAbdome(): void {
+        if (this.fichaObject.Exames.funcaoHepaticaBilirrubinas !== undefined
+            && this.fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Não realizou/sem resultados'
+            && this.fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Normais') {
+            this.abdomeString += 'Bilirrubinas ' + this.fichaObject.Exames.funcaoHepaticaBilirrubinas.toLowerCase() + '. ';
         }
     }
 
@@ -854,40 +924,70 @@ export class FichaComponent implements OnInit, OnDestroy {
         Object.keys(this.fichaObject.Nutricional).forEach(res => {
             this.nutricionalString += res.toLowerCase() + ' com aceitação ' + this.fichaObject.Nutricional[res].toLowerCase() + ', ';
         });
-        this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2) + '. ';
+        this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
+        if (this.allFichas !== undefined) {
+            this.nutricionalString += ' (';
+            Object.keys(this.allFichas[0].FolhasBalanco.nutricao).forEach(res => {
+                this.nutricionalString += res.toLowerCase() + ' com ' + this.allFichas[0].FolhasBalanco.nutricao[res] + ' volume/ml, ';
+            });
+            this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
+            this.nutricionalString += ' em ' + this.allFichas[0].dataCriada + '). ';
+
+        } else {
+            this.nutricionalString += '. ';
+        }
         if (this.fichaObject.Exames.Albumina !== undefined) {
             this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase() + '. ';
         }
-        this.nutricionalString += 'Peso ' + this.fichaObject.Renal.peso + ' kg. ';
+        this.nutricionalString += 'Peso atual ' + this.fichaObject.Renal.peso + 'kg e peso acumulado de ' + this.pesoAcumulado + 'kg.';
     }
 
     private prepareInfecciosoString(): void {
-        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + ' ';
 
+        const ficha = this.allFichas[0];
+        
+        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + ' ';
         if (this.fichaObject.FolhasBalanco.picosFebris !== undefined) {
             if (this.fichaObject.FolhasBalanco.picosFebris > 1) {
-                this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' picos febris. ';
+                this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' picos febris ';
             } else {
-                this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' pico febril. ';
+                this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' pico febril ';
             }
         }
-        // if (this.fichaObject.Exames.pcr !== undefined) {
-        //     this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
-        // }
-        // if (this.fichaObject.Exames.leucograma !== undefined) {
-        //     this.infecciosoString += 'leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
-        // }
+        if (ficha !== undefined) {
+            this.infecciosoString += '(' + ficha.FolhasBalanco.curvaTermica.toLowerCase() + ' em ' + ficha.dataCriada + '). ';
+        } else {
+            this.infecciosoString += '. ';
+        }
+        if (this.fichaObject.Exames.pcr !== undefined && this.fichaObject.Exames.pcr !== 'Não realizou/sem resultados') {
+            this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
+        }
+        if (this.fichaObject.Exames.leucograma !== undefined && this.fichaObject.Exames.leucograma !== 'Não realizou/sem resultados') {
+            this.infecciosoString += 'Leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
+        }
         if (this.fichaObject.Infeccioso !== undefined) {
             this.infecciosoString += 'Em uso de ';
             this.fichaObject.Infeccioso.forEach(item => {
                 this.infecciosoString += item + ', ';
             });
-            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2) + '. ';
+            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2) + '. Registrado uso de ';
+            console.log(this.antibioticos[0].antibioticos);
+            for (const i of this.antibioticos[0].antibioticos) {
+                this.infecciosoString += i + ', ';
+            }
+            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2)
+                + ' em ' + this.allFichas[0].dataCriada + '. ';
         }
     }
 
     private prepareEndocrinoString(): void {
-        this.endocrinoString = 'Paciente com ' + this.fichaObject.Endocrino.curvaGlicemica.toLowerCase() + '. ';
+        if (this.allFichas !== undefined) {
+            const ficha = this.allFichas[0];
+        }
+        this.endocrinoString = 'Paciente com ' + this.fichaObject.Endocrino.curvaGlicemica.toLowerCase() + ' (';
+        if (ficha !== undefined) {
+            this.endocrinoString += ficha.Endocrino.curvaGlicemica + ' em ' + ficha.dataCriada + ').';
+        }
         if (this.fichaObject.BombaInfusao !== undefined) {
             Object.keys(bombaEndocrino).forEach(item => {
                 Object.keys(this.fichaObject.BombaInfusao).map(res => {

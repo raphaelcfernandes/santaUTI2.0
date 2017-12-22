@@ -1,16 +1,18 @@
-html, body {margin: 0; height: 900px; overflow: hidden}
+html, body {margin: 0; width: 100%; overflow-x: hidden}
 
 #left {
-  height: calc(100% - 56px);
+  height: calc(100% - 385px);
   position: absolute;
+  top:385px;
   left: 0;
   width: 100%;
   overflow-y: scroll; 
 }
 
 #right {
-  height: calc(100% - 56px);
+  height: calc(100% - 385px);
   position: absolute;
+  top:385px;
   right: 0;
   overflow-y: scroll;
   width:100%;

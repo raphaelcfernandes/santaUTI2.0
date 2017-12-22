@@ -2,6 +2,7 @@
 https://plnkr.co/edit/ApjJkNwS6hfS56DjL7vt?p=preview
 https://bootsnipp.com/snippets/featured/panel-table-with-filters-per-column
 https://bootsnipp.com/snippets/gv6Pe
+
 // pesoDataGraph.push(data.Renal.peso);
             // pesoDatesGraph.push(date);
             // pamDataGraph.push(data.MonitorMultiparametrico.pam);
@@ -159,30 +160,30 @@ Renal -> Em dialise? Volume e tempo/hora aperecer se selecionado UF
 Metabolico textarea arrumar fosforo e outros
 
 Exames com alteracao:
-    PCR + leucograma => Infeccioso
-    albumina => Renal
-    amilase => gastro
-    calcio + magnesio + fosforo + potassio retirar de exames de alteracao
-    Creatinina => Renal
-    Bilirrubinas => gastro
-    FA/GGT => gastro
-    Transaminases =? gastro
-    gasometria => Metabolico
-    hematocrito => Hematologico
-    hemoglobina => Hematologico
-    lactato => Infeccioso
-    leucograma => Infeccioso
-    plaquetas => Hematologico
-    Ureia => Renal
-    Raio-x torax => Respiratorio
+    PCR + leucograma => Infeccioso (ok)
+    albumina => Renal (ok)
+    amilase => gastro (ok)
+    calcio + magnesio + fosforo + potassio retirar de exames de alteracao (ok)
+    Creatinina => Renal (ok)
+    Bilirrubinas => gastro (ok)
+    FA/GGT => gastro (ok)
+    Transaminases =? gastro (ok)
+    gasometria => Metabolico (ok)
+    hematocrito => Hematologico (ok)
+    hemoglobina => Hematologico (ok)
+    lactato => Infeccioso (ok)
+    leucograma => Infeccioso (ok)
+    plaquetas => Hematologico (ok)
+    Ureia => Renal (ok)
+    Raio-x torax => Respiratorio (ok)
 
 
 
 antibiotico => Infeccioso
-PAM => Hemodinamico
-curva termica => Infeccioso
-glicemcia => Metabolico
-diurese => Renal
-balanco hidrico + acumulado => Renal
-Peso + acumulado => Renal/nutricional
+PAM => Hemodinamico (ok)
+curva termica => Infeccioso (ok)
+glicemia => Metabolico (ok)
+diurese => Renal (ok)
+balanco hidrico + acumulado => Renal (ok)
+Peso + acumulado => Renal/nutricional (ok)
 dieta => nutricional
