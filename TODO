@@ -187,3 +187,153 @@ diurese => Renal (ok)
 balanco hidrico + acumulado => Renal (ok)
 Peso + acumulado => Renal/nutricional (ok)
 dieta => nutricional
+
+nutricional (APP) =>
+    Mover para folhas balanco
+    Dieta 0 total, oral (apenas aceitacao, sem infusao), enteral/gastrica (tolerancia + velocidade),
+    parenteral (tolerancia + velocidade), aporte calorico com SG (velocidade)
+nutricional (site) =>
+    Corrigir.
+
+Renal (app) =>
+    Volume => volume/ml
+    Retirar tempo/hora.
+Hematologico (app) =>
+    meias elasticas de compressao
+Hematologico =>
+    mudar site
+Folhas balanco (app) =>
+    Retirar numero de picos febris
+    curva termica: afebril, subfebril, febril
+Infeccioso =>
+    Atualizar curva termica do texto
+
+<form>
+		<div *ngIf="diagnosticos">
+			<div class="panel panel-primary filterable">
+				<div class="panel-heading">
+					<div class="pull-right">
+						<button class="btn btn-warning btn-sm" (click)="radioModel = 'todos'">Todos</button>
+						<button class="btn btn-warning btn-sm" (click)="radioModel = 'resolvidos'">Resolvidos</button>
+						<button class="btn btn-warning btn-sm" (click)="radioModel = 'ativos'">Ativos</button>
+					</div>
+				</div>
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th class="labelsConsulta">Diagnóstico</th>
+							<th class="labelsConsulta">Data Criado</th>
+							<th class="labelsConsulta">Data Resolvido</th>
+							<th class="labelsConsulta">Comentários</th>
+							<th class="labelsConsulta">Ações</th>
+						</tr>
+					</thead>
+					<tbody *ngIf="radioModel==='todos'">
+						<tr *ngFor="let d of diagnosticos">
+							<td>{{d.diagnostico}}</td>
+							<td>{{d.dataDiagnostico}}</td>
+							<td>{{d.dataResolvido}}</td>
+							<td>{{d.comentario}}</td>
+							<ng-container *ngIf="d.id!==undefined">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
+									</button>
+								</td>
+							</ng-container>
+						</tr>
+					</tbody>
+					<tbody *ngIf="radioModel==='ativos'">
+						<tr *ngFor="let d of diagnosticos  | myFilter:diagnosticos">
+							<td>{{d.diagnostico}}</td>
+							<td>{{d.dataDiagnostico}}</td>
+							<td>{{d.dataResolvido}}</td>
+							<td>{{d.comentario}}</td>
+							<ng-container *ngIf="d.id!==undefined">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
+									</button>
+								</td>
+							</ng-container>
+						</tr>
+					</tbody>
+					<tbody *ngIf="radioModel==='resolvidos' ">
+						<tr *ngFor="let d of diagnosticos | filterResolvidos:diagnosticos">
+							<td>{{d.diagnostico}}</td>
+							<td>{{d.dataDiagnostico}}</td>
+							<td>{{d.dataResolvido}}</td>
+							<td>{{d.comentario}}</td>
+							<ng-container *ngIf="d.id!==undefined">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
+									</button>
+								</td>
+							</ng-container>
+							<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
+								<td>
+									<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
+									</button>
+								</td>
+							</ng-container>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<hr>
+			<table>
+				<tfoot>
+					<tr>
+						<td>
+							<div class="md-form form-sm">
+								<input id="diagnostico" class="form-control input-lg" type="text" name="diagnostico" size="50" [(ngModel)]="diagnosticoString"
+								 length="10" mdbCharCounter mdbActive />
+								<label for="diagnostico" class="">Diagnóstico</label>
+							</div>
+						</td>
+						<td>
+							<div class="md-form form-sm">
+								<input id="comentario" mdbCharCounter length="50" mdbActive class="form-control input-lg" type="text" name="comentario" size="50"
+								 [(ngModel)]="comentarioString" />
+								<label for="comentario" class="">Comentário</label>
+							</div>
+						</td>
+						<td>
+							<button class="btn btn-info btn-sm" (click)="addDiagnostico()">Adicionar</button>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+
+		<hr>
+		<!-- <chart type="line" [data]="data" [options]="options"></chart> -->
+	</form>

@@ -1,201 +1,238 @@
 <app-navbar></app-navbar>
 <div class="container-fluid">
-	<form>
-		<div *ngIf="diagnosticos">
-			<div class="panel panel-primary filterable">
-				<div class="panel-heading">
-					<div class="pull-right">
-						<button class="btn btn-warning btn-sm" (click)="radioModel = 'todos'">Todos</button>
-						<button class="btn btn-warning btn-sm" (click)="radioModel = 'resolvidos'">Resolvidos</button>
-						<button class="btn btn-warning btn-sm" (click)="radioModel = 'ativos'">Ativos</button>
-					</div>
-				</div>
-				<table class="table table-sm">
-					<thead>
-						<tr>
-							<th class="labelsConsulta">Diagnóstico</th>
-							<th class="labelsConsulta">Data Criado</th>
-							<th class="labelsConsulta">Data Resolvido</th>
-							<th class="labelsConsulta">Comentários</th>
-							<th class="labelsConsulta">Ações</th>
-						</tr>
-					</thead>
-					<tbody *ngIf="radioModel==='todos'">
-						<tr *ngFor="let d of diagnosticos">
-							<td>{{d.diagnostico}}</td>
-							<td>{{d.dataDiagnostico}}</td>
-							<td>{{d.dataResolvido}}</td>
-							<td>{{d.comentario}}</td>
-							<ng-container *ngIf="d.id!==undefined">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
-									</button>
-								</td>
-							</ng-container>
-						</tr>
-					</tbody>
-					<tbody *ngIf="radioModel==='ativos'">
-						<tr *ngFor="let d of diagnosticos  | myFilter:diagnosticos">
-							<td>{{d.diagnostico}}</td>
-							<td>{{d.dataDiagnostico}}</td>
-							<td>{{d.dataResolvido}}</td>
-							<td>{{d.comentario}}</td>
-							<ng-container *ngIf="d.id!==undefined">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
-									</button>
-								</td>
-							</ng-container>
-						</tr>
-					</tbody>
-					<tbody *ngIf="radioModel==='resolvidos' ">
-						<tr *ngFor="let d of diagnosticos | filterResolvidos:diagnosticos">
-							<td>{{d.diagnostico}}</td>
-							<td>{{d.dataDiagnostico}}</td>
-							<td>{{d.dataResolvido}}</td>
-							<td>{{d.comentario}}</td>
-							<ng-container *ngIf="d.id!==undefined">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="excluirDiagnostico(d)"> Excluir
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="!d.dataResolvido && d.id===undefined">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="resolverDiagnostico(d)"> Resolver
-									</button>
-								</td>
-							</ng-container>
-							<ng-container *ngIf="d.dataResolvido && d.resolvido===true">
-								<td>
-									<button class="btn btn-info btn-sm" (click)="desfazerAcaoDiagnostico(d)"> Desfazer ação
-									</button>
-								</td>
-							</ng-container>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<hr>
-			<table>
-				<tfoot>
-					<tr>
-						<td>
-							<div class="md-form form-sm">
-								<input id="diagnostico" class="form-control input-lg" type="text" name="diagnostico" size="50" [(ngModel)]="diagnosticoString"
-								 length="10" mdbCharCounter mdbActive />
-								<label for="diagnostico" class="">Diagnóstico</label>
-							</div>
-						</td>
-						<td>
-							<div class="md-form form-sm">
-								<input id="comentario" mdbCharCounter length="50" mdbActive class="form-control input-lg" type="text" name="comentario" size="50"
-								 [(ngModel)]="comentarioString" />
-								<label for="comentario" class="">Comentário</label>
-							</div>
-						</td>
-						<td>
-							<button class="btn btn-info btn-sm" (click)="addDiagnostico()">Adicionar</button>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
 
-		<hr>
-		<!-- <chart type="line" [data]="data" [options]="options"></chart> -->
-	</form>
 
 	<div class="row">
 		<div class="col-sm-6" id="left">
 			<div class="container" *ngIf="neurologicoString">
 				<label class="labelsConsulta" for="neurologicoTextArea">Neurológico</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Solicito TC de crânio</a>
+						<a class="dropdown-item">Solicito ressonancia magnetica</a>
+						<a class="dropdown-item">Solicito parecer do neurologista</a>
+						<a class="dropdown-item">Retirada de sedativos</a>
+						<a class="dropdown-item">Preescrevo psicotrópicos</a>
+						<a class="dropdown-item">Solicito avaliaćao do neuro-cirurgiao</a>
+						<a class="dropdown-item">Programo/Otimizo sedoanalgesia</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea autosize id="neurologicoTextArea" disabled class="form-control" [value]='neurologicoString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="hemodinamicoString">
-				<label class="labelsConsulta" for="hemodinamicoTextArea">Hemodinâmico</label>
+				<label class="labelsConsulta" for="hemodinamicoTextArea">Cardiovascular</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Desmame de drogas vasoativas</a>
+						<a class="dropdown-item">Inicio drogas vasoativas</a>
+						<a class="dropdown-item">Otimizo drogas vasoativas</a>
+						<a class="dropdown-item">Acompanhamento conjunto com equipe de cardiologia</a>
+						<a class="dropdown-item">Aquecer membros</a>
+						<a class="dropdown-item">Inicío anti-coagulaćao</a>
+						<a class="dropdown-item">Cardioversao elétrica</a>
+						<a class="dropdown-item">Cardioversao quimica</a>
+						<a class="dropdown-item">Expansão volemica</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="hemodinamicoTextArea" autosize disabled class="form-control" [value]='hemodinamicoString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="respiratorioString">
 				<label class="labelsConsulta" for="respiratorioTextArea">Respiratório</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Progredir desmame de ventilacao mecanica</a>
+						<a class="dropdown-item">Programar traqueostomia</a>
+						<a class="dropdown-item">Aspiracao de secrecoes</a>
+						<a class="dropdown-item">Otimizar fisioterapia intensiva</a>
+						<a class="dropdown-item">Pronar paciente</a>
+						<a class="dropdown-item">Voltar para ventilacao mecanica</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="respiratorioTextArea" autosize disabled class="form-control" [value]='respiratorioString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="abdomeString">
-				<label class="labelsConsulta" for="abdomeTextArea">Abdome</label>
+				<label class="labelsConsulta" for="abdomeTextArea">Gastrointestinal</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Solicito avaliaćão do cirurgião</a>
+						<a class="dropdown-item">Inicío probióticos</a>
+						<a class="dropdown-item">Preescrevo enema</a>
+						<a class="dropdown-item">Programo dieta laxante</a>
+						<a class="dropdown-item">Programo dieta obstitante</a>
+						<a class="dropdown-item">Solicito ultrassom de abdome</a>
+						<a class="dropdown-item">Solicito tomografia de abdome</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="abdomeTextArea" autosize disabled class="form-control" [value]='abdomeString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="renalString">
 				<label class="labelsConsulta" for="renalTextArea">Renal</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Faćo estimulo com diurético</a>
+						<a class="dropdown-item">Reposićao de albumina</a>
+						<a class="dropdown-item">Programo hemodiálise</a>
+						<a class="dropdown-item">Reduzo oferta hídrica</a>
+						<a class="dropdown-item">Solicito avaliaćao de nefrologista</a>
+						<a class="dropdown-item">Acompanhamento diário com equipe de nefrologia</a>
+						<a class="dropdown-item">Irrigaćao vesical contínua</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="renalTextArea" disabled class="form-control" autosize [value]='renalString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="peleMucosasString">
 				<label class="labelsConsulta" for="peleMucosasTextArea">Pele e Mucosas</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Mudanća de decubito frequente</a>
+						<a class="dropdown-item">Debridar úlceras</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="peleMucosasTextArea" disabled class="form-control" autosize [value]='peleMucosasString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="osteomuscularString">
 				<label class="labelsConsulta" class="labelsConsulta" for="osteomuscularTextArea">Osteomuscular</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Otimizar cuidados de fisioterapia</a>
+						<a class="dropdown-item">Melhora no aporte proteíco-calórico</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="osteomuscularTextArea" disabled class="form-control" autosize [value]='osteomuscularString'></textarea>
 			</div>
 
+
+		</div>
+		<div class="col-sm-6" id="right">
+
 			<div class="container" *ngIf="nutricionalString">
 				<label class="labelsConsulta" for="nutricionalTextArea">Nutricional</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Inicío dieta parenteral</a>
+						<a class="dropdown-item">Inicío dieta enteral</a>
+						<a class="dropdown-item">Inciío dieta oral</a>
+						<a class="dropdown-item">Suspendo dieta parenteral</a>
+						<a class="dropdown-item">Suspendo dieta enteral</a>
+						<a class="dropdown-item">Suspendo dieta oral</a>
+						<a class="dropdown-item">Aumento aporte proteico</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="nutricionalTextArea" disabled class="form-control" autosize [value]='nutricionalString'></textarea>
 			</div>
 
+			<div class="container" *ngIf="hematologicoString">
+				<label class="labelsConsulta" for="hematologicoTextArea">Hematológico</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item" (click)="liClicked(item)">Transfundo concentrado de hemáceas</a>
+						<a class="dropdown-item">Transfundo plaquetas </a>
+						<a class="dropdown-item">Inicío tromboprofilaxia</a>
+						<a class="dropdown-item">Suspendo tromboprofilaxia</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
+				<textarea id="hematologicoTextArea" disabled class="form-control" autosize [value]='hematologicoString'></textarea>
+			</div>
 			<div class="container" *ngIf="infecciosoString">
 				<label class="labelsConsulta" for="infecciosoTextArea">Infeccioso</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item">Solicito culturas </a>
+						<a class="dropdown-item">Aguarda resultado de culturas</a>
+						<a class="dropdown-item">Amplio cobertura antibiótica</a>
+						<a class="dropdown-item">Descalono antibióticos</a>
+						<a class="dropdown-item">Discuto caso com CCIH/Infectologia</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="infecciosoTextArea" disabled class="form-control" autosize [value]='infecciosoString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="endocrinoString">
 				<label class="labelsConsulta" for="endocrinoTextArea">Endócrino</label>
+				<div class="btn-group" dropdown>
+					<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+						Planos
+					</button>
+					<div class="dropdown-menu dropdown-primary">
+						<a class="dropdown-item">Inicío insulina em bomba de infusão</a>
+						<a class="dropdown-item">Ajuste glicêmico por insulina regular</a>
+						<a class="dropdown-item">Inicío insulina NPH</a>
+						<a class="dropdown-item">Outros</a>
+					</div>
+				</div>
 				<textarea id="endocrinoTextArea" disabled class="form-control" autosize [value]='endocrinoString'></textarea>
 			</div>
 
 			<div class="container" *ngIf="metabolicoString">
 				<label class="labelsConsulta" for="metabolicoTextArea">Metabólico</label>
+						<div class="btn-group pull-right" dropdown>
+							<button dropdownToggle type="button" class="btn btn-primary btn-sm dropdown-toggle waves-light" mdbRippleRadius>
+								Planos
+							</button>
+							<div class="dropdown-menu dropdown-primary">
+								<a class="dropdown-item">Reposićão de água livre</a>
+								<a class="dropdown-item">Reposićão de potássio</a>
+								<a class="dropdown-item">Reposićão de magnésio</a>
+								<a class="dropdown-item">Reposićão de fósforo</a>
+								<a class="dropdown-item">Reposićão de sódio</a>
+								<a class="dropdown-item">Reposićão de cálcio</a>
+								<a class="dropdown-item">Preescrevo bicarbonato </a>
+								<a class="dropdown-item">Medidas para controle de hipercalemia</a>
+								<a class="dropdown-item">Outros</a>
+							</div>
+
+				</div>
 				<textarea id="metabolicoTextArea" disabled class="form-control" autosize [value]='metabolicoString'></textarea>
 			</div>
-
-			<div class="container" *ngIf="hematologicoString">
-				<label class="labelsConsulta" for="hematologicoTextArea">Hematológico</label>
-				<textarea id="hematologicoTextArea" disabled class="form-control" autosize [value]='hematologicoString'></textarea>
-			</div>
-		</div>
-		<div class="col-sm-6" id="right">
-			<div class="container">
-				<label class="labelsConsulta" for="analiseTextArea">Análise/Comentários</label>
-				<textarea id="analiseTextArea" class="form-control" autosize></textarea>
+			<div class="container" *ngIf="analiseString">
+				<label class="labelsConsulta" for="analiseTextArea" >Análise/Comentários</label>
+				<textarea id="analiseTextArea" class="form-control" [value]='analiseString' autosize></textarea>
 			</div>
 			<div class="container">
 				<label class="labelsConsulta" for="planoTextArea">Plano</label>

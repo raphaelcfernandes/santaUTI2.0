@@ -39,6 +39,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     private id = 0;
     private diagnosticoButtonString: string;
     private radioModel: string;
+    private analiseString: string;
     data: any;
     options = {
         responsive: true,
@@ -58,7 +59,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                 });
                 this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(lastFicha => {
                     lastFicha.forEach(last => {
-                        this.fichaObject = last.payload.val();                        
+                        this.fichaObject = last.payload.val();
                         this.prepareGraphs();
                         this.fillTextAreas();
                     });
@@ -99,6 +100,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                 diagnostico.dataResolvido = this.convertTimeStampToPrettyDate(diagnostico.dataResolvido);
             }
         });
+        this.prepareAnaliseString();
     }
 
     private excluirDiagnostico(diagnostico): void {
@@ -185,7 +187,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             }
         });
 
-        
+
         this.antibioticos.forEach(a => {
             if (ant.length === 0) {
                 ant.push({
@@ -211,7 +213,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         });
 
         this.antibioticos = ant;
-        
+
         this.allFichas.forEach(data => {
             data.dataCriada = this.convertTimeStampToPrettyDate(data.dataCriada);
         });
@@ -287,7 +289,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     private fillTextAreas(): void {
         this.prepareNeurologicoString();
         this.prepareHemodinamicoString();
-        this.prepareAbdomeString();
+        this.prepareGastrointestinalString();
         this.prepareOsteomuscularString();
         this.preparePeleMucosasString();
         this.prepareNutricionalString();
@@ -297,6 +299,134 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.prepareRenalString();
         this.prepareHematologicoString();
         this.prepareMetabolicoString();
+    }
+
+    private prepareAnaliseString(): void {
+        this.analiseString = 'Paciente internado na UTI no dia (data internacao) devido (motivo internacao).';
+        this.analiseString += ' Atualmente está internado com seguintes diagnósticos ';
+        this.diagnosticos.forEach(item => {
+            console.log(item);
+            if (item.dataResolvido === undefined) {
+                this.analiseString += item.diagnostico + ', ';
+            }
+        });
+
+        this.analiseString = this.analiseString.substr(0, this.analiseString.length - 2) + '. ';
+        this.analiseString += '\nEvolui ';
+        if (this.fichaObject.Neurologico.nivelConsciencia === 'CONSCIENTE/ALERTA') {
+            this.analiseString += 'consciente/alerta';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'VIGIL') {
+            this.analiseString += 'vigil';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'SONOLÊNCIA') {
+            this.analiseString += 'sonolento';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'OBNUBILAÇÃO') {
+            this.analiseString += 'obnubilado';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'TORPOR') {
+            this.analiseString += 'torporoso';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'COMA') {
+            this.analiseString += 'comatoso';
+        } else if (this.fichaObject.Neurologico.nivelConsciencia === 'SEDADO') {
+            this.analiseString += 'sedado';
+        }
+        if (this.fichaObject.Neurologico.deliriumCAMICU === 'Não há delirium') {
+            this.analiseString += ', ausência de delirium, ';
+        } else {
+            this.analiseString += ', presença de delirium hiperativo, ';
+        }
+        this.analiseString += 'hemodinamicamente ' + this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() + ', ';
+        if (this.fichaObject.BombaInfusao !== undefined) {
+            this.analiseString += ' em uso de ';
+            Object.keys(bombaDVA).map(item => {
+                Object.keys(this.fichaObject.BombaInfusao).map(res => {
+                    if (res === bombaDVA[item]) {
+                        this.analiseString += res + ' ' + this.fichaObject.BombaInfusao[res] + ' ml/h, ';
+                    }
+                });
+            });
+            this.analiseString = this.analiseString.substr(0, this.analiseString.length - 2) + ', ';
+        } else {
+            this.analiseString += ' Sem drogas vasoativas, ';
+        }
+        if (this.fichaObject.Respiratorio.viasAereas === 'Natural') {
+            this.analiseString += 'em ventilação ' + this.fichaObject.Respiratorio.viasAereas.toLowerCase() + ' ';
+            if (this.fichaObject.Respiratorio.UsoOxigenio === 'Não') {
+                this.analiseString += 'sem oxigênio suplementar,';
+            } else {
+                Object.keys(this.fichaObject.Respiratorio.UsoOxigenio).forEach(item => {
+                    if (item === 'em Máscara de Venturi') {
+                        this.analiseString += item.toLowerCase() + ', ';
+                    }
+                    if (item === 'Sob Cateter Nasal' || item === 'Em Máscara de Reinalação') {
+                        this.analiseString += item.toLowerCase() + ', ';
+                    }
+                });
+            }
+        } else {
+            Object.keys(this.fichaObject.Respiratorio.ViasAereas).forEach(item => {
+                if (item === 'Tubo Traqueal') {
+                    this.analiseString += 'entubado, ';
+                }
+                if (item === 'Traqueostomia') {
+                    this.analiseString +=
+                        'traqueostomizado, ';
+                }
+            });
+        }
+        if (this.fichaObject.Respirador.ventilacaoMecanica === false) {
+            this.analiseString += 'não faz uso de ventilação mecânica, ';
+        } else {
+            this.analiseString += 'em ventilação mecânica (';
+            if (this.fichaObject.Respirador.modoVentilatorio === 'Mecânica') {
+                this.analiseString += this.fichaObject.Respirador.parametros + ', FIO2 ' + this.fichaObject.Respirador.fio2
+                    + '), ';
+            } else if (this.fichaObject.Respirador.modoVentilatorio === 'BIPAP') {
+                this.analiseString += this.fichaObject.Respirador.modoVentilatorio + ', ';
+            } else if (this.fichaObject.Respirador.modoVentilatorio === 'Não-invasiva') {
+                this.analiseString += this.fichaObject.Respirador.modoVentilatorio + ', ';
+            }
+        }
+        this.analiseString += 'diurese ' + this.fichaObject.FolhasBalanco.diurese + ' ml, ';
+        if (this.fichaObject.Renal.emDialise !== false) {
+            this.analiseString += 'em hemodiálise ';
+            if (this.fichaObject.Renal.emDialise.UF === false) {
+                this.analiseString += 'sem UF, ';
+            } else {
+                this.analiseString += 'com UF de  ' + this.fichaObject.Renal.emDialise.volume + ' ml, ';
+            }
+        }
+        if (this.fichaObject.Exames.calcio === undefined && this.fichaObject.Exames.magnesio === undefined
+            && this.fichaObject.Exames.fosforo === undefined && this.fichaObject.Exames.potassio === undefined) {
+            this.analiseString += 'sem disturbio eletrolítico';
+        } else {
+            if (this.fichaObject.Exames.calcio !== undefined && this.fichaObject.Exames.calcio !== 'Normal'
+                && this.fichaObject.Exames.calcio !== 'Não realizou/sem resultados') {
+                this.analiseString += this.fichaObject.Exames.calcio.toLowerCase() + ', ';
+            }
+            if (this.fichaObject.Exames.fosforo !== undefined && this.fichaObject.Exames.fosforo !== 'Normal'
+                && this.fichaObject.Exames.fosforo !== 'Não realizou/sem resultados') {
+                this.analiseString += this.fichaObject.Exames.fosforo.toLowerCase() + ', ';
+            }
+            if (this.fichaObject.Exames.magnesio !== undefined && this.fichaObject.Exames.magnesio !== 'Normal'
+                && this.fichaObject.Exames.magnesio !== 'Não realizou/sem resultados') {
+                this.analiseString += this.fichaObject.Exames.magnesio.toLowerCase() + ', ';
+            }
+            if (this.fichaObject.Exames.potassio !== undefined && this.fichaObject.Exames.potassio !== 'Normal'
+                && this.fichaObject.Exames.potassio !== 'Não realizou/sem resultados') {
+                this.analiseString += this.fichaObject.Exames.potassio.toLowerCase() + ', ';
+            }
+        }
+        this.analiseString = this.analiseString.substr(0, this.analiseString.length - 2) + '. ';
+        if (this.fichaObject.Infeccioso !== undefined) {
+            this.analiseString += 'Em uso de ';
+            this.fichaObject.Infeccioso.forEach(item => {
+                this.analiseString += item + ', ';
+            });
+            this.analiseString = this.analiseString.substr(0, this.analiseString.length - 2) + '. ';
+            this.analiseString += 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + '. ';
+        } else {
+            this.analiseString += 'Não está em uso de antibiótico e ';
+            this.analiseString += 'curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + '. ';
+        }
     }
 
     private prepareMetabolicoString(): void {
@@ -345,34 +475,43 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private prepareHematologicoString(): void {
-        if (this.fichaObject.Hematologico.tromboprofilaxia === 'Não') {
-            this.hematologicoString = 'Não realizada.';
-        } else {
-            this.hematologicoString = this.fichaObject.Hematologico.tromboprofilaxia + '.';
-        }
+        this.hematologicoString = '';
         if (this.fichaObject.Exames.hematocrito > 0) {
-            this.hematologicoString += 'Hematócritos ' + this.fichaObject.Exames.hematocrito + '. ';
+            this.hematologicoString += 'Hematócritos ' + this.fichaObject.Exames.hematocrito + ', ';
         }
         if (this.fichaObject.Exames.hemoglobina > 0) {
-            this.hematologicoString += 'Hemoglobina ' + this.fichaObject.Exames.hemoglobina + '. ';
+            if (this.hematologicoString !== '') {
+                this.hematologicoString += 'hemoglobina ' + this.fichaObject.Exames.hemoglobina + ', ';
+            } else {
+                this.hematologicoString += 'Hemoglobina' + this.fichaObject.Exames.hemoglobina + ', ';
+            }
         }
         if (this.fichaObject.Exames.plaquetas > 0) {
-            this.hematologicoString += 'Plaquetas ' + this.fichaObject.Exames.plaquetas + '. ';
+            if (this.hematologicoString !== '') {
+                this.hematologicoString += 'plaquetas ' + this.fichaObject.Exames.plaquetas + ', ';
+            } else {
+                this.hematologicoString += 'Plaquetas ' + this.fichaObject.Exames.plaquetas + ', ';
+            }
         }
-        if (this.fichaObject.Exames.lactato !== 'Normal'
-            && this.fichaObject.Exames.lactato !== undefined
-            && this.fichaObject.Exames.lactato !== 'Não realizou/sem resultados') {
-            this.hematologicoString += 'Lactato ' + this.fichaObject.Exames.lactato.toLowerCase() + '. ';
+        if (this.fichaObject.Hematologico.tromboprofilaxia === 'Não') {
+            if (this.hematologicoString !== '') {
+                this.hematologicoString += 'ausência de medidas para tromboprofilaxia.';
+            } else {
+                this.hematologicoString += 'Ausência de medidas para tromboprofilaxia';
+            }
+        } else {
+            if (this.hematologicoString !== '') {
+                this.hematologicoString += 'tromboprofilaxia com ' + this.fichaObject.Hematologico.tromboprofilaxia.toLowerCase() + '.';
+            } else {
+                this.hematologicoString += 'Tromprofilaxia com ' + this.fichaObject.Hematologico.tromboprofilaxia + '.';
+            }
+
         }
 
     }
 
     private prepareRenalString(): void {
-        this.renalString = 'Diurese ' + this.fichaObject.FolhasBalanco.diurese;
-        if (this.allFichas !== undefined) {
-            this.renalString += ' (' + this.allFichas[0].FolhasBalanco.diurese +
-                ' em ' + this.allFichas[0].dataCriada + ')';
-        }
+        this.renalString = 'Diurese ' + this.fichaObject.FolhasBalanco.diurese + ' ml';
         this.renalString += ', balanço hídrico '
             + this.fichaObject.FolhasBalanco.balancoHidrico + ' e acumulado de ' + this.balancoHidricoAcumulado + ', peso '
             + this.fichaObject.Renal.peso + 'kg e acumulado de ' + this.pesoAcumulado + 'kg';
@@ -389,8 +528,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             if (this.fichaObject.Renal.emDialise.UF === false) {
                 this.renalString += 'sem UF.';
             } else {
-                this.renalString += 'com UF de volume ' + this.fichaObject.Renal.emDialise.volume
-                    + ', ' + this.fichaObject.Renal.emDialise.tempo + ' tempo/hora. ';
+                this.renalString += 'com UF de ' + this.fichaObject.Renal.emDialise.volume + ' ml.';
             }
         } else {
             this.renalString += '. ';
@@ -416,29 +554,29 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private viasAereas(): void {
         if (this.fichaObject.Respiratorio.viasAereas === 'Natural') {
-            this.respiratorioString = 'Paciente em ventilação ' + this.fichaObject.Respiratorio.viasAereas.toLowerCase() + ' ';
+            this.respiratorioString = 'Em ventilação ' + this.fichaObject.Respiratorio.viasAereas.toLowerCase() + ' ';
             if (this.fichaObject.Respiratorio.UsoOxigenio === 'Não') {
-                this.respiratorioString += 'sem oxigênio suplementar.';
+                this.respiratorioString += 'sem oxigênio suplementar, ';
             } else {
                 Object.keys(this.fichaObject.Respiratorio.UsoOxigenio).forEach(item => {
                     if (item === 'Em Máscara de Venturi') {
-                        this.respiratorioString += item.toLowerCase() + ' à ' + this.fichaObject.Respiratorio.UsoOxigenio[item] + '%.';
+                        this.respiratorioString += item.toLowerCase() + ' à ' + this.fichaObject.Respiratorio.UsoOxigenio[item] + '%,';
                     }
                     if (item === 'Sob Cateter Nasal' || item === 'Em Máscara de Reinalação') {
                         this.respiratorioString +=
-                            item.toLowerCase() + ' com fluxo de ' + this.fichaObject.Respiratorio.UsoOxigenio[item] + ' L/min.';
+                            item.toLowerCase() + ' com fluxo de ' + this.fichaObject.Respiratorio.UsoOxigenio[item] + ' L/min,';
                     }
                 });
             }
         } else {
             Object.keys(this.fichaObject.Respiratorio.ViasAereas).forEach(item => {
                 if (item === 'Tubo Traqueal') {
-                    this.respiratorioString = 'Paciente entubado (pressão do CUFF ' + this.fichaObject.Respiratorio.ViasAereas.pressaoCuff
-                        + ', canula na posição ' + this.fichaObject.Respiratorio.ViasAereas.localizacaoCanula.toLowerCase() + ').';
+                    this.respiratorioString = 'Entubado (pressão do CUFF ' + this.fichaObject.Respiratorio.ViasAereas.pressaoCuff
+                        + ', canula na posição ' + this.fichaObject.Respiratorio.ViasAereas.localizacaoCanula.toLowerCase() + '),';
                 }
                 if (item === 'Traqueostomia') {
                     this.respiratorioString =
-                        'Paciente traqueostomizado (pressão do CUFF ' + this.fichaObject.Respiratorio.ViasAereas.pressaoCuff + ').';
+                        'Traqueostomizado (pressão do CUFF ' + this.fichaObject.Respiratorio.ViasAereas.pressaoCuff + '),';
                 }
             });
         }
@@ -446,14 +584,14 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private ventilacaoMecanica(): void {
         if (this.fichaObject.Respirador.ventilacaoMecanica === false) {
-            this.respiratorioString += ' Não faz uso de ventilação mecânica. ';
+            this.respiratorioString += ' não faz uso de ventilação mecânica, ';
         } else {
-            this.respiratorioString += ' Em ventilação mecânica (';
+            this.respiratorioString += ' em ventilação mecânica (';
             if (this.fichaObject.Respirador.modoVentilatorio === 'Mecânica') {
                 this.respiratorioString += this.fichaObject.Respirador.parametros + ', FIO2 ' + this.fichaObject.Respirador.fio2
                     + ', PEEP ' + this.fichaObject.Respirador.peep + ', VOLUME ' + this.fichaObject.Respirador.volume
                     + ', F.R Respirador ' + this.fichaObject.Respirador.freqRespiratoriaRespirador
-                    + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '). ';
+                    + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '), ';
             } else if (this.fichaObject.Respirador.modoVentilatorio === 'BIPAP') {
                 this.respiratorioString += this.fichaObject.Respirador.modoVentilatorio + ', EPAP ' + this.fichaObject.Respirador.epap
                     + ', IPAP ' + this.fichaObject.Respirador.ipap + ', VOLUME ' + this.fichaObject.Respirador.volume
@@ -463,13 +601,13 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.respiratorioString += this.fichaObject.Respirador.modoVentilatorio + ', FIO2 ' + this.fichaObject.Respirador.fio2
                     + ', PEEP ' + this.fichaObject.Respirador.peep + ', VOLUME ' + this.fichaObject.Respirador.volume
                     + ', F.R Respirador ' + this.fichaObject.Respirador.freqRespiratoriaRespirador
-                    + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '). ';
+                    + ', F.R Paciente ' + this.fichaObject.Respirador.freqRespiratoriaPaciente + '), ';
             }
         }
     }
 
     private murmurioVesicular(): void {
-        this.respiratorioString += 'Murmúrio vesicular ';
+        this.respiratorioString += 'murmúrio vesicular ';
         if (this.fichaObject.Respiratorio.MurmurioVesicular === 'Fisiológico') {
             this.respiratorioString += this.fichaObject.Respiratorio.MurmurioVesicular.toLowerCase() + '. ';
         } else {
@@ -485,7 +623,7 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private roncos(): void {
         if (this.fichaObject.Respiratorio.Roncos === undefined) {
-            this.respiratorioString += 'Sem roncos. ';
+            this.respiratorioString += 'sem roncos. ';
         } else {
             this.respiratorioString += 'Roncos ';
             Object.keys(this.fichaObject.Respiratorio.Roncos).forEach(item => {
@@ -553,21 +691,21 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private nivelConsciencia(): void {
-        this.neurologicoString = 'Paciente ';
+        this.neurologicoString = '';
         if (this.fichaObject.Neurologico.nivelConsciencia === 'CONSCIENTE/ALERTA') {
-            this.neurologicoString += 'consciente/alerta';
+            this.neurologicoString += 'Consciente/alerta';
         } else if (this.fichaObject.Neurologico.nivelConsciencia === 'VIGIL') {
-            this.neurologicoString += 'vigil';
+            this.neurologicoString += 'Vigil';
         } else if (this.fichaObject.Neurologico.nivelConsciencia === 'SONOLÊNCIA') {
-            this.neurologicoString += 'sonolento';
+            this.neurologicoString += 'Sonolento';
         } else if (this.fichaObject.Neurologico.nivelConsciencia === 'OBNUBILAÇÃO') {
-            this.neurologicoString += 'obnubilado';
+            this.neurologicoString += 'Obnubilado';
         } else if (this.fichaObject.Neurologico.nivelConsciencia === 'TORPOR') {
-            this.neurologicoString += 'torporoso';
+            this.neurologicoString += 'Torporoso';
         } else if (this.fichaObject.Neurologico.nivelConsciencia === 'COMA') {
-            this.neurologicoString += 'comatoso';
+            this.neurologicoString += 'Comatoso';
         } else if (this.fichaObject.Neurologico.nivelConsciencia === 'SEDADO') {
-            this.neurologicoString += 'sedado, ramsay ' + this.fichaObject.Neurologico.ramsay
+            this.neurologicoString += 'Sedado, ramsay ' + this.fichaObject.Neurologico.ramsay
                 + ', rass ' + this.fichaObject.Neurologico.rass;
         }
     }
@@ -575,7 +713,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     private escalaGlasgow(): void {
         const total = this.fichaObject.Neurologico.aberturaOcular +
             this.fichaObject.Neurologico.respostaMotora + this.fichaObject.Neurologico.respostaVerbal;
-        this.neurologicoString += '. Glasgow ' + total + ' (AO: ' + this.fichaObject.Neurologico.aberturaOcular +
+        this.neurologicoString += ', glasgow ' + total + ' (AO: ' + this.fichaObject.Neurologico.aberturaOcular +
             ', RV: ' + this.fichaObject.Neurologico.respostaVerbal + ', RM: ' + this.fichaObject.Neurologico.respostaMotora + '), ';
     }
 
@@ -585,7 +723,7 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.neurologicoString += this.fichaObject.Neurologico[res].toLowerCase() + ' ' + res.toLowerCase() + ', ';
             }
         });
-        this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2) + '. ';
+        this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2) + ', ';
     }
 
     private deficitMotor(): void {
@@ -593,7 +731,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             && this.fichaObject.Neurologico.mie === undefined
             && this.fichaObject.Neurologico.msd === undefined
             && this.fichaObject.Neurologico.mse === undefined) {
-            this.neurologicoString += 'Sem déficit motor. ';
+            this.neurologicoString += 'sem déficit motor. ';
         } else {
             if (this.fichaObject.Neurologico.mid !== undefined) {
                 if (this.fichaObject.Neurologico.mid === 'Paresia') {
@@ -623,24 +761,24 @@ export class FichaComponent implements OnInit, OnDestroy {
                     this.neurologicoString += 'M plégico superior esquerdo, ';
                 }
             }
-            this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2) + '. ';
+            this.neurologicoString = this.neurologicoString.substr(0, this.neurologicoString.length - 2) + ', ';
         }
     }
 
     private avaliacaoPupilar(): void {
-        this.neurologicoString += 'Pupilas ' + this.fichaObject.Neurologico.tamanhoPupila.toLowerCase() + ', '
+        this.neurologicoString += 'pupilas ' + this.fichaObject.Neurologico.tamanhoPupila.toLowerCase() + ', '
             + this.fichaObject.Neurologico.simetriaPupila.toLowerCase() + ', ';
         if (this.fichaObject.Neurologico.simetriaPupilar === 'Anisocóricas') {
             this.fichaObject += this.fichaObject.Neurologico.diferencaPupila.toLowerCase() + ', ';
         }
-        this.neurologicoString += this.fichaObject.Neurologico.reatividadeLuzPupila.toLowerCase() + ' à luz. ';
+        this.neurologicoString += this.fichaObject.Neurologico.reatividadeLuzPupila.toLowerCase() + ' à luz, ';
     }
 
     private delirium(): void {
         if (this.fichaObject.Neurologico.deliriumCAMICU === 'Não há delirium') {
-            this.neurologicoString += 'Realizado CAM-ICU com ausência de delirium. ';
+            this.neurologicoString += 'ausência de delirium, ';
         } else {
-            this.neurologicoString += 'Realizado CAM-ICU com presença de delirium hiperativo. ';
+            this.neurologicoString += ' presença de delirium hiperativo, ';
         }
     }
 
@@ -682,17 +820,17 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject && this.fichaObject.FolhasBalanco && this.fichaObject.MonitorMultiparametrico) {
             if (this.fichaObject.MonitorMultiparametrico.ritmo === 'Ritmo de Marcapasso') {
                 this.hemodinamicoString =
-                    'Paciente hemodinamicamente ' +
+                    'Hemodinamicamente ' +
                     this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
-                    ' compensado em ' +
+                    ' em ' +
                     this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
                     ', FC ' +
                     this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca;
             } else {
                 this.hemodinamicoString =
-                    'Paciente hemodinamicamente ' +
+                    'Hemodinamicamente ' +
                     this.fichaObject.FolhasBalanco.hemodinamicamente.toLowerCase() +
-                    ' compensado em ritmo ' +
+                    ' em ritmo ' +
                     this.fichaObject.MonitorMultiparametrico.ritmo.toLowerCase() +
                     ', FC ' +
                     this.fichaObject.MonitorMultiparametrico.frequenciaCardiaca;
@@ -750,9 +888,6 @@ export class FichaComponent implements OnInit, OnDestroy {
             + ', perfusão capilar '
             + this.fichaObject.Hemodinamico.perfusaoCapilar.toLowerCase()
             + ', PAM ' + this.fichaObject.MonitorMultiparametrico.pam;
-        if (this.allFichas !== undefined) {
-            this.hemodinamicoString += ' (' + ficha.MonitorMultiparametrico.pam + ' em ' + ficha.dataCriada + ')';
-        }
         this.hemodinamicoString += ', PVC '
             + this.fichaObject.MonitorMultiparametrico.pvc
             + ', Swan-Ganz '
@@ -760,7 +895,7 @@ export class FichaComponent implements OnInit, OnDestroy {
             + '.';
     }
 
-    private prepareAbdomeString() {
+    private prepareGastrointestinalString() {
         this.abdome();
         this.ascite();
         this.massasPalpaveis();
@@ -777,24 +912,23 @@ export class FichaComponent implements OnInit, OnDestroy {
             + ', '
             + this.fichaObject.Gastrointestinal.tensao.toLowerCase() + ', com ruidos '
             + this.fichaObject.Gastrointestinal.ruidos.toLowerCase()
-            + '. ';
+            + ', ';
     }
 
     private ascite(): void {
         if (this.fichaObject.Gastrointestinal.ascite !== 'Ausente') {
-            this.abdomeString += 'Ascite ' + this.fichaObject.Gastrointestinal.ascite.toLowerCase() + '. ';
+            this.abdomeString += 'ascite ' + this.fichaObject.Gastrointestinal.ascite.toLowerCase() + ', ';
         }
     }
-
     private massasPalpaveis(): void {
         if (this.fichaObject.Gastrointestinal.massasPalpaveis !== false) {
-            this.abdomeString += 'Massas palpáveis ';
+            this.abdomeString += 'massas palpáveis ';
             for (const key in this.fichaObject.Gastrointestinal.massasPalpaveis) {
                 this.abdomeString += key.toLowerCase() + ', ';
             }
             this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + '. ';
         } else {
-            this.abdomeString += 'Sem massas palpáveis. ';
+            this.abdomeString += 'sem massas palpáveis, ';
         }
     }
 
@@ -827,9 +961,9 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject.FolhasBalanco.evacuacoes !== false) {
             this.abdomeString += 'Evacuacões ';
             for (const key in this.fichaObject.FolhasBalanco.evacuacoes) {
-                this.abdomeString += key.toLowerCase() + ' ' + this.fichaObject.FolhasBalanco.evacuacoes[key] + ' vezes, ';
+                this.abdomeString += key.toLowerCase() + ' ' + this.fichaObject.FolhasBalanco.evacuacoes[key] + ' eventos, ';
             }
-            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + '. ';
+            this.abdomeString = this.abdomeString.substr(0, this.abdomeString.length - 2) + ', ';
         } else {
             this.abdomeString += 'Não evacuou.';
         }
@@ -838,9 +972,9 @@ export class FichaComponent implements OnInit, OnDestroy {
     private amilase(): void {
         if (this.fichaObject.Exames.amilase !== undefined) {
             if (this.fichaObject.Exames.amilase === false) {
-                this.abdomeString += 'Amilase não dosada. ';
+                this.abdomeString += 'amilase não dosada, ';
             } else {
-                this.abdomeString += 'Amilase ' + this.fichaObject.Exames.amilase.toLowerCase() + '. ';
+                this.abdomeString += 'amilase ' + this.fichaObject.Exames.amilase.toLowerCase() + ', ';
             }
         }
     }
@@ -848,14 +982,14 @@ export class FichaComponent implements OnInit, OnDestroy {
     private ffaGGT(): void {
         if (this.fichaObject.Exames.funcaoHepaticaFAGGT !== undefined
             && this.fichaObject.Exames.funcaoHepaticaFAGGT === 'Elevadas') {
-            this.abdomeString += 'FA/GGT ' + this.fichaObject.Exames.funcaoHepaticaFAGGT.toLowerCase() + '. ';
+            this.abdomeString += 'FA/GGT ' + this.fichaObject.Exames.funcaoHepaticaFAGGT.toLowerCase() + ', ';
         }
     }
 
     private transaminases(): void {
         if (this.fichaObject.Exames.funcaoHepaticaTransaminases !== undefined
             && this.fichaObject.Exames.funcaoHepaticaTransaminases === 'Elevadas') {
-            this.abdomeString += 'Transaminases ' + this.fichaObject.Exames.funcaoHepaticaTransaminases.toLowerCase() + '. ';
+            this.abdomeString += 'transaminases ' + this.fichaObject.Exames.funcaoHepaticaTransaminases.toLowerCase() + ', ';
         }
     }
 
@@ -863,7 +997,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (this.fichaObject.Exames.funcaoHepaticaBilirrubinas !== undefined
             && this.fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Não realizou/sem resultados'
             && this.fichaObject.Exames.funcaoHepaticaBilirrubinas !== 'Normais') {
-            this.abdomeString += 'Bilirrubinas ' + this.fichaObject.Exames.funcaoHepaticaBilirrubinas.toLowerCase() + '. ';
+            this.abdomeString += 'bilirrubinas ' + this.fichaObject.Exames.funcaoHepaticaBilirrubinas.toLowerCase() + ', ';
         }
     }
 
@@ -880,7 +1014,7 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private mucosas(): void {
-        this.peleMucosasString = 'Paciente com mucosas ';
+        this.peleMucosasString = 'Mucosas ';
         let coloracao1: string;
         let coracao: string;
         let hidratacao: string;
@@ -920,83 +1054,68 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private prepareNutricionalString(): void {
-        this.nutricionalString = 'Paciente em dieta ';
-        Object.keys(this.fichaObject.Nutricional).forEach(res => {
-            this.nutricionalString += res.toLowerCase() + ' com aceitação ' + this.fichaObject.Nutricional[res].toLowerCase() + ', ';
-        });
-        this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
-        if (this.allFichas !== undefined) {
-            this.nutricionalString += ' (';
-            Object.keys(this.allFichas[0].FolhasBalanco.nutricao).forEach(res => {
-                this.nutricionalString += res.toLowerCase() + ' com ' + this.allFichas[0].FolhasBalanco.nutricao[res] + ' volume/ml, ';
-            });
-            this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
-            this.nutricionalString += ' em ' + this.allFichas[0].dataCriada + '). ';
+        // this.nutricionalString = 'Dieta ';
+        // Object.keys(this.fichaObject.Nutricional).forEach(res => {
+        //     this.nutricionalString += res.toLowerCase() + ' com aceitação ' + this.fichaObject.Nutricional[res].toLowerCase() + ', ';
+        // });
+        // this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
+        // if (this.allFichas !== undefined) {
+        //     this.nutricionalString += ' (';
+        //     Object.keys(this.allFichas[0].FolhasBalanco.nutricao).forEach(res => {
+        //         this.nutricionalString += res.toLowerCase() + ' com ' + this.allFichas[0].FolhasBalanco.nutricao[res] + ' volume/ml, ';
+        //     });
+        //     this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
+        //     this.nutricionalString += ' em ' + this.allFichas[0].dataCriada + '). ';
 
-        } else {
-            this.nutricionalString += '. ';
-        }
-        if (this.fichaObject.Exames.Albumina !== undefined) {
-            this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase() + '. ';
-        }
-        this.nutricionalString += 'Peso atual ' + this.fichaObject.Renal.peso + 'kg e peso acumulado de ' + this.pesoAcumulado + 'kg.';
+        // } else {
+        //     this.nutricionalString += '. ';
+        // }
+        // if (this.fichaObject.Exames.Albumina !== undefined) {
+        //     this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase() + '. ';
+        // }
     }
 
     private prepareInfecciosoString(): void {
 
         const ficha = this.allFichas[0];
-        
-        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + ' ';
-        if (this.fichaObject.FolhasBalanco.picosFebris !== undefined) {
-            if (this.fichaObject.FolhasBalanco.picosFebris > 1) {
-                this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' picos febris ';
-            } else {
-                this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' pico febril ';
-            }
-        }
-        if (ficha !== undefined) {
-            this.infecciosoString += '(' + ficha.FolhasBalanco.curvaTermica.toLowerCase() + ' em ' + ficha.dataCriada + '). ';
-        } else {
-            this.infecciosoString += '. ';
-        }
+
+        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + ', ';
         if (this.fichaObject.Exames.pcr !== undefined && this.fichaObject.Exames.pcr !== 'Não realizou/sem resultados') {
             this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
         }
         if (this.fichaObject.Exames.leucograma !== undefined && this.fichaObject.Exames.leucograma !== 'Não realizou/sem resultados') {
             this.infecciosoString += 'Leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
         }
+        if (this.fichaObject.Exames.lactato !== 'Normal'
+            && this.fichaObject.Exames.lactato !== undefined
+            && this.fichaObject.Exames.lactato !== 'Não realizou/sem resultados') {
+            this.infecciosoString += 'Lactato ' + this.fichaObject.Exames.lactato.toLowerCase() + '. ';
+        }
         if (this.fichaObject.Infeccioso !== undefined) {
             this.infecciosoString += 'Em uso de ';
             this.fichaObject.Infeccioso.forEach(item => {
                 this.infecciosoString += item + ', ';
             });
-            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2) + '. Registrado uso de ';
-            console.log(this.antibioticos[0].antibioticos);
-            for (const i of this.antibioticos[0].antibioticos) {
-                this.infecciosoString += i + ', ';
-            }
-            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2)
-                + ' em ' + this.allFichas[0].dataCriada + '. ';
         }
+        this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2) + '. ';
     }
 
     private prepareEndocrinoString(): void {
-        if (this.allFichas !== undefined) {
-            const ficha = this.allFichas[0];
-        }
-        this.endocrinoString = 'Paciente com ' + this.fichaObject.Endocrino.curvaGlicemica.toLowerCase() + ' (';
-        if (ficha !== undefined) {
-            this.endocrinoString += ficha.Endocrino.curvaGlicemica + ' em ' + ficha.dataCriada + ').';
-        }
+        const ficha = this.allFichas[0];
+        let flag = false;
+        this.endocrinoString = this.fichaObject.Endocrino.curvaGlicemica + '. ';
         if (this.fichaObject.BombaInfusao !== undefined) {
             Object.keys(bombaEndocrino).forEach(item => {
                 Object.keys(this.fichaObject.BombaInfusao).map(res => {
                     if (res === bombaEndocrino[item]) {
+                        flag = true;
                         this.endocrinoString += 'Em uso de ' + res + ' em bomba de infusão, ';
                     }
                 });
             });
-            this.endocrinoString = this.endocrinoString.substr(0, this.endocrinoString.length - 2) + '. ';
+            if (flag) {
+                this.endocrinoString = this.endocrinoString.substr(0, this.endocrinoString.length - 2) + '. ';
+            }
         }
     }
 }
