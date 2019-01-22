@@ -30,25 +30,25 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    // this.show = true;
-    // this.subscriptions.add(this.db.getPacientesFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(actions => {
-    //   actions.forEach(pacientes => {
-    //     this.profissionais.forEach(profissional => {
-    //       if (profissional.profissionalKey === pacientes.payload.val().profissionalResponsavel) {
-    //         this.pacientes.push({
-    //           'pacienteKey': pacientes.key,
-    //           'nome': pacientes.payload.val().nome,
-    //           'sobrenome': pacientes.payload.val().sobrenome,
-    //           'box': pacientes.payload.val().box,
-    //           'leito': pacientes.payload.val().leito,
-    //           'medicoResponsavel': profissional.profissionalData.nome + ' ' + profissional.profissionalData.sobrenome
-    //         });
-    //       }
-    //     });
+    this.show = true;
+    this.subscriptions.add(this.db.getPacientesFromHospitalKey('DcbtizNr0ADNNnd0evlN').snapshotChanges().subscribe(actions => {
+      actions.forEach(pacientes => {
+        this.profissionais.forEach(profissional => {
+          if (profissional.profissionalKey === pacientes.payload.val().profissionalResponsavel) {
+            this.pacientes.push({
+              'pacienteKey': pacientes.key,
+              'nome': pacientes.payload.val().nome,
+              'sobrenome': pacientes.payload.val().sobrenome,
+              'box': pacientes.payload.val().box,
+              'leito': pacientes.payload.val().leito,
+              'medicoResponsavel': profissional.profissionalData.nome + ' ' + profissional.profissionalData.sobrenome
+            });
+          }
+        });
 
-    //   });
-    //   this.show = false;
-    // }));
+      });
+      this.show = false;
+    }));
 
   }
 

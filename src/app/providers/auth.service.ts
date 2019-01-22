@@ -18,6 +18,7 @@ export class AuthService {
   }
 
   loginWithEmailAndPassword(email, password) {
+    console.log("service")
     return this.afAuth.auth.signInWithEmailAndPassword(email, password)
       .then(value => {
         const ref = firebase.database().ref('Pessoa').orderByChild('email').equalTo(firebase.auth().currentUser.email)
@@ -28,7 +29,7 @@ export class AuthService {
           });
       })
       .catch(err => {
-
+        console.log("error")
       });
   }
 

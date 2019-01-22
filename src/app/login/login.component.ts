@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   doLogin(event) {
+    console.log("here");
     this.authService.loginWithEmailAndPassword(this.loginForm.value.email, this.loginForm.value.password);
   }
 }
