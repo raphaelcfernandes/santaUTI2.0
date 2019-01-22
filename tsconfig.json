@@ -1,7 +1,12 @@
 {
   "compileOnSave": false,
-  "include": ["node_modules/angular-bootstrap-md/**/*.ts",  "node_modules/ng-autosize/**/*.ts","src/**/*.ts"],
+  "include": [
+    "node_modules/angular-bootstrap-md/**/*.ts",
+    "node_modules/ng-autosize/**/*.ts",
+    "src/**/*.ts"
+  ],
   "compilerOptions": {
+    "importHelpers": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -15,6 +20,8 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "module": "es2015",
+    "baseUrl": "./"
   }
 }

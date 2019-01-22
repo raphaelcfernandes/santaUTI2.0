@@ -340,8 +340,6 @@ export class FichaComponent implements OnInit, OnDestroy {
                 this.metabolicoString += this.fichaObject.Exames.gasometriaArterial.compensadaDescompensada.toLowerCase() + '. ';
             }
         }
-
-
     }
 
     private prepareHematologicoString(): void {
@@ -364,7 +362,6 @@ export class FichaComponent implements OnInit, OnDestroy {
             && this.fichaObject.Exames.lactato !== 'Não realizou/sem resultados') {
             this.hematologicoString += 'Lactato ' + this.fichaObject.Exames.lactato.toLowerCase() + '. ';
         }
-
     }
 
     private prepareRenalString(): void {
@@ -981,9 +978,9 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private prepareEndocrinoString(): void {
-        if (this.allFichas !== undefined) {
-            const ficha = this.allFichas[0];
-        }
+        
+        const ficha = this.allFichas[0];
+        
         this.endocrinoString = 'Paciente com ' + this.fichaObject.Endocrino.curvaGlicemica.toLowerCase() + ' (';
         if (ficha !== undefined) {
             this.endocrinoString += ficha.Endocrino.curvaGlicemica + ' em ' + ficha.dataCriada + ').';
