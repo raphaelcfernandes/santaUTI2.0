@@ -38,7 +38,7 @@ export class DatabaseService {
     return this.hospitalKey;
   }
 
-  getProfissionaisFromHospitalKey(key: string): AngularFireList<any[]> {
+  getProfissionaisFromHospitalKey(key: string): AngularFireList<any> {
     return this.db.list('Hospital/' + key + '/Profissionais');
   }
 

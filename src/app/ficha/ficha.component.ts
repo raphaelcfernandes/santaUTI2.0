@@ -55,23 +55,30 @@ export class FichaComponent implements OnInit, OnDestroy {
             this.db.getAllFichasByPacienteKey(userId).snapshotChanges().subscribe(data => {
                 data.forEach(ficha => {
                     this.allFichas.push(ficha.payload.val());
+                    console.log(this.allFichas)
                 });
                 this.db.getLastFichaByPacienteKey(userId).snapshotChanges().subscribe(lastFicha => {
                     lastFicha.forEach(last => {
-                        this.fichaObject = last.payload.val();                        
+                        this.fichaObject = last.payload.val();
                         this.prepareGraphs();
                         this.fillTextAreas();
                     });
                 });
-                this.db.getDiagosnitcosByPacienteKey(userId).snapshotChanges().subscribe(diagnosticos => {
-                    diagnosticos.forEach(diagnostico => {
-                        this.diagnosticos.push(diagnostico.payload.val());
-                    });
-                    this.prepareDiagnosticos();
-                });
+                // this.db.getDiagosnitcosByPacienteKey(userId).snapshotChanges().subscribe(diagnosticos => {
+                //     diagnosticos.forEach(diagnostico => {
+                //         this.diagnosticos.push(diagnostico.payload.val());
+                //     });
+                //     this.prepareDiagnosticos();
+                // });
             });
             this.subscriptions.unsubscribe();
         }));
+    }
+
+    ngOnInit() { }
+
+    ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     filtrar(index, diagnostico) {
@@ -131,12 +138,7 @@ export class FichaComponent implements OnInit, OnDestroy {
         this.diagnosticos[index].resolvido = false;
     }
 
-    ngOnInit() { }
-
-    ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-    }
-
+    
     private prepareGraphs(): void {
         const pesoDataGraph: any = [];
         const pesoDatesGraph: any = [];
@@ -366,10 +368,10 @@ export class FichaComponent implements OnInit, OnDestroy {
 
     private prepareRenalString(): void {
         this.renalString = 'Diurese ' + this.fichaObject.FolhasBalanco.diurese;
-        if (this.allFichas !== undefined) {
-            this.renalString += ' (' + this.allFichas[0].FolhasBalanco.diurese +
-                ' em ' + this.allFichas[0].dataCriada + ')';
-        }
+        // if (this.allFichas !== undefined) {
+            // this.renalString += ' (' + this.allFichas[0].FolhasBalanco.diurese +
+                // ' em ' + this.allFichas[0].dataCriada + ')';
+        // }
         this.renalString += ', balanço hídrico '
             + this.fichaObject.FolhasBalanco.balancoHidrico + ' e acumulado de ' + this.balancoHidricoAcumulado + ', peso '
             + this.fichaObject.Renal.peso + 'kg e acumulado de ' + this.pesoAcumulado + 'kg';
@@ -739,7 +741,8 @@ export class FichaComponent implements OnInit, OnDestroy {
     }
 
     private itensMonitorMultiparametrico() {
-        const ficha = this.allFichas[0];
+        const ficha = this.fichaObject;
+        console.log(this.allFichas)
         this.hemodinamicoString += ', extremidades '
             + this.fichaObject.Hemodinamico.extremidadesColoracao.toLowerCase()
             + ' e '
@@ -896,10 +899,11 @@ export class FichaComponent implements OnInit, OnDestroy {
         if (coloracao1 === 'Ictéricas') {
             ictericia = this.fichaObject.PeleMucosas.ictericia;
             this.peleMucosasString += coloracao1.toLowerCase()
-                + ' + ' + ictericia + ', ' + coracao.toLowerCase()
+                + ' + ' + ictericia + ', ' + coloracao1.toLowerCase()
                 + ', ' + hidratacao.toLowerCase() + '. ';
         } else {
-            this.peleMucosasString += coloracao1.toLowerCase() + ', ' + coracao.toLowerCase() + ', ' + hidratacao.toLowerCase() + '. ';
+            // this.peleMucosasString += coloracao1.toLowerCase() + ', ' + coloracao1.toLowerCase() + ', ' + hidratacao.toLowerCase() + '. ';
+            this.peleMucosasString+='Arruma essa merda '
         }
     }
 
@@ -922,28 +926,28 @@ export class FichaComponent implements OnInit, OnDestroy {
             this.nutricionalString += res.toLowerCase() + ' com aceitação ' + this.fichaObject.Nutricional[res].toLowerCase() + ', ';
         });
         this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
-        if (this.allFichas !== undefined) {
-            this.nutricionalString += ' (';
-            Object.keys(this.allFichas[0].FolhasBalanco.nutricao).forEach(res => {
-                this.nutricionalString += res.toLowerCase() + ' com ' + this.allFichas[0].FolhasBalanco.nutricao[res] + ' volume/ml, ';
-            });
-            this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
-            this.nutricionalString += ' em ' + this.allFichas[0].dataCriada + '). ';
+        // if (this.allFichas !== undefined) {
+        //     this.nutricionalString += ' (';
+        //     Object.keys(this.fichaObject.FolhasBalanco.nutricao).forEach(res => {
+        //         this.nutricionalString += res.toLowerCase() + ' com ' + this.fichaObject.FolhasBalanco.nutricao[res] + ' volume/ml, ';
+        //     });
+        //     this.nutricionalString = this.nutricionalString.substr(0, this.nutricionalString.length - 2);
+        //     this.nutricionalString += ' em ' + this.fichaObject.dataCriada + '). ';
 
-        } else {
-            this.nutricionalString += '. ';
-        }
-        if (this.fichaObject.Exames.Albumina !== undefined) {
-            this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase() + '. ';
-        }
+        // } else {
+        //     this.nutricionalString += '. ';
+        // }
+        // if (this.fichaObject.Exames.Albumina !== undefined) {
+        //     this.nutricionalString += 'Albumina ' + this.fichaObject.Exames.Albumina.toLowerCase() + '. ';
+        // }
         this.nutricionalString += 'Peso atual ' + this.fichaObject.Renal.peso + 'kg e peso acumulado de ' + this.pesoAcumulado + 'kg.';
     }
 
     private prepareInfecciosoString(): void {
 
-        const ficha = this.allFichas[0];
+        const ficha = this.fichaObject;
         
-        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica.toLowerCase() + ' ';
+        this.infecciosoString = 'Curva térmica ' + this.fichaObject.FolhasBalanco.curvaTermica + ' ';
         if (this.fichaObject.FolhasBalanco.picosFebris !== undefined) {
             if (this.fichaObject.FolhasBalanco.picosFebris > 1) {
                 this.infecciosoString += 'com ' + this.fichaObject.FolhasBalanco.picosFebris + ' picos febris ';
@@ -952,28 +956,28 @@ export class FichaComponent implements OnInit, OnDestroy {
             }
         }
         if (ficha !== undefined) {
-            this.infecciosoString += '(' + ficha.FolhasBalanco.curvaTermica.toLowerCase() + ' em ' + ficha.dataCriada + '). ';
+            this.infecciosoString += '(' + ficha.FolhasBalanco.curvaTermica + ' em ' + ficha.dataCriada + '). ';
         } else {
             this.infecciosoString += '. ';
         }
         if (this.fichaObject.Exames.pcr !== undefined && this.fichaObject.Exames.pcr !== 'Não realizou/sem resultados') {
-            this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr.toLowerCase() + ', ';
+            this.infecciosoString += 'PCR ' + this.fichaObject.Exames.pcr + ', ';
         }
         if (this.fichaObject.Exames.leucograma !== undefined && this.fichaObject.Exames.leucograma !== 'Não realizou/sem resultados') {
-            this.infecciosoString += 'Leucograma ' + this.fichaObject.Exames.leucograma.toLowerCase() + '. ';
+            this.infecciosoString += 'Leucograma ' + this.fichaObject.Exames.leucograma + '. ';
         }
         if (this.fichaObject.Infeccioso !== undefined) {
             this.infecciosoString += 'Em uso de ';
             this.fichaObject.Infeccioso.forEach(item => {
                 this.infecciosoString += item + ', ';
             });
-            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2) + '. Registrado uso de ';
-            console.log(this.antibioticos[0].antibioticos);
-            for (const i of this.antibioticos[0].antibioticos) {
-                this.infecciosoString += i + ', ';
-            }
-            this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2)
-                + ' em ' + this.allFichas[0].dataCriada + '. ';
+            // this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2) + '. Registrado uso de ';
+            // console.log(this.antibioticos[0].antibioticos);
+            // for (const i of this.antibioticos[0].antibioticos) {
+            //     this.infecciosoString += i + ', ';
+            // }
+            // this.infecciosoString = this.infecciosoString.substr(0, this.infecciosoString.length - 2)
+            //     + ' em ' + this.allFichas[0].dataCriada + '. ';
         }
     }
 
